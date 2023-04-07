@@ -37,7 +37,7 @@ export default function Nav() {
                 <div className="navbar-start">
                 </div>  
                 <div className="navbar-center" onClick={handleClick}>
-                    <Link legacyBehavior href="/Index">
+                    <Link legacyBehavior href="/">
                         <a className="btn btn-ghost normal-case text-3xl font-bold">fynal</a>
                     </Link>
                 </div>
