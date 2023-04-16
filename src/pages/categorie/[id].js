@@ -1,26 +1,22 @@
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';
 
+import { arrayUnique } from '../../fonctions/filter';
+import { useRouter } from 'next/router';
+
 export async function getStaticPaths() {
     const paths = await getAllCategoriesID();
-    // const paths = await dbCategoriesID();
-    // console.log(paths);
     
     return {
         paths,
         fallback: false,
+        // fallback: true,
     }
 }
 
-// voir pour utiliser getServerSideProps
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
     const categoriesSideMenu = await getCategorieIdData();
-
-    // console.log(catData[0]);
-    // catData.produits.forEach(produit => {
-    //     console.log(produit.nom);
-    // });
     
     return {
         props: {
@@ -30,15 +26,70 @@ export async function getStaticProps({ params }) {
     };
 }
 
+function handleClick(categorieFiltre, vendeurFiltre) {
+    console.log(categorieFiltre);
+    console.log(vendeurFiltre);
+    console.log("test");
+}
+
 export default function Categorie({ catData }) {
+
+    // voir pour peut être faire une page de chargement avec fallback: true
+    // si on le fait ici, le faire aussi pour les pages produits
+    // const router = useRouter();
+
+    // if(router.isFallback) {
+    //     return <div>Loading...</div>
+    // }
+
+    const infosCategorie = {
+        libelle: catData[0].libelle,
+        description: catData[0].description,
+    };
+    const produits = catData.produits;
+
+    const categorieFiltre = arrayUnique( 
+        produits.map((produit) => { 
+            return produit.idCategorie 
+        })
+    );
+
+    const vendeurFiltre = arrayUnique( 
+        produits.map((produit) => { 
+            return produit.idVendeur 
+        })
+    );
+
+    const filtres = {
+        categorie: categorieFiltre,
+        vendeur: vendeurFiltre,
+    }
+
+    console.log(categorieFiltre);
+    console.log(vendeurFiltre);
+
+    /*
+    Gestion des filtres :
+    - stock : case à cocher 'En stock', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut stock = 0, pas besoin de récupérer d'information au préalable
+    - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
+    - reduction : case à cocher 'En soldes', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut reduction = 0, pas besoin de récupérer d'information au préalable
+
+    - hauteur/longueur/largeur/poids : pas de filtre nécessaire, surtout utile pour le colis
+
+    - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
+    
+    - vendeur : case à cocher, comparer avec les valeurs dans le tableau, récupérer tous les vendeurs des produits affichés au préalable
+    */
+
     return (
         <div>
-            <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ catData[0].libelle }</h1>
-            <h2 className='text-center mt-8 font-semibold text-xl italic'>{ catData[0].description }</h2>
+            <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
+            <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
+            <button onClick={() => handleClick(categorieFiltre, vendeurFiltre)}>TEST</button>
             <div className="bg-white">
                 <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                        {catData.produits.map((produit) => {
+                        {produits.map((produit) => {
                             return (
                                 <a key={produit.idProduit} href={'/'} className="group">
                                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
