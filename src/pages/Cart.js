@@ -1,4 +1,14 @@
-import React from "react";  
+import React from "react";
+import { getCategorieIdData } from '../fonctions/SidebarData';
+
+export async function getStaticProps() {
+    const categoriesSideMenu = await getCategorieIdData();
+    return {
+        props: {
+            categoriesSideMenu,
+        },
+    };
+}
 
 export default function Cart(){
 
