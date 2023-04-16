@@ -29,8 +29,8 @@ export function createRandomProduct() {
         faker.datatype.number(10000),
         faker.datatype.number(10000),
         faker.datatype.number(10000),
-        faker.datatype.number({min: 1, max: 3}),
-        1
+        faker.datatype.number({min: 1, max: 2}),
+        0
     );
 
     return randomProduct;
