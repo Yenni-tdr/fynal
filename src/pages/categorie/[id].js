@@ -1,8 +1,13 @@
+import { useEffect, useState } from 'react';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';
 
-import { arrayUnique } from '../../fonctions/filter';
-import { useEffect, useState } from 'react';
+import {
+    arrayUnique,
+    stockFilter,
+    reductionFilter,
+} from '../../fonctions/filter';
+
 import {
     FILTRE_PRIX_CROISSANT_STRING,
     FILTRE_PRIX_DECROISSANT_STRING,
@@ -68,19 +73,34 @@ export default function Categorie({ catData }) {
         vendeur: vendeurFiltre,
     }
 
-    const [sort, setSort] = useState("");
+    const [filter, setFilter] = useState({
+        filterValue: "",
+        eventFilter: "",
+    });
     const [produitsTries, setProduits] = useState(produits);
 
+    const checkBoxesStates = {
+        stockCheckbox: false,
+        reductionCheckbox: false,
+    }
+
+    const filtreSortValues = [
+        FILTRE_PRIX_CROISSANT_STRING,
+        FILTRE_PRIX_DECROISSANT_STRING,
+        FILTRE_ALPHABETIQUE_CROISSANT_STRING,
+        FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
+    ]
+
     useEffect(() => {
-        if(sort === FILTRE_PRIX_CROISSANT_STRING) {
+        if(filter.filterValue === FILTRE_PRIX_CROISSANT_STRING) {
             setProduits(() => [...produits.sort((a,b) => a.prix - b.prix)])
         }
 
-        if(sort === FILTRE_PRIX_DECROISSANT_STRING) {
+        if(filter.filterValue === FILTRE_PRIX_DECROISSANT_STRING) {
             setProduits(() => [...produits.sort((a,b) => b.prix - a.prix)])
         }
 
-        if(sort === FILTRE_ALPHABETIQUE_CROISSANT_STRING) {
+        if(filter.filterValue === FILTRE_ALPHABETIQUE_CROISSANT_STRING) {
             setProduits(() => [...produits.sort((a,b) => {
                 if(a.nom < b.nom) return -1;
                 if( a.nom > b.nom) return 1;
@@ -88,7 +108,7 @@ export default function Categorie({ catData }) {
             })])
         }
 
-        if(sort === FILTRE_ALPHABETIQUE_DECROISSANT_STRING) {
+        if(filter.filterValue === FILTRE_ALPHABETIQUE_DECROISSANT_STRING) {
             setProduits(() => [...produits.sort((a,b) => {
                 if(a.nom < b.nom) return 1;
                 if( a.nom > b.nom) return -1;
@@ -96,18 +116,37 @@ export default function Categorie({ catData }) {
             })])
         }
 
-        // UTILISER FILTER
-        if(sort === FILTRE_STOCK) {
-            setProduits(() => [...produits.sort((a,b) => {
-                if(a.nom < b.nom) return 1;
-                if( a.nom > b.nom) return -1;
-                return 0;
-            })])
-        }
-    }, [sort]);
+        // if(filtreSortValues.includes(filter.filterValue)) {
+        //     if(checkBoxesStates.stockCheckbox === true) stockFilter(setProduits, produits);
+        //     if(checkBoxesStates.reductionCheckbox === true) stockFilter(setProduits, produits);
+        // }
 
-    function handleBouton(value) {
-        setSort(value);
+        if(filter.filterValue === FILTRE_STOCK) {
+            if(filter.eventFilter.target.checked === true) {
+                checkBoxesStates.stockCheckbox = true;
+                stockFilter(setProduits, produits);
+            } else {
+                checkBoxesStates.stockCheckbox = false;
+                setProduits(produits);
+            }
+        }
+
+        if(filter.filterValue === FILTRE_REDUCTION) {
+            if(filter.eventFilter.target.checked === true) {
+                checkBoxesStates.reductionCheckbox = true;
+                reductionFilter(setProduits, produits);
+            } else {
+                checkBoxesStates.reductionCheckbox = false;
+                setProduits(produits);
+            }
+        }
+    }, [filter]);
+
+    function handleBouton(value, eventFilter = "") {
+        setFilter({
+            filterValue: value,
+            eventFilter: eventFilter,
+        });
     }
 
     /*
@@ -127,7 +166,6 @@ export default function Categorie({ catData }) {
         <div>
             <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
-            {/* <button onClick={() => handleClick(categorieFiltre, vendeurFiltre)}>TEST</button> */}
             <button onClick={() => handleBouton(FILTRE_PRIX_CROISSANT_STRING)}>{FILTRE_PRIX_CROISSANT_STRING}</button>
             <br />
             <button onClick={() => handleBouton(FILTRE_PRIX_DECROISSANT_STRING)}>{FILTRE_PRIX_DECROISSANT_STRING}</button>
@@ -136,11 +174,9 @@ export default function Categorie({ catData }) {
             <br />
             <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_DECROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</button>
             <br />
-            <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_DECROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</button>
+            <input type='checkbox' id='stockCheckbox' onClick={(eventCheckbox) => handleBouton(FILTRE_STOCK, eventCheckbox)}></input>{FILTRE_STOCK}
             <br />
-            <button onClick={() => handleBouton(FILTRE_STOCK)}>{FILTRE_STOCK}</button>
-            <br />
-            <button onClick={() => handleBouton(FILTRE_REDUCTION)}>{FILTRE_REDUCTION}</button>
+            <input type='checkbox' id='reductionCheckbox' onClick={(eventCheckbox) => handleBouton(FILTRE_REDUCTION, eventCheckbox)}></input>{FILTRE_REDUCTION}
             <div className="bg-white">
                 <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">

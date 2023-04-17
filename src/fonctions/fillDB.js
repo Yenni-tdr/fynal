@@ -12,7 +12,7 @@ export async function fillDatabaseProducts() {
     // });
     // console.log(allUsers);
 
-    for(let i = 0; i<100; i++) {
+    for(let i = 0; i<20; i++) {
         const product = createRandomProduct();
 
         await prisma.produit.create({
