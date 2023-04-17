@@ -8,6 +8,8 @@ import {
     FILTRE_PRIX_DECROISSANT_STRING,
     FILTRE_ALPHABETIQUE_CROISSANT_STRING,
     FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
+    FILTRE_STOCK,
+    FILTRE_REDUCTION,
 } from '../../const/const';
 // import { useRouter } from 'next/router';
 
@@ -87,11 +89,20 @@ export default function Categorie({ catData }) {
         }
 
         if(sort === FILTRE_ALPHABETIQUE_DECROISSANT_STRING) {
-            setProduits(() => produits.sort((a,b) => {
+            setProduits(() => [...produits.sort((a,b) => {
                 if(a.nom < b.nom) return 1;
                 if( a.nom > b.nom) return -1;
                 return 0;
-            }))
+            })])
+        }
+
+        // UTILISER FILTER
+        if(sort === FILTRE_STOCK) {
+            setProduits(() => [...produits.sort((a,b) => {
+                if(a.nom < b.nom) return 1;
+                if( a.nom > b.nom) return -1;
+                return 0;
+            })])
         }
     }, [sort]);
 
@@ -102,9 +113,9 @@ export default function Categorie({ catData }) {
     /*
     Gestion des filtres :
     - stock : case à cocher 'En stock', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut stock = 0, pas besoin de récupérer d'information au préalable
-    - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
     - reduction : case à cocher 'En soldes', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut reduction = 0, pas besoin de récupérer d'information au préalable
-
+    - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
+    
     - hauteur/longueur/largeur/poids : pas de filtre nécessaire, surtout utile pour le colis
 
     - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
@@ -124,6 +135,12 @@ export default function Categorie({ catData }) {
             <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_CROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_CROISSANT_STRING}</button>
             <br />
             <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_DECROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</button>
+            <br />
+            <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_DECROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</button>
+            <br />
+            <button onClick={() => handleBouton(FILTRE_STOCK)}>{FILTRE_STOCK}</button>
+            <br />
+            <button onClick={() => handleBouton(FILTRE_REDUCTION)}>{FILTRE_REDUCTION}</button>
             <div className="bg-white">
                 <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
