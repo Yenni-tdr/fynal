@@ -3,21 +3,24 @@ import Head from 'next/head'
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from '../fonctions/SidebarData';
-// import { fillDatabaseAdmin } from '../fonctions/fillDB';
-// import { fillDatabaseProducts } from '../fonctions/fillDB';
+import { getCategorieProductsData } from '../fonctions/categorie';
 
-export async function getStaticProps() {
-    // await fillDatabaseAdmin();
-    // await fillDatabaseProducts();
+export async function getServerSideProps() {
+    var id = 1;
+    const catData = await getCategorieProductsData(id);
     const categoriesSideMenu = await getCategorieIdData();
+    
     return {
         props: {
+            catData,
             categoriesSideMenu,
         },
     };
 }
 
-export default function Home() {
+export default function Home({ catData, categoriesSideMenu }) {
+
+    const SelectProduits = catData.produits.slice(0, 4);
 
   const slider = [
     {
@@ -51,6 +54,7 @@ export default function Home() {
         imageAlt :'Product',
     },
     ]
+    /*
     const products = [
     {
         id: 1,
@@ -87,7 +91,7 @@ export default function Home() {
     },
     
   ]
-
+*/
   return (
     <>
       <Head>
@@ -102,57 +106,56 @@ export default function Home() {
         ))}
     </Carousel>
       </section>
-      <section class="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-16">
-      <div class="grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
-          <div class="text-center">
-          <div class="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
+      <section className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-16">
+      <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
+          <div className="text-center">
+          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
               <img src="/images/fast-delivery.png" alt="a"></img>
           </div>
-          <h6 class="text-4xl font-bold text-deep-purple-accent-400">Livraison</h6>
-          <p class="mb-2 font-bold text-md">Rapide</p>
+          <h6 className="text-4xl font-bold text-deep-purple-accent-400">Livraison</h6>
+          <p className="mb-2 font-bold text-md">Rapide</p>
           </div>
-          <div class="text-center">
-          <div class="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
+          <div className="text-center">
+          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
               <img src="/images/credit-card.png" alt="a" className="w-10"></img> 
           </div>
-          <h6 class="text-4xl font-bold text-deep-purple-accent-400">Paiement</h6>
-          <p class="mb-2 font-bold text-md">En Ligne</p>
+          <h6 className="text-4xl font-bold text-deep-purple-accent-400">Paiement</h6>
+          <p className="mb-2 font-bold text-md">En Ligne</p>
           </div>
-          <div class="text-center">
-          <div class="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
+          <div className="text-center">
+          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
               <img src="/images/refund.png" alt="a" className="w-10"></img>
           </div>
-          <h6 class="text-4xl font-bold text-deep-purple-accent-400">Retours</h6>
-          <p class="mb-2 font-bold text-md">Gratuits</p>
+          <h6 className="text-4xl font-bold text-deep-purple-accent-400">Retours</h6>
+          <p className="mb-2 font-bold text-md">Gratuits</p>
           </div>
       </div>
       </section>
 
       <section className="font-sans font-semibold text-2xl">
-      <h2 className="underline underline-offset-8 text-black decoration-slate-600 ml-4 lg:ml-56 ">LES PRODUITS DU MOMENT</h2>
+      <h2 className="underline underline-offset-8 text-black decoration-slate-600 ml-4 lg:ml-52 ">LES PRODUITS DU MOMENT</h2>
       <div className="bg-white -mt-14 sm:-ml-50s">
           <div className="mx-auto max-w-2xl py-16 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {products.map((product) => (
-                  <div key={product.id} className="group relative">
+              {SelectProduits.map((produit) => (
+                  <div key={produit.id} className="group relative">
                   <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
                       <img
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
+                      src={produit.image}
+                      alt={produit.imageAlt}
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                       />
                   </div>
                   <div className="mt-4 flex justify-between">
                       <div>
                       <h3 className="text-sm text-gray-700">
-                          <a href={product.href}>
+                          <a href={produit.href}>
                           <span aria-hidden="true" className="absolute inset-0" />
-                          {product.name}
+                          {produit.nom}
                           </a>
                       </h3>
-                      <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                       </div>
-                      <p className="text-sm font-medium text-gray-900">{product.price}</p>
+                      <p className="text-sm font-medium text-gray-900">{produit.prix}</p>
                   </div>
                   </div>
               ))}
