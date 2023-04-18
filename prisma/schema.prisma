@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["extendedWhereUnique"]
 }
 
 datasource db {
@@ -110,6 +109,8 @@ model Produit {
   poids           Float?          @db.Real
   idCategorie     Int?
   idVendeur       Int
+  reference       String
+  image           String
   PanierProduit   PanierProduit[]
   Categorie       Categorie?      @relation(fields: [idCategorie], references: [idCategorie], onDelete: NoAction, onUpdate: NoAction)
   Vendeur         Vendeur         @relation(fields: [idVendeur], references: [idVendeur], onDelete: Cascade, onUpdate: NoAction)
