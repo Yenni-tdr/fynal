@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';   
 import { useState } from 'react';
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
 // voir pour utiliser getServerSideProps
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
-    const Cart = await prisma.commande.findUnique({where:{idCommande: 8,etatCommande : 0,},
+    const Cart = await prisma.commande.findUnique({where:{idCommande: 8}, 
         include: {
             PanierProduit: true,
           },});
@@ -121,6 +122,7 @@ export default function Categorie({ catData,InitialCart }) {
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                         {catData.produits.map((produit) => {
                             return (
+                                <Link href={`/products/${produit.idProduit}`} legacyBehavior>
                                 <a key={produit.idProduit}  className="group">
                                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                     <img
@@ -154,6 +156,7 @@ export default function Categorie({ catData,InitialCart }) {
                                     </button> */}
                                 </div>
                                 </a>
+                                </Link>
                             );
                         })}
                     </div>
