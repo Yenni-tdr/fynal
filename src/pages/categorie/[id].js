@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 // voir pour utiliser getServerSideProps
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
-    const Cart = await prisma.commande.findUnique({where:{idCommande: 8},
+    const Cart = await prisma.commande.findUnique({where:{idCommande: 8,etatCommande : 0,},
         include: {
             PanierProduit: true,
           },});
