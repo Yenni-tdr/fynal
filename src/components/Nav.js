@@ -5,9 +5,9 @@ import Link from "next/link";
 import confetti from 'canvas-confetti';
 
 
+export default function Nav({ childrenProps }) {
 
-
-export default function Nav() {
+    // console.log(childrenProps);
 
     const [sidebar, setSidebar] = useState(false);
 
@@ -78,7 +78,7 @@ export default function Nav() {
                     </button>
             </div>
         </header>
-        {sidebar && <Sidebar sidebarState={sidebar} onClose={() => setSidebar(false)}/>}
+        {sidebar && <Sidebar sidebarState={sidebar} childrenProps={childrenProps} onClose={() => setSidebar(false)}/>}
         </>
         )
 }

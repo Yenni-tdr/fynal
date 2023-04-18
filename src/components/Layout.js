@@ -3,9 +3,10 @@ import Nav from './Nav';
 import Footer from './Footer';
 
 export default function Layout({ children }) {
+  
   return (  
     <>
-      <Nav />
+      <Nav childrenProps={children.props.categoriesSideMenu} />
           {children}  
       <Footer />
     </>
