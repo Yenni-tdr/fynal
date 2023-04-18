@@ -5,7 +5,10 @@ import { getCategorieIdData } from "../fonctions/SidebarData";
 export async function getServerSideProps() {
   const categoriesSideMenu = await getCategorieIdData();
   const InitialCart = await prisma.commande.findUnique({
-    where: { idCommande: 8 },
+    where: { 
+      idCommande: 8,
+      etatCommande : 0,
+    },
     include: {
       PanierProduit: {
         include: {
@@ -238,7 +241,7 @@ export default function Cart({ InitialCart }) {
 
                     <div className="flex justify-end">
                       <a
-                        href="#"
+                        href="/Shipping"
                         className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                       >
                         Paiement
