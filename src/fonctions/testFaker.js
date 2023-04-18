@@ -21,18 +21,16 @@ export function createRandomProduct() {
     const randomProduct = new Product(
         faker.commerce.product(),
         faker.commerce.productDescription(),
-        // faker.datatype.number(100),
-        10,
+        faker.datatype.number(100),
         faker.datatype.number(20),
         faker.datatype.float({min: 1, max: 1000, precision: 0.01}),
-        // 0,
-        10,
+        0,
         faker.datatype.number(10000),
         faker.datatype.number(10000),
         faker.datatype.number(10000),
         faker.datatype.number(10000),
-        faker.datatype.number({min: 1, max: 2}),
-        0
+        faker.datatype.number({min: 1, max: 3}),
+        1
     );
 
     return randomProduct;
