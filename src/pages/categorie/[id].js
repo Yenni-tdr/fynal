@@ -1,7 +1,6 @@
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';   
-import { useContext, useState } from 'react';
-import { PrismaClient, Commande } from '@prisma/client';
+import { useState } from 'react';
 
 export async function getStaticPaths() {
     const paths = await getAllCategoriesID();
