@@ -3,12 +3,8 @@ import Head from 'next/head'
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from '../fonctions/SidebarData';
-// import { fillDatabaseAdmin } from '../fonctions/fillDB';
-// import { fillDatabaseProducts } from '../fonctions/fillDB';
 
 export async function getStaticProps() {
-    // await fillDatabaseAdmin();
-    // await fillDatabaseProducts();
     const categoriesSideMenu = await getCategorieIdData();
     return {
         props: {
@@ -17,7 +13,7 @@ export async function getStaticProps() {
     };
 }
 
-export default function Home() {
+export default function Home({ categoriesSideMenu }) {
 
   const slider = [
     {
