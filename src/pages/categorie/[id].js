@@ -1,3 +1,5 @@
+// Ce fichier est une route dynamique. Grâce à cela, on peut automatiquement générer des pages en fonctions des catégories présentes dans la base de données.
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
@@ -14,6 +16,7 @@ import {
     FILTRE_REDUCTION,
 } from '../../const/const';
 
+// Cette fonction permet de générer tous les chemins possibles en fonction des catégories présentes dans la BDD
 export async function getStaticPaths() {
     const paths = await getAllCategoriesID();
     
@@ -24,6 +27,8 @@ export async function getStaticPaths() {
     }
 }
 
+// Cette fonction permet de récupérer les produits liés à la catégorie choisie 
+// On récupère aussi les informations sur les catégories pour le menu sur le côté
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
     const categoriesSideMenu = await getCategorieIdData();
@@ -36,6 +41,7 @@ export async function getStaticProps({ params }) {
     };
 }
 
+// Tableau contenant tous les types de tri possible
 const sorts = [
     FILTRE_PRIX_CROISSANT_STRING,
     FILTRE_PRIX_DECROISSANT_STRING,
@@ -43,6 +49,7 @@ const sorts = [
     FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
 ]
 
+// Object permettant de savoir l'état du tri et des filtres appliqués
 let actualSort = {
     sortType: false,
     stockCheckbox: false,
@@ -61,6 +68,7 @@ export default function Categorie({ catData }) {
     //     return <div>Loading...</div>
     // }
 
+    // On récupère les informations venant de la BDD et on les organise
     const infosCategorie = {
         libelle: catData[0].libelle,
         description: catData[0].description,
@@ -69,6 +77,7 @@ export default function Categorie({ catData }) {
     actualSort.vendeurArray = catData.vendeurs;
     let entreprises = catData.entreprises;
 
+    // Déclaration des hooks d'état permettant d'appliquer les filtres sur la page
     const [filter, setFilter] = useState({
         filterValue: "",
         eventFilter: "",
@@ -79,6 +88,8 @@ export default function Categorie({ catData }) {
 
     useEffect(() => {
 
+        // A chaque changement de catégorie, on remet à 0 toutes les informations d'état et on reload la page pour bien afficher les produits de la nouvelle catégorie
+        // (Le reload ne devrait pas petre nécessaire en principe mais avec la manière dont on a utilisé les hooks d'état, nous sommes obligés de le faire)
         const handleRouteChange = (url) => {
             actualSort.sortType = false;
             actualSort.stockCheckbox = false;
@@ -87,9 +98,9 @@ export default function Categorie({ catData }) {
             actualSort.entrepriseArray = [],
             router.reload();
         }
-
         router.events.on('routeChangeComplete', handleRouteChange);
 
+        // On vérifie quelle action a été effectuée, si c'est le choix d'un nouveau tri ou l'application d'un filtre
         if(sorts.includes(filter.filterValue)) actualSort.sortType = filter.filterValue;
         else if(filter.filterValue === FILTRE_STOCK) actualSort.stockCheckbox = !actualSort.stockCheckbox;
         else if(filter.filterValue === FILTRE_REDUCTION) actualSort.reductionCheckbox = !actualSort.reductionCheckbox;
@@ -99,14 +110,13 @@ export default function Categorie({ catData }) {
             actualSort.entrepriseArray.push(filter.filterValue);
         }
 
-        console.log(actualSort);
-
+        // On met à jour les produits en fonctions du tri et des filtres
         let filteredProducts = updateProducts(produits, actualSort);
-
         setProduits([...filteredProducts]);
 
     }, [filter]);
 
+    // Cette fonction permet de récupérer les informations venant de l'activation d'un tri ou d'un filtre
     function handleFilter(value, eventFilter = "") {
         setFilter({
             filterValue: value,
@@ -116,21 +126,16 @@ export default function Categorie({ catData }) {
 
     /*
     Gestion des filtres :
-    - stock : case à cocher 'En stock', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut stock = 0, pas besoin de récupérer d'information au préalable
-    - reduction : case à cocher 'En soldes', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut reduction = 0, pas besoin de récupérer d'information au préalable
     - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
-    
-    - hauteur/longueur/largeur/poids : pas de filtre nécessaire, surtout utile pour le colis
-
     - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
-    
-    - vendeur : case à cocher, comparer avec les valeurs dans le tableau, récupérer tous les vendeurs des produits affichés au préalable
     */
 
+    // Affichage de la page
     return (
         <div>
             <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
+            {/* Affichage des filtres */}
             <div className='flex justify-end gap-4 mr-10 mt-10'>
                 <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
                     <option disabled value={DEFAULT}>Trier par :</option>
@@ -155,6 +160,7 @@ export default function Categorie({ catData }) {
             <div className="bg-white">
                 <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                        {/* Affichage des produits de la catégorie */}
                         {produitsTries.map((produit) => {
                             return (
                                 <a key={produit.idProduit} href={'/'} className="group">

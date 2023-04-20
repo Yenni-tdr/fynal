@@ -3,17 +3,12 @@ import {
     FILTRE_PRIX_DECROISSANT_STRING,
     FILTRE_ALPHABETIQUE_CROISSANT_STRING,
     FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
-    FILTRE_STOCK,
-    FILTRE_REDUCTION,
 } from '../const/const';
 
-const sorts = [
-    FILTRE_PRIX_CROISSANT_STRING,
-    FILTRE_PRIX_DECROISSANT_STRING,
-    FILTRE_ALPHABETIQUE_CROISSANT_STRING,
-    FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
-]
-
+/*
+* Cette fonction permet d'appliquer un tri en fonction du type de tri en entrée.
+* Il y a 4 types de tri : par prix croissant/décroissant et par ordre alphabétique croissant/décroissant
+*/
 function sortSwitch(produitsTries, sortType) {
     switch (sortType) {
         case FILTRE_PRIX_CROISSANT_STRING:
@@ -42,18 +37,33 @@ function sortSwitch(produitsTries, sortType) {
     }
 }
 
+/*
+* Cette fonction filtre les produits n'ayant aucun stock.
+*
+* Valeur de retour : le tableau des produits sans ceux n'ayant pas de stock.
+*/
 function stockFilter(produitsTries) {
     return produitsTries.filter((produit) => {
         return produit.stock > 0;
     });
 }
 
+/*
+* Cette fonction filtre les produits n'ayant pas de réduction.
+*
+* Valeur de retour : le tableau des produits sans ceux n'ayant pas de réduction.
+*/
 function reductionFilter(produitsTries) {
     return produitsTries.filter((produit) => {
         return produit.reduction > 0;
     });
 }
 
+/*
+* Cette fonction filtre les produits en fonction des entreprises cochées par l'utilisateur.
+*
+* Valeur de retour : le tableau des produits sans ceux dont l'entreprise n'a pas été cochée par l'utilisateur.
+*/
 function entrepriseFilter(produitsTries, vendeurArray, entrepriseArray) {
     const vendeursEntreprises = vendeurArray.filter((vendeur) => {
         return entrepriseArray.includes(vendeur.idEntreprise);
@@ -66,6 +76,11 @@ function entrepriseFilter(produitsTries, vendeurArray, entrepriseArray) {
     });
 }
 
+/*
+* Cette fonction permet d'appliquer le tri et tous les filtres sélectionnés par l'utilisateur.
+*
+* Valeur de retour : le tableau des produits, trié et filtré.
+*/
 export function updateProducts(produits, actualSort) {
     let produitsTries = produits;
 
