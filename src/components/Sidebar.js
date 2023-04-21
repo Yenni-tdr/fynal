@@ -43,7 +43,7 @@ const Sidebar = ({ sidebarState, childrenProps }) => {
     <>
         <SidebarNav className="sticky top-25 z-50" sidebar={isOpen} ref={menuRef}>
             <SidebarWrap>
-                {childrenProps.map((item, index) => {
+                {Array.isArray(childrenProps) && childrenProps.map((item, index) => {
                     return <SidebarMenu item={item} key={index} closeSidebar={() => setIsOpen(false)} />
                 })}
             </SidebarWrap>
