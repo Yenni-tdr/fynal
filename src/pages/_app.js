@@ -5,6 +5,7 @@ import {CookiesProvider} from "react-cookie";
 
 function MyApp({Component, pageProps}){
   return (
+
       <CookiesProvider>
           <Layout>
               <Component {...pageProps} />

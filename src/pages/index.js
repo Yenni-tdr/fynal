@@ -3,21 +3,25 @@ import Head from 'next/head'
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from '../fonctions/SidebarData';
-// import { fillDatabaseAdmin } from '../fonctions/fillDB';
-// import { fillDatabaseProducts } from '../fonctions/fillDB';
+import { getCategorieProductsData } from '../fonctions/categorie';
+import Link from 'next/link';
 
-export async function getStaticProps() {
-    // await fillDatabaseAdmin();
-    // await fillDatabaseProducts();
+export async function getServerSideProps() {
+    var id = 1;
+    const catData = await getCategorieProductsData(id);
     const categoriesSideMenu = await getCategorieIdData();
+    
     return {
         props: {
+            catData,
             categoriesSideMenu,
         },
     };
 }
 
-export default function Home() {
+export default function Home({ catData, categoriesSideMenu }) {
+
+    const SelectProduits = catData.produits.slice(0, 4);
 
   const slider = [
     {
@@ -51,6 +55,7 @@ export default function Home() {
         imageAlt :'Product',
     },
     ]
+    /*
     const products = [
     {
         id: 1,
@@ -87,7 +92,13 @@ export default function Home() {
     },
     
   ]
-
+*/
+const addresses = [
+    "15 rue de la paix, Paris, 75015",
+    "25 avenue des Champs-Élysées, Paris, 75008",
+    "10 rue de Rivoli, Paris, 75004",
+  ];
+  
   return (
     <>
       <Head>
@@ -129,37 +140,42 @@ export default function Home() {
       </section>
 
       <section className="font-sans font-semibold text-2xl">
-      <h2 className="underline underline-offset-8 text-black decoration-slate-600 ml-4 lg:ml-56 ">LES PRODUITS DU MOMENT</h2>
+      <h2 className="underline underline-offset-8 text-black decoration-slate-600 ml-4 lg:ml-52 ">LES PRODUITS DU MOMENT</h2>
       <div className="bg-white -mt-14 sm:-ml-50s">
           <div className="mx-auto max-w-2xl py-16 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {products.map((product) => (
-                  <div key={product.id} className="group relative">
+              {SelectProduits.map((produit) => (
+                  <div key={produit.id} className="group relative">
                   <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
                       <img
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
+                      src={produit.image}
+                      alt={produit.imageAlt}
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                       />
                   </div>
                   <div className="mt-4 flex justify-between">
                       <div>
                       <h3 className="text-sm text-gray-700">
-                          <a href={product.href}>
+                          <a href={produit.href}>
                           <span aria-hidden="true" className="absolute inset-0" />
-                          {product.name}
+                          {produit.nom}
                           </a>
                       </h3>
-                      <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                       </div>
-                      <p className="text-sm font-medium text-gray-900">{product.price}</p>
+                      <p className="text-sm font-medium text-gray-900">{produit.prix}</p>
                   </div>
                   </div>
               ))}
               </div>
           </div>
       </div>
+        <section>
+            <Link href='Delivery'>DIJKSTRA</Link>
+            <br></br>    
+            <Link href='History'>HISTO COMMANDES</Link>
+        </section> 
       </section>
+
       <section className="flex bg-slate-200 py-20 place-content-evenly">
       <div className="ml-42 mt-8 font-sans font-semibold text-2xl">
           <h3>Télécharger notre application</h3>
@@ -169,6 +185,7 @@ export default function Home() {
           <a href="#"><Image src="/images/apps.png" alt="img" height={200} width={200}></Image></a>
       </div>
       </section>  
+
   </>
   )
 }

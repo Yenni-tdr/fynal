@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';
+import * as FaIcons from 'react-icons/fa';
 
 import {
     arrayUnique,
@@ -188,7 +189,6 @@ export default function Categorie({ catData }) {
     - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
     
     - hauteur/longueur/largeur/poids : pas de filtre nécessaire, surtout utile pour le colis
-
     - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
     
     - vendeur : case à cocher, comparer avec les valeurs dans le tableau, récupérer tous les vendeurs des produits affichés au préalable
@@ -263,9 +263,9 @@ export default function Categorie({ catData }) {
                                         <h3 className="mt-4 text-sm text-gray-700">{produit.nom}</h3>
                                         <p className="mt-1 text-lg font-medium text-gray-900">{produit.prix} €</p>
                                     </div>
-                                    {/* <button id='addCart' className="bg-slate-200 hover:bg-slate-300 text-black  text-xl font-semibold py-2 px-4 mt-4 rounded shadow"
+                                    { <button id='addCart' className="bg-slate-200 hover:bg-slate-300 text-black  text-xl font-semibold py-2 px-4 mt-4 rounded shadow"
                                             onClick={() => addToCart(produit)}> <FaIcons.FaCartPlus/>
-                                    </button> */}
+                                    </button> }
                                 </div>
                                 </a>
                                 
