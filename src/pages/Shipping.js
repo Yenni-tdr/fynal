@@ -56,51 +56,73 @@ export default function Shipping({ InitialCart }) {
 
   const { isSubmitting } = formState;
 
-  const submitHandler = async ({ numeroNomRue, ville, codePostal, pays }) => {
-    // await wait(1000)
+  const submitHandler = async ({
+    numeroNomRue,
+    complement,
+    ville,
+    codePostal,
+    pays,
+  }) => {
+    // await wait(1000);
     const response = await fetch("/api/shippingAdress", {
       method: "POST",
       body: JSON.stringify({
+        idAdresse: cart[0].idAdresse,
         idCommande: cart[0].idCommande,
         idUtilisateur: cart[0].idUtilisateur,
         AdressePrev: cart[0].Utilisateur.Adresse,
         numeroNomRue: numeroNomRue,
         ville: ville,
-        codePostal: parseInt(codePostal),
+        complement: complement,
+        codePostal: Number(codePostal),
         pays: pays,
       }),
     });
-
+    console.log(response);
     if (!response.ok) {
+      console.log(response);
       throw new Error(response.statusText);
     }
 
     const updatedProduct = await response.json();
     router.push("/payment");
 
-    // const cartData = {idCommande: cart[0].idCommande,
-    //       idUtilisateur : cart[0].idUtilisateur,
-    //       AdressePrev : cart[0].Utilisateur.Adresse,
-    //       numeroNomRue : numeroNomRue,
-    //       ville : ville,
-    //       codePostal : parseInt(codePostal),
-    //       pays : pays,}
-    // if((cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue) && (cartData.ville === cartData.AdressePrev.ville) && (cartData.pays === cartData.AdressePrev.pays) && (cartData.codePostal === cartData.AdressePrev.codePostal)){
-    //     console.log(true)
-    //     console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
-    //     console.log(cartData.ville === cartData.AdressePrev.ville)
-    //     console.log(cartData.pays === cartData.AdressePrev.pays)
-    //     console.log(cartData.codePostal === cartData.AdressePrev.codePostal)
-    // }else{
-    //     console.log(false);
-    //     console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
-    //     console.log(cartData.ville === cartData.AdressePrev.ville)
-    //     console.log(cartData.pays === cartData.AdressePrev.pays)
-    //     console.log(cartData.codePostal === cartData.AdressePrev.codePostal)
+    // const cartData = {
+    //   idCommande: cart[0].idCommande,
+    //   idUtilisateur: cart[0].idUtilisateur,
+    //   AdressePrev: cart[0].Adresse || cart[0].Utilisateur.Adresse,
+    //   numeroNomRue: numeroNomRue,
+    //   ville: ville,
+    //   codePostal: Number(codePostal),
+    //   pays: pays,
+    //   complement : complement,
+    //   idAdresse: cart[0].idAdresse,
+    //   complement: complement,
+    // };
+    // console.log(cartData);
+    // if (
+    //   cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue &&
+    //   cartData.ville === cartData.AdressePrev.ville &&
+    //   cartData.pays === cartData.AdressePrev.pays &&
+    //   cartData.codePostal === cartData.AdressePrev.codePostal
+    // ) {
+    //   console.log(true);
+    //   console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
+    //   console.log(cartData.ville === cartData.AdressePrev.ville);
+    //   console.log(cartData.pays === cartData.AdressePrev.pays);
+    //   console.log(cartData.codePostal === cartData.AdressePrev.codePostal);
+    // } else {
+    //   console.log(false);
+    //   console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
+    //   console.log(cartData.ville === cartData.AdressePrev.ville);
+    //   console.log(cartData.pays === cartData.AdressePrev.pays);
+    //   console.log(cartData.codePostal === cartData.AdressePrev.codePostal);
     // }
-
-    // console.log(cartData)
   };
+
+  const shippingAdress = cart[0].Adresse
+    ? cart[0].Adresse
+    : cart[0].Utilisateur.Adresse;
 
   return (
     <>
@@ -113,7 +135,7 @@ export default function Shipping({ InitialCart }) {
         <div className="mb-4">
           <label htmlFor="Nom">Rue</label>
           <input
-            defaultValue={cart[0].Utilisateur.Adresse.numeroNomRue}
+            defaultValue={shippingAdress.numeroNomRue}
             className="w-full border-solid border-2  rounded border-black"
             id="numeroNomRue"
             autoFocus
@@ -126,9 +148,19 @@ export default function Shipping({ InitialCart }) {
           )}
         </div>
         <div className="mb-4">
+          <label htmlFor="Nom">Complément d'adresse</label>
+          <input
+            defaultValue={shippingAdress.complement}
+            className="w-full border-solid border-2  rounded border-black"
+            id="complement"
+            autoFocus
+            {...register("complement", { required: false })}
+          />
+        </div>
+        <div className="mb-4">
           <label htmlFor="Nom">Ville</label>
           <input
-            defaultValue={cart[0].Utilisateur.Adresse.ville}
+            defaultValue={shippingAdress.ville}
             className="w-full border-solid border-2  rounded border-black"
             id="ville"
             autoFocus
@@ -141,7 +173,7 @@ export default function Shipping({ InitialCart }) {
         <div className="mb-4">
           <label htmlFor="Nom">codePostal</label>
           <input
-            defaultValue={cart[0].Utilisateur.Adresse.codePostal}
+            defaultValue={shippingAdress.codePostal}
             className="w-full border-solid border-2  rounded border-black"
             id="codePostal"
             autoFocus
@@ -156,7 +188,7 @@ export default function Shipping({ InitialCart }) {
         <div className="mb-4">
           <label htmlFor="Nom">Pays</label>
           <input
-            defaultValue={cart[0].Utilisateur.Adresse.pays}
+            defaultValue={shippingAdress.pays}
             className="w-full border-solid border-2  rounded border-black"
             id="pays"
             autoFocus
