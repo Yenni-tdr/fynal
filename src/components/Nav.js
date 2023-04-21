@@ -69,7 +69,7 @@ export default function Nav({ childrenProps }) {
                   <span className="text-info">Total: 999€</span>
                   <div className="card-actions">
                     <Link href="/Cart">
-                      <button className="btn btn-primary btn-block">
+                    <button className="flex ml-auto text-white  bg-stone-800 border-0 py-2 px-6 focus:outline-none hover:bg-stone-950 rounded-lg transition ease-in duration-200">
                         Voir panier
                       </button>
                     </Link>
