@@ -138,7 +138,6 @@ model Produit {
   Categorie       Categorie?      @relation(fields: [idCategorie], references: [idCategorie], onDelete: NoAction, onUpdate: NoAction)
   Vendeur         Vendeur         @relation(fields: [idVendeur], references: [idVendeur], onDelete: Cascade, onUpdate: NoAction)
 }
-
 model Entreprise {
   idEntreprise Int       @id @default(autoincrement())
   nom          String

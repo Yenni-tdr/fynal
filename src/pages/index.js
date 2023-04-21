@@ -102,28 +102,28 @@ export default function Home() {
         ))}
     </Carousel>
       </section>
-      <section class="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-16">
-      <div class="grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
-          <div class="text-center">
-          <div class="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
+      <section className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-16">
+      <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
+          <div className="text-center">
+          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
               <img src="/images/fast-delivery.png" alt="a"></img>
           </div>
-          <h6 class="text-4xl font-bold text-deep-purple-accent-400">Livraison</h6>
-          <p class="mb-2 font-bold text-md">Rapide</p>
+          <h6 className="text-4xl font-bold text-deep-purple-accent-400">Livraison</h6>
+          <p className="mb-2 font-bold text-md">Rapide</p>
           </div>
-          <div class="text-center">
-          <div class="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
+          <div className="text-center">
+          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
               <img src="/images/credit-card.png" alt="a" className="w-10"></img> 
           </div>
-          <h6 class="text-4xl font-bold text-deep-purple-accent-400">Paiement</h6>
-          <p class="mb-2 font-bold text-md">En Ligne</p>
+          <h6 className="text-4xl font-bold text-deep-purple-accent-400">Paiement</h6>
+          <p className="mb-2 font-bold text-md">En Ligne</p>
           </div>
-          <div class="text-center">
-          <div class="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
+          <div className="text-center">
+          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-teal-accent-400 sm:w-12 sm:h-12">
               <img src="/images/refund.png" alt="a" className="w-10"></img>
           </div>
-          <h6 class="text-4xl font-bold text-deep-purple-accent-400">Retours</h6>
-          <p class="mb-2 font-bold text-md">Gratuits</p>
+          <h6 className="text-4xl font-bold text-deep-purple-accent-400">Retours</h6>
+          <p className="mb-2 font-bold text-md">Gratuits</p>
           </div>
       </div>
       </section>
@@ -160,7 +160,7 @@ export default function Home() {
           </div>
       </div>
       </section>
-      <section class="flex bg-slate-200 py-20 place-content-evenly">  
+      <section className="flex bg-slate-200 py-20 place-content-evenly">
       <div className="ml-42 mt-8 font-sans font-semibold text-2xl">
           <h3>Télécharger notre application</h3>
           <p>Disponible sur l'App Store et Google Play</p>

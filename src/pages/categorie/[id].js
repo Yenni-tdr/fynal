@@ -1,4 +1,25 @@
 
+import { useEffect, useState } from 'react';
+import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
+import { getCategorieIdData } from '../../fonctions/SidebarData';
+
+import {
+    arrayUnique,
+    stockFilter,
+    reductionFilter,
+} from '../../fonctions/filter';
+
+import {
+    FILTRE_PRIX_CROISSANT_STRING,
+    FILTRE_PRIX_DECROISSANT_STRING,
+    FILTRE_ALPHABETIQUE_CROISSANT_STRING,
+    FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
+    FILTRE_STOCK,
+    FILTRE_REDUCTION,
+} from '@/const';
+// import { useRouter } from 'next/router';
+
+
 import Link from 'next/link'; 
 // Ce fichier est une route dynamique. Grâce à cela, on peut automatiquement générer des pages en fonctions des catégories présentes dans la base de données.
 
@@ -44,27 +65,11 @@ export async function getStaticProps({ params }) {
     
     return {
         props: {
-            catData: catData,
-            categoriesSideMenu: categoriesSideMenu,
+
+            catData,
+            categoriesSideMenu,
         },
     };
-}
-
-// Tableau contenant tous les types de tri possible
-const sorts = [
-    FILTRE_PRIX_CROISSANT_STRING,
-    FILTRE_PRIX_DECROISSANT_STRING,
-    FILTRE_ALPHABETIQUE_CROISSANT_STRING,
-    FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
-]
-
-// Object permettant de savoir l'état du tri et des filtres appliqués
-let actualSort = {
-    sortType: false,
-    stockCheckbox: false,
-    reductionCheckbox: false,
-    vendeurArray: [],
-    entrepriseArray: [],
 }
 
 export default function Categorie({ catData }) {
@@ -77,56 +82,99 @@ export default function Categorie({ catData }) {
     //     return <div>Loading...</div>
     // }
 
-    // On récupère les informations venant de la BDD et on les organise
     const infosCategorie = {
         libelle: catData[0].libelle,
         description: catData[0].description,
     };
-    let produits = catData.produits;
-    actualSort.vendeurArray = catData.vendeurs;
-    let entreprises = catData.entreprises;
+    const produits = catData.produits;
 
-    // Déclaration des hooks d'état permettant d'appliquer les filtres sur la page
+    const categorieFiltre = arrayUnique( 
+        produits.map((produit) => { 
+            return produit.idCategorie 
+        })
+    );
+
+    const vendeurFiltre = arrayUnique( 
+        produits.map((produit) => { 
+            return produit.idVendeur 
+        })
+    );
+
+    const filtres = {
+        categorie: categorieFiltre,
+        vendeur: vendeurFiltre,
+    }
+
     const [filter, setFilter] = useState({
         filterValue: "",
         eventFilter: "",
     });
     const [produitsTries, setProduits] = useState(produits);
 
-    const router = useRouter();
+    const checkBoxesStates = {
+        stockCheckbox: false,
+        reductionCheckbox: false,
+    }
+
+    const filtreSortValues = [
+        FILTRE_PRIX_CROISSANT_STRING,
+        FILTRE_PRIX_DECROISSANT_STRING,
+        FILTRE_ALPHABETIQUE_CROISSANT_STRING,
+        FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
+    ]
 
     useEffect(() => {
-
-        // A chaque changement de catégorie, on remet à 0 toutes les informations d'état et on reload la page pour bien afficher les produits de la nouvelle catégorie
-        // (Le reload ne devrait pas petre nécessaire en principe mais avec la manière dont on a utilisé les hooks d'état, nous sommes obligés de le faire)
-        const handleRouteChange = (url) => {
-            actualSort.sortType = false;
-            actualSort.stockCheckbox = false;
-            actualSort.reductionCheckbox = false;
-            actualSort.vendeurArray = [],
-            actualSort.entrepriseArray = [],
-            router.reload();
-        }
-        router.events.on('routeChangeComplete', handleRouteChange);
-
-        // On vérifie quelle action a été effectuée, si c'est le choix d'un nouveau tri ou l'application d'un filtre
-        if(sorts.includes(filter.filterValue)) actualSort.sortType = filter.filterValue;
-        else if(filter.filterValue === FILTRE_STOCK) actualSort.stockCheckbox = !actualSort.stockCheckbox;
-        else if(filter.filterValue === FILTRE_REDUCTION) actualSort.reductionCheckbox = !actualSort.reductionCheckbox;
-        else if(actualSort.entrepriseArray.includes(filter.filterValue)) {
-            actualSort.entrepriseArray.splice(actualSort.entrepriseArray.indexOf(filter.filterValue), 1);
-        } else {
-            actualSort.entrepriseArray.push(filter.filterValue);
+        if(filter.filterValue === FILTRE_PRIX_CROISSANT_STRING) {
+            setProduits(() => [...produits.sort((a,b) => a.prix - b.prix)])
         }
 
-        // On met à jour les produits en fonctions du tri et des filtres
-        let filteredProducts = updateProducts(produits, actualSort);
-        setProduits([...filteredProducts]);
+        if(filter.filterValue === FILTRE_PRIX_DECROISSANT_STRING) {
+            setProduits(() => [...produits.sort((a,b) => b.prix - a.prix)])
+        }
 
+        if(filter.filterValue === FILTRE_ALPHABETIQUE_CROISSANT_STRING) {
+            setProduits(() => [...produits.sort((a,b) => {
+                if(a.nom < b.nom) return -1;
+                if( a.nom > b.nom) return 1;
+                return 0;
+            })])
+        }
+
+        if(filter.filterValue === FILTRE_ALPHABETIQUE_DECROISSANT_STRING) {
+            setProduits(() => [...produits.sort((a,b) => {
+                if(a.nom < b.nom) return 1;
+                if( a.nom > b.nom) return -1;
+                return 0;
+            })])
+        }
+
+        // if(filtreSortValues.includes(filter.filterValue)) {
+        //     if(checkBoxesStates.stockCheckbox === true) stockFilter(setProduits, produits);
+        //     if(checkBoxesStates.reductionCheckbox === true) stockFilter(setProduits, produits);
+        // }
+
+        if(filter.filterValue === FILTRE_STOCK) {
+            if(filter.eventFilter.target.checked === true) {
+                checkBoxesStates.stockCheckbox = true;
+                stockFilter(setProduits, produits);
+            } else {
+                checkBoxesStates.stockCheckbox = false;
+                setProduits(produits);
+            }
+        }
+
+        if(filter.filterValue === FILTRE_REDUCTION) {
+            if(filter.eventFilter.target.checked === true) {
+                checkBoxesStates.reductionCheckbox = true;
+                reductionFilter(setProduits, produits);
+            } else {
+                checkBoxesStates.reductionCheckbox = false;
+                setProduits(produits);
+            }
+        }
     }, [filter]);
 
-    // Cette fonction permet de récupérer les informations venant de l'activation d'un tri ou d'un filtre
-    function handleFilter(value, eventFilter = "") {
+    function handleBouton(value, eventFilter = "") {
         setFilter({
             filterValue: value,
             eventFilter: eventFilter,
@@ -135,15 +183,39 @@ export default function Categorie({ catData }) {
 
     /*
     Gestion des filtres :
+    - stock : case à cocher 'En stock', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut stock = 0, pas besoin de récupérer d'information au préalable
+    - reduction : case à cocher 'En soldes', regarder dans le tableau 'produits' et enlever les produits qui ont l'attribut reduction = 0, pas besoin de récupérer d'information au préalable
     - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
-    - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
-    */
+    
+    - hauteur/longueur/largeur/poids : pas de filtre nécessaire, surtout utile pour le colis
 
-    // Affichage de la page
+    - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
+    
+    - vendeur : case à cocher, comparer avec les valeurs dans le tableau, récupérer tous les vendeurs des produits affichés au préalable
+    */
     return (
         <div>
             <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
+
+            <button onClick={() => handleBouton(FILTRE_PRIX_CROISSANT_STRING)}>{FILTRE_PRIX_CROISSANT_STRING}</button>
+            <br />
+            <button onClick={() => handleBouton(FILTRE_PRIX_DECROISSANT_STRING)}>{FILTRE_PRIX_DECROISSANT_STRING}</button>
+            <br />
+            <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_CROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_CROISSANT_STRING}</button>
+            <br />
+            <button onClick={() => handleBouton(FILTRE_ALPHABETIQUE_DECROISSANT_STRING)}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</button>
+            <br />
+            <input type='checkbox' id='stockCheckbox' onClick={(eventCheckbox) => handleBouton(FILTRE_STOCK, eventCheckbox)}></input>{FILTRE_STOCK}
+            <br />
+            <input type='checkbox' id='reductionCheckbox' onClick={(eventCheckbox) => handleBouton(FILTRE_REDUCTION, eventCheckbox)}></input>{FILTRE_REDUCTION}
+            <div className="bg-white">
+                <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                        {produitsTries.map((produit) => {
+                            return (
+                                <a key={produit.idProduit} href={'/'} className="group">
+
             {/* Affichage des filtres */}
             <div className='flex justify-end gap-4 mr-10 mt-10'>
                 <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
@@ -174,6 +246,8 @@ export default function Categorie({ catData }) {
                             return (
                                 
                                 <a href={`/products/${produit.idProduit}`} key={produit.idProduit}  className="group">
+
+
 
                                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                     <img

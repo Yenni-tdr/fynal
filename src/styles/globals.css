@@ -5,4 +5,16 @@
 html{
     scroll-behavior: smooth;
     font-family: "Open Sans", sans-serif;
-} 
+}
+
+@layer components{
+    .form-auth-input-valid{
+        @apply h-7 border-solid border-gray-400 rounded-md border;
+    }
+    .form-auth-input-invalid{
+        @apply h-7   border-solid border-gray-400 rounded-md border-2 border-red-700;
+    }
+    .error-form{
+        @apply my-0.5 invisible peer-[.invalid]:visible text-red-700 text-sm;
+    }
+}
