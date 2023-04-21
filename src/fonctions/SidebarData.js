@@ -1,11 +1,9 @@
+// import React from "react";
+// import * as GiIcons from 'react-icons/gi';
+// import * as BsIcons from 'react-icons/bs';
+// import * as RiIcons from 'react-icons/ri';
 import { prisma } from '../../db';
 
-/*
-* Cette fonction permet de récupérer les informations sur les catégories dans la BDD et ensuite générer le lien permettant d'y accéder.
-* Cette fonction est utilisé pour afficher les catégories dans le menu ouvrable à gauche.
-* 
-* Valeur de retour : tableau contenant le nom des catégories ainsi que le lien permettant d'y accéder.
-*/
 export async function getCategorieIdData() {
     const categories = await prisma.categorie.findMany();
 
@@ -71,5 +69,3 @@ export async function getCategorieIdData() {
 // ]
 
 // export default SidebarData
-
-}

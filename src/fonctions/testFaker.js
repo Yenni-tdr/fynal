@@ -17,7 +17,6 @@ class Product {
     }
 }
 
-// Fonction permettant de créer un faux produit, pouvant ensuite être utilisé pour faire des tests.
 export function createRandomProduct() {
     const randomProduct = new Product(
         faker.commerce.product(),

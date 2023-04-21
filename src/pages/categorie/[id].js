@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';
@@ -19,28 +18,6 @@ import {
 } from '@/const';
 // import { useRouter } from 'next/router';
 
-
-import Link from 'next/link'; 
-// Ce fichier est une route dynamique. Grâce à cela, on peut automatiquement générer des pages en fonctions des catégories présentes dans la base de données.
-
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
-import { getCategorieIdData } from '../../fonctions/SidebarData';
-import { updateProducts } from '../../fonctions/filter';
-
-import {
-    DEFAULT,
-    FILTRE_PRIX_CROISSANT_STRING,
-    FILTRE_PRIX_DECROISSANT_STRING,
-    FILTRE_ALPHABETIQUE_CROISSANT_STRING,
-    FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
-    FILTRE_STOCK,
-    FILTRE_REDUCTION,
-} from '../../const/const';
-
-// Cette fonction permet de générer tous les chemins possibles en fonction des catégories présentes dans la BDD
 export async function getStaticPaths() {
     const paths = await getAllCategoriesID();
     
@@ -51,21 +28,12 @@ export async function getStaticPaths() {
     }
 }
 
-// Cette fonction permet de récupérer les produits liés à la catégorie choisie 
-// On récupère aussi les informations sur les catégories pour le menu sur le côté
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
-
-    const Cart = await prisma.commande.findUnique({where:{idCommande: 8}, 
-        include: {
-            PanierProduit: true,
-          },});
-
     const categoriesSideMenu = await getCategorieIdData();
     
     return {
         props: {
-
             catData,
             categoriesSideMenu,
         },
@@ -193,11 +161,11 @@ export default function Categorie({ catData }) {
     
     - vendeur : case à cocher, comparer avec les valeurs dans le tableau, récupérer tous les vendeurs des produits affichés au préalable
     */
+
     return (
         <div>
             <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
-
             <button onClick={() => handleBouton(FILTRE_PRIX_CROISSANT_STRING)}>{FILTRE_PRIX_CROISSANT_STRING}</button>
             <br />
             <button onClick={() => handleBouton(FILTRE_PRIX_DECROISSANT_STRING)}>{FILTRE_PRIX_DECROISSANT_STRING}</button>
@@ -215,40 +183,6 @@ export default function Categorie({ catData }) {
                         {produitsTries.map((produit) => {
                             return (
                                 <a key={produit.idProduit} href={'/'} className="group">
-
-            {/* Affichage des filtres */}
-            <div className='flex justify-end gap-4 mr-10 mt-10'>
-                <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
-                    <option disabled value={DEFAULT}>Trier par :</option>
-                    <option value={FILTRE_PRIX_CROISSANT_STRING}>{FILTRE_PRIX_CROISSANT_STRING}</option>
-                    <option value={FILTRE_PRIX_DECROISSANT_STRING}>{FILTRE_PRIX_DECROISSANT_STRING}</option>
-                    <option value={FILTRE_ALPHABETIQUE_CROISSANT_STRING}>{FILTRE_ALPHABETIQUE_CROISSANT_STRING}</option>
-                    <option value={FILTRE_ALPHABETIQUE_DECROISSANT_STRING}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</option>
-                </select>
-                <div className='flex flex-col gap-1'>
-                    <span><input type="checkbox" id='stockCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_STOCK, eventCheckbox)}/> {FILTRE_STOCK}</span>
-                    <span><input type='checkbox' id='reductionCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_REDUCTION, eventCheckbox)}/> {FILTRE_REDUCTION}</span>
-                </div>
-                {entreprises.length > 1 && <div className='flex flex-col gap-1'>
-                    <label>Vendeurs</label>
-                    {entreprises.map((entreprise) => {
-                        return(
-                            <span><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {entreprise.nom}</span>
-                        )
-                    })}
-                </div>}
-            </div>
-            <div className="bg-white">
-                <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                    <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                        {/* Affichage des produits de la catégorie */}
-                        {produitsTries.map((produit) => {
-                            return (
-                                
-                                <a href={`/products/${produit.idProduit}`} key={produit.idProduit}  className="group">
-
-
-
                                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                     <img
                                     src={produit.image}
@@ -261,14 +195,13 @@ export default function Categorie({ catData }) {
                                 <div className='flex flex-row space-x-44'>
                                     <div>
                                         <h3 className="mt-4 text-sm text-gray-700">{produit.nom}</h3>
-                                        <p className="mt-1 text-lg font-medium text-gray-900">{produit.prix} €</p>
+                                        <p className="mt-1 text-lg font-medium text-gray-900">{produit.prix}</p>
                                     </div>
                                     {/* <button id='addCart' className="bg-slate-200 hover:bg-slate-300 text-black  text-xl font-semibold py-2 px-4 mt-4 rounded shadow"
                                             onClick={() => addToCart(produit)}> <FaIcons.FaCartPlus/>
                                     </button> */}
                                 </div>
                                 </a>
-                                
                             );
                         })}
                     </div>

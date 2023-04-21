@@ -37,16 +37,7 @@ export default async function handler(req, res){
             }
         });
 
-        const user = {
-            address: {
-                numeroNomRue: changedUser?.adresse?.numeroNomRue,
-                complement: changedUser?.adresse?.complement,
-                codePostal: changedUser?.adresse?.codePostal,
-                genre: changedUser?.adresse?.ville,
-                ville: changedUser?.adresse?.pays,
-            }
-        }
-        return res.status(200).json(user);
+        return res.status(200).json({});
 
     }catch (err){
         console.log(err);
