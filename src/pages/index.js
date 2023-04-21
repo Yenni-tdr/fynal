@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from '../fonctions/SidebarData';
 import { getCategorieProductsData } from '../fonctions/categorie';
+import Link from 'next/link';
 
 export async function getServerSideProps() {
     var id = 1;
@@ -92,6 +93,12 @@ export default function Home({ catData, categoriesSideMenu }) {
     
   ]
 */
+const addresses = [
+    "15 rue de la paix, Paris, 75015",
+    "25 avenue des Champs-Élysées, Paris, 75008",
+    "10 rue de Rivoli, Paris, 75004",
+  ];
+  
   return (
     <>
       <Head>
@@ -162,16 +169,23 @@ export default function Home({ catData, categoriesSideMenu }) {
               </div>
           </div>
       </div>
+        <section>
+            <Link href='Delivery'>DIJKSTRA</Link>
+            <br></br>    
+            <Link href='History'>HISTO COMMANDES</Link>
+        </section> 
       </section>
-      <section class="flex bg-slate-200 py-20 place-content-evenly">  
-      <div className="ml-42 mt-8 font-sans font-semibold text-2xl">
-          <h3>Télécharger notre application</h3>
-          <p>Disponible sur l'App Store et Google Play</p>
-      </div>
-      <div className="mt-0">
-          <a href="#"><Image src="/images/apps.png" alt="img" height={200} width={200}></Image></a>
-      </div>
-      </section>  
+      <section className="flex flex-col sm:flex-row bg-slate-200 py-20 place-content-evenly">
+        <div className="ml-8 mt-8 sm:ml-42 sm:mt-0 font-sans font-semibold text-2xl">
+            <h3>Télécharger notre application</h3>
+            <p>Disponible sur l'App Store et Google Play</p>
+        </div>
+        <div className="-mt-8">
+            <a href="#">
+                <Image src="/images/apps.png" alt="img" height={200} width={200} />
+            </a>
+        </div>
+    </section>
   </>
   )
 }
