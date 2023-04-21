@@ -1,4 +1,7 @@
+
+import Link from 'next/link'; 
 // Ce fichier est une route dynamique. Grâce à cela, on peut automatiquement générer des pages en fonctions des catégories présentes dans la base de données.
+
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -31,6 +34,12 @@ export async function getStaticPaths() {
 // On récupère aussi les informations sur les catégories pour le menu sur le côté
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
+
+    const Cart = await prisma.commande.findUnique({where:{idCommande: 8}, 
+        include: {
+            PanierProduit: true,
+          },});
+
     const categoriesSideMenu = await getCategorieIdData();
     
     return {
@@ -163,7 +172,9 @@ export default function Categorie({ catData }) {
                         {/* Affichage des produits de la catégorie */}
                         {produitsTries.map((produit) => {
                             return (
-                                <a key={produit.idProduit} href={'/'} className="group">
+                                
+                                <a href={`/products/${produit.idProduit}`} key={produit.idProduit}  className="group">
+
                                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                     <img
                                     src={produit.image}
@@ -183,6 +194,7 @@ export default function Categorie({ catData }) {
                                     </button> */}
                                 </div>
                                 </a>
+                                
                             );
                         })}
                     </div>
