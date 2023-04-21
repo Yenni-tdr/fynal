@@ -83,7 +83,8 @@ model Livreur {
   idLivreur     Int         @id @default(autoincrement())
   permis        Int
   vehicule      Int
-  idUtilisateur Int
+
+  idUtilisateur Int         @unique
   Commande      Commande[]
   Utilisateur   Utilisateur @relation(fields: [idUtilisateur], references: [idUtilisateur], onDelete: Cascade, onUpdate: NoAction)
 }
@@ -124,13 +125,15 @@ model Utilisateur {
   prenom        String
   dateNaissance DateTime?    @db.Date
   email         String       @unique
-  genre         Int?
+
+  genre         String?
   idAdresse     Int?
   motDePasse    String
   Abonnement    Abonnement[]
   Commande      Commande[]
   Contrat       Contrat[]
-  Livreur       Livreur[]
+
+  Livreur       Livreur?
   Adresse       Adresse?     @relation(fields: [idAdresse], references: [idAdresse], onDelete: Cascade, onUpdate: NoAction)
   Vendeur       Vendeur?
 }

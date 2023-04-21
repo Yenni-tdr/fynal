@@ -26,9 +26,13 @@ const AccountBody = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const birthDate = new Date(cookies?.user?.dateNaissance);
-    const birthDateString = birthDate.getFullYear()  + "-" + formatMonth(birthDate.getMonth()+1)+ "-" + birthDate.getDate();
 
+    function birthDateString(date){
+        const dateFormat = new Date(date)
+        return dateFormat.getFullYear()  + "-" + formatMonth(dateFormat.getMonth()+1)+ "-" + dateFormat.getDate();
+    }
+
+    const birthDateDisplay = birthDateString(cookies?.user?.dateNaissance)
 
     const {register: registerProfile, handleSubmit: handleSubmitProfile, formState: {errors: errorsProfile}, reset: resetProfile} = useForm({
         resolver: yupResolver(profileSchema),
@@ -37,7 +41,7 @@ const AccountBody = () => {
             firstName:cookies?.user?.prenom,
             lastName:cookies?.user?.nom,
             email:cookies?.user?.email,
-            birthDate:birthDateString,
+            birthDate:birthDateDisplay,
             sex:cookies?.user?.genre,
         }
     });
@@ -81,7 +85,8 @@ const AccountBody = () => {
         console.log("test1")
         try{
             const userIdObj = {userId: cookies?.user?.idUtilisateur}
-            const sendData = {...userIdObj, ...data}
+            const birthDateObj = {birthDate: new Date(birthDateString(data.birthDate))};
+            const sendData = {...userIdObj, ...data, ...birthDateObj}
             console.log(JSON.stringify(sendData));
             const response = await fetch('/api/user/updateProfile',{
                 method: 'POST',
@@ -93,11 +98,6 @@ const AccountBody = () => {
             const result = await response.json();
             console.log("test2 :", result)
             if(response.ok){
-                const user = {...cookies?.user, ...result}
-                setCookies('user', user, {
-                    path: '/',
-                    maxAge: 60 * 60 * 24 * 30,
-                })
                 await router.reload();
             }else{
                 setError(result.message);
@@ -127,11 +127,6 @@ const AccountBody = () => {
             const result = await response.json();
             console.log("test2 :", result)
             if(response.ok){
-                const user = {...cookies?.user, ...result}
-                setCookies('user', user, {
-                    path: '/',
-                    maxAge: 60 * 60 * 24 * 30,
-                })
                 await router.reload();
             }else{
                 setError(result.message);
