@@ -4,9 +4,12 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {useRouter} from "next/router";
 import {useState} from "react";
 import {signInSchema} from "../const";
+import {useCookies} from "react-cookie";
+
 
 const SignInForm = () => {
 
+    const [cookies, setCookie, removeCookie] = useCookies(['user']);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
@@ -34,6 +37,12 @@ const SignInForm = () => {
             if(response.ok){
                 //await router.push("/signin");
                 console.log(result)
+                setCookie('user', result, {
+                    path: '/',
+                    MaxAge: 60 * 60 * 24 * 30,
+                })
+                await router.replace("/");
+                //await router.push("/");
             }else{
                 setError(result.message);
             }
@@ -42,29 +51,11 @@ const SignInForm = () => {
             setError("Une erreur est survenue. Réessayez plus tard s'il vous plait")
         }
         setIsLoading(false);
-        /*
-        setIsLoading(true);
-        console.log("test1")
-        const response = await signIn('credentials', {
-            redirect: false,
-            email: data.email,
-            password: data.password,
-            callbackUrl: '/'
-        })
-        console.log("test2")
 
-        if (response?.error) {
-            setError(response.error);
-        } else {
-            setError(null);
-        }
-        if (response.url) {
-            console.log("test13 :" + response)
-            //await router.push(response.url);
-        }
-        setIsLoading(false);
+    }
 
-         */
+    if(cookies['user']){
+        router.push('/')
     }
 
     return (

@@ -34,17 +34,18 @@ model Categorie {
 }
 
 model Commande {
-  idCommande    Int             @id @default(autoincrement())
-  dateCommande  DateTime?       @db.Date
-  dateLivraison DateTime?       @db.Date
-  etatCommande  Int
-  idLivreur     Int?
-  idAdresse     Int?
-  idUtilisateur Int
-  Adresse       Adresse?        @relation(fields: [idAdresse], references: [idAdresse], onDelete: Cascade, onUpdate: NoAction)
-  Livreur       Livreur?        @relation(fields: [idLivreur], references: [idLivreur], onDelete: NoAction, onUpdate: NoAction)
-  Utilisateur   Utilisateur     @relation(fields: [idUtilisateur], references: [idUtilisateur], onDelete: NoAction, onUpdate: NoAction)
-  PanierProduit PanierProduit[]
+  idCommande     Int             @id @default(autoincrement())
+  dateCommande   DateTime?       @db.Date
+  dateLivraison  DateTime?       @db.Date
+  etatCommande   Int
+  idLivreur      Int?
+  idAdresse      Int?
+  idUtilisateur  Int
+  method_payment String?
+  Adresse        Adresse?        @relation(fields: [idAdresse], references: [idAdresse], onDelete: Cascade, onUpdate: NoAction)
+  Livreur        Livreur?        @relation(fields: [idLivreur], references: [idLivreur], onDelete: NoAction, onUpdate: NoAction)
+  Utilisateur    Utilisateur     @relation(fields: [idUtilisateur], references: [idUtilisateur], onDelete: NoAction, onUpdate: NoAction)
+  PanierProduit  PanierProduit[]
 }
 
 model Contrat {
@@ -120,9 +121,9 @@ model Utilisateur {
   idUtilisateur Int          @id @default(autoincrement())
   nom           String
   prenom        String
-  dateNaissance DateTime?    @db.Date
+  dateNaissance String?
   email         String       @unique
-  genre         Int?
+  genre         String?
   idAdresse     Int?
   motDePasse    String
   Abonnement    Abonnement[]
@@ -130,14 +131,14 @@ model Utilisateur {
   Contrat       Contrat[]
   Livreur       Livreur[]
   Adresse       Adresse?     @relation(fields: [idAdresse], references: [idAdresse], onDelete: Cascade, onUpdate: NoAction)
-  Vendeur       Vendeur[]
+  Vendeur       Vendeur?
 }
 
 model Vendeur {
   idVendeur     Int         @id @default(autoincrement())
   nbrVentes     Int?        @default(0)
   benefices     Float?      @default(0) @db.Real
-  idUtilisateur Int
+  idUtilisateur Int         @unique
   idEntreprise  Int?
   Produit       Produit[]
   Entreprise    Entreprise? @relation(fields: [idEntreprise], references: [idEntreprise], onDelete: Cascade, onUpdate: NoAction)

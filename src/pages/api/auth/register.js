@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import * as Yup from "yup";
 import {registerSchema, saltRounds} from "../../../const";
 
 const bcrypt = require("bcryptjs");
-const prisma = new PrismaClient();
+import { prisma } from '../../../../db';
 
 export default async function handler(req, res){
 

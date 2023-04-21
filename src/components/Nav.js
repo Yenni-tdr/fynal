@@ -3,6 +3,7 @@ import * as FaIcons from 'react-icons/fa';
 import Sidebar from './Sidebar';
 import Link from "next/link";
 import confetti from 'canvas-confetti';
+import AccountMenu from "@/src/components/AccountMenu";
 
 export default function Nav({ childrenProps }) {
 
@@ -64,8 +65,7 @@ export default function Nav({ childrenProps }) {
                             </div>
                         </label>
                         <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><Link href="/signin" className="justify-between">Connexion</Link></li>
-                            <li><Link href="/register">Inscription</Link></li>
+                            <AccountMenu/>
                         </ul>
                     </div>  
                 </div>  

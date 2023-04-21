@@ -1,5 +1,4 @@
 import {useForm} from "react-hook-form";
-// import {signIn} from "next-auth/react";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {registerSchema} from "../const";
 import {useState} from "react";

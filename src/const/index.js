@@ -1,2 +1,2 @@
 export * from './filtre'
-export * from './auth'
+export * from './profile'
