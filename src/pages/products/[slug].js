@@ -144,7 +144,7 @@ export default function Products({ products, InitialCart }) {
                   {product.prix > 0 ? product.prix + " €" : "Rupture de stock"}
                 </span>
                 <button
-                  className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  className="flex ml-auto text-white  bg-stone-800 border-0 py-2 px-6 focus:outline-none hover:bg-stone-950 rounded-lg transition ease-in duration-200"
                   onClick={async (e) => {
                     try {
                       await handleNewCartData(product, cart);
@@ -156,6 +156,11 @@ export default function Products({ products, InitialCart }) {
                 >
                   Ajouter au panier
                 </button>
+              </div>
+              <div className="flex">
+                <Link href={"/categorie/" + product.idCategorie} className="ml-auto normal-case text-lg mt-4 hover:underline hover:text-black">            
+                  Retour aux catégories
+                </Link>
               </div>
             </div>
           </div>
