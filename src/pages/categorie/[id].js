@@ -47,7 +47,7 @@ export async function getStaticProps({ params }) {
 }
 
 async function newCartData(product, commande) {
-  const IDCOMMANDE = commande === 0 ? 0 : commande.idCommande;
+  const IDCOMMANDE = commande.idCommande === 0 ? 0 : commande.idCommande;
   const existItem =
     IDCOMMANDE === 0
       ? false
