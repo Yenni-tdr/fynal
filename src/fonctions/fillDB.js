@@ -5,14 +5,6 @@ import { createRandomProduct } from './testFaker';
 * Fonction permettant de remplir la BDD avec des faux produits, permettant ainsi de faire des tests.
 */
 export async function fillDatabaseProducts() {
-    // const allUsers = await prisma.produit.findMany({
-    //     where: {
-    //         prix: {
-    //             lt: 100,
-    //         }
-    //     }
-    // });
-    // console.log(allUsers);
 
     for(let i = 0; i<20; i++) {
         const product = createRandomProduct();

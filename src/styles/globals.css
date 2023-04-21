@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-html{
-    scroll-behavior: smooth;
-    font-family: "Open Sans", sans-serif;
-} 
+html {
+  scroll-behavior: smooth;
+  font-family: "Open Sans", sans-serif;
+}
+
+.alert-error {
+  @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative;
+}

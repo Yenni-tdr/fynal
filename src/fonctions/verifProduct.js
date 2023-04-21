@@ -3,6 +3,12 @@ import {
     verifFloatPositive,
 } from "./verifIntFloat";
 
+/*
+* Fonction permettant de vérifier la validité des informations entrées par un vendeur lors de la création d'une produit.
+* On vérifie que tous les champs soient valides.
+*
+* Valeur de retour : un objet 'errors' contenant des booléens correspondant à la présence d'une erreur ou non pour chaque champs.
+*/
 export default function verifProduct(product, idCategories) {
 
     const errors = {
