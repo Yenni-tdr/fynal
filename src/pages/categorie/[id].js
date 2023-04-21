@@ -140,11 +140,11 @@ export default function Categorie({ catData, InitialCart }) {
                         alt={produit.nom}
                         height={10}
                         width={10}
-                        className="h-full w-full object-cover object-center group-hover:opacity-75"
+                        className="h-full w-full object-cover object-center hover:opacity-75"
                       />
                     </div>
                   </Link>
-                  <div className="flex flex-row space-x-44">
+                  <div className="flex flex-row ">
                     <div>
                       <h3 className="mt-4 text-sm text-gray-700">
                         {produit.nom}
@@ -153,7 +153,8 @@ export default function Categorie({ catData, InitialCart }) {
                         {produit.prix}
                       </p>
                     </div>
-                    <button
+                    
+                    <button className=" mt-7 text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                       onClick={async (e) => {
                         try {
                           await handleNewCartData(produit, cart);
@@ -163,8 +164,9 @@ export default function Categorie({ catData, InitialCart }) {
                         }
                       }}
                     >
-                      ADD TO CART
+                      Ajouter au panier
                     </button>
+                    
                     {/* <button id='addCart' className="bg-slate-200 hover:bg-slate-300 text-black  text-xl font-semibold py-2 px-4 mt-4 rounded shadow"
                                             onClick={() => addToCart(produit)}> <FaIcons.FaCartPlus/>
                                     </button> */}
