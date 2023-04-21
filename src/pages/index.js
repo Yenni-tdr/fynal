@@ -175,17 +175,17 @@ const addresses = [
             <Link href='History'>HISTO COMMANDES</Link>
         </section> 
       </section>
-      <section className="flex flex-col sm:flex-row bg-slate-200 py-20 place-content-evenly">
-        <div className="ml-8 mt-8 sm:ml-42 sm:mt-0 font-sans font-semibold text-2xl">
-            <h3>Télécharger notre application</h3>
-            <p>Disponible sur l'App Store et Google Play</p>
-        </div>
-        <div className="-mt-8">
-            <a href="#">
-                <Image src="/images/apps.png" alt="img" height={200} width={200} />
-            </a>
-        </div>
-    </section>
+
+      <section className="flex bg-slate-200 py-20 place-content-evenly">
+      <div className="ml-42 mt-8 font-sans font-semibold text-2xl">
+          <h3>Télécharger notre application</h3>
+          <p>Disponible sur l'App Store et Google Play</p>
+      </div>
+      <div className="mt-0">
+          <a href="#"><Image src="/images/apps.png" alt="img" height={200} width={200}></Image></a>
+      </div>
+      </section>  
+
   </>
   )
 }
