@@ -87,8 +87,8 @@ export default function Nav({ childrenProps }) {
                 <button className="flex space-x-2" onClick={handleSidebarClick}>
                     <FaIcons.FaBars className="mt-1"/><span>Catégories</span>
                 </button>
-                <div className="flex items-center mr-24">
-                    <form onSubmit={handleSubmit}>
+                <div className="flex items-center mr-4 sm:mr-24">
+                    <form onSubmit={handleSubmit} className="flex items-center w-full sm:w-auto">
                         <label className="sr-only" htmlFor="search"> Rechercher </label>
                         <input
                             className="h-8 w-full rounded-full border-none bg-white pe-10 ps-4 text-sm shadow-sm sm:w-56 text-black"
