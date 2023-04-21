@@ -4,6 +4,7 @@ import {
 } from "../../fonctions/categorie";
 import { getCategorieIdData } from "../../fonctions/SidebarData";
 import { useState } from "react";
+import Link from "next/link";
 
 export async function getStaticPaths() {
   const paths = await getAllCategoriesID();
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
 // voir pour utiliser getServerSideProps
 export async function getStaticProps({ params }) {
   const catData = await getCategorieProductsData(params.id);
-  const Cart = await prisma.commande.findUnique({
+  const Cart = await prisma.commande.findMany({
     where: { idCommande: 8, etatCommande: 0 },
     include: {
       PanierProduit: true,
@@ -28,7 +29,7 @@ export async function getStaticProps({ params }) {
   });
   const categoriesSideMenu = await getCategorieIdData();
 
-  const InitialCart = Cart ? Cart : 0;
+  const InitialCart = Cart ? Cart : [{ idCommande: 0 }];
 
   // console.log(catData[0]);
   // catData.produits.forEach(produit => {
@@ -49,7 +50,7 @@ async function newCartData(product, commande) {
   const IDCOMMANDE = commande === 0 ? 0 : commande.idCommande;
   const existItem =
     IDCOMMANDE === 0
-      ? undefined
+      ? false
       : commande.PanierProduit.find((x) => x.idProduit === product.idProduit);
   const exist = existItem ? true : false;
   console.log(exist);
@@ -78,7 +79,6 @@ async function newCartData(product, commande) {
 
   const updatedCart = await response.json();
   return updatedCart;
-  location.reload();
 }
 
 export default function Categorie({ catData, InitialCart }) {
@@ -95,7 +95,7 @@ export default function Categorie({ catData, InitialCart }) {
   //     dispatch({type:'ADD_TO_CART', payload: {...item, quantity}});
   // }
 
-  const [cart, setCartItems] = useState(InitialCart);
+  const [cart, setCartItems] = useState(InitialCart[0]);
   console.log(cart);
   // console.log(InitialCart.ProduitPanier[0].idProduit);
 
@@ -129,16 +129,21 @@ export default function Categorie({ catData, InitialCart }) {
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
             {catData.produits.map((produit) => {
               return (
-                <a key={produit.idProduit} className="group">
-                  <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                    <img
-                      src={produit.imageSrc}
-                      alt={produit.nom}
-                      height={10}
-                      width={10}
-                      className="h-full w-full object-cover object-center group-hover:opacity-75"
-                    />
-                  </div>
+                <div className="group">
+                  <Link
+                    href={`/products/${produit.idProduit}`}
+                    key={produit.idProduit}
+                  >
+                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                      <img
+                        src={produit.image}
+                        alt={produit.nom}
+                        height={10}
+                        width={10}
+                        className="h-full w-full object-cover object-center group-hover:opacity-75"
+                      />
+                    </div>
+                  </Link>
                   <div className="flex flex-row space-x-44">
                     <div>
                       <h3 className="mt-4 text-sm text-gray-700">
@@ -164,7 +169,7 @@ export default function Categorie({ catData, InitialCart }) {
                                             onClick={() => addToCart(produit)}> <FaIcons.FaCartPlus/>
                                     </button> */}
                   </div>
-                </a>
+                </div>
               );
             })}
           </div>

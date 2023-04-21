@@ -42,7 +42,14 @@ export default async function handler(req, res){
             }
         });
 
-        return res.status(200).json({});
+        const user = {
+            nom: changedUser?.nom,
+            prenom: changedUser?.prenom,
+            email: changedUser?.email,
+            genre: changedUser?.genre,
+            dateNaissance: changedUser?.dateNaissance,
+        }
+        return res.status(200).json(user);
 
     }catch (err){
         console.log(err);
