@@ -9,7 +9,7 @@ export default function CheckoutStepsOrder({ activeStep = 0 }) {
             key={step}
             className={`flex-1 border-b-2 text-center ${
               index <= activeStep
-                ? "border-indigo-500 text-indigo-500"
+                ? "border-indigo-500 text-indigo-500 font-semibold"
                 : "border-gray-400 text-gray-400 "
             }`}
           >
