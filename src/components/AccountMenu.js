@@ -39,7 +39,7 @@ export default function AccountMenu(){
         return (
             <>
                 <li><Link href="/account" className="justify-between">Espace utilisateur</Link></li>
-                <li><Link href="/" className="justify-between">Historique</Link></li>
+                <li><Link href="/history" className="justify-between">Historique</Link></li>
                 <li><button onClick={() => removeCookieUser()}>Deconnexion</button></li>
             </>
         )
