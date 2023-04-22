@@ -180,7 +180,7 @@ const AccountBody = () => {
     if (!hasMounted) return null;
 
     return (
-        <div className="flex flex-col items-center flex-1">
+        <div className="flex flex-col items-center flex-1 mx-5">
             <h2 className="mt-2 text-2xl font-semibold">Espace utilisateur</h2>
             <section className="flex flex-col items-center flex-1 w-full shadow mr-1 my-2 p-2">
                 <form onSubmit={handleSubmitProfile(onSubmitProfile)} className="w-full flex flex-col items-center">
@@ -320,7 +320,7 @@ const AccountBody = () => {
                     }
                 </form>
             </section>
-            <section className="flex flex-col items-center flex-1 w-full shadow mr-1 my-2 p-2">
+            <section className="flex flex-col items-center flex-1 w-full shadow mr-1 my-2 p-2 mb-20">
                 <form onSubmit={handleSubmitAddress(onSubmitAddress)} className="w-full flex flex-col items-center">
                     <div className="w-full flex justify-between">
                         <div className="w-3/5 flex justify-center">

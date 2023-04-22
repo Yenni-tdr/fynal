@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
-//import { prisma } from "../../db";
 import {useCookies} from "react-cookie";
 import useSWR from "swr";
 import {useRouter} from "next/router";
+
 
 const HistoryBody = () => {
     const [cookies, setCookies, removeCookie] = useCookies(['user']);
@@ -23,7 +23,7 @@ const HistoryBody = () => {
         body: JSON.stringify({userId: cookies?.user?.idUtilisateur})
     })
         .then((res) => res.json())
-    //.then((data) => console.log(data))
+        //.then((data) => console.log(data))
 
     // Envoie de la requête à chaque chargement de la page à l'aide d'SWR
     const {data: commandes, error:errorSWR, isLoading: isLoadingSWR} = useSWR(cookies['user'] ? '/api/user/getOrderHistory' : null, fetcher, {
@@ -39,6 +39,9 @@ const HistoryBody = () => {
             <div className="">
                 <h1 className="text-2xl font-semibold my-2">Historique des commandes</h1>
             </div>
+            {commandes?.length === 0 &&
+                <p className="my-10">Vous n'avez pas encore fait de commande</p>
+            }
             {commandes?.map((commande) => {
                 return(
                     <div key={commande.idCommande}>
@@ -87,6 +90,5 @@ const HistoryBody = () => {
         </div>
     );
 };
-
 
 export default HistoryBody;
