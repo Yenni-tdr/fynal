@@ -17,7 +17,7 @@ const AccountBody = () => {
         }
     })
 
-    // Fonction permettant d'otenir un index
+    // Fonction permettant d'obtenir un index
     function formatMonth(indexMonth) {
         return (indexMonth < 10) ? '0' + indexMonth.toString() : indexMonth.toString();
     }

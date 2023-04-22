@@ -1,4 +1,3 @@
-
 // Ce fichier est une route dynamique. Grâce à cela, on peut automatiquement générer des pages en fonctions des catégories présentes dans la base de données.
 
 import { useEffect, useState } from 'react';
@@ -28,7 +27,6 @@ export async function getStaticPaths() {
         // fallback: true,
     }
 }
-
 
 // Cette fonction permet de récupérer les produits liés à la catégorie choisie 
 // On récupère aussi les informations sur les catégories pour le menu sur le côté
@@ -110,6 +108,7 @@ export default function Categorie({ catData, InitialCart }) {
     // voir pour peut être faire une page de chargement avec fallback: true
     // si on le fait ici, le faire aussi pour les pages produits
     // const router = useRouter();
+
     // if(router.isFallback) {
     //     return <div>Loading...</div>
     // }
@@ -119,7 +118,6 @@ export default function Categorie({ catData, InitialCart }) {
         libelle: catData[0].libelle,
         description: catData[0].description,
     };
-
     let produits = catData.produits;
     actualSort.vendeurArray = catData.vendeurs;
     let entreprises = catData.entreprises;
