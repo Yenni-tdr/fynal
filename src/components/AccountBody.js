@@ -244,15 +244,15 @@ const AccountBody = () => {
                                     {changeOnProfile &&
                                         <>
                                             <label className="mr-1">
-                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radio-man" value="Homme" className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
+                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radio-man" value="Homme" defaultChecked={cookies?.user?.genre === "Homme"} className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
                                                 Homme
                                             </label>
                                             <label className="mr-1">
-                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioWoman" value="Femme" className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
+                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioWoman" value="Femme" defaultChecked={cookies?.user?.genre === "Femme"} className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
                                                 Femme
                                             </label>
                                             <label className="">
-                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioOther" value="Autre" className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
+                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioOther" value="Autre" defaultChecked={cookies?.user?.genre === "Autre"} className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
                                                 Autre
                                             </label>
                                             <p className="error-form">
