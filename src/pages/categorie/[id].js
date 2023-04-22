@@ -216,7 +216,7 @@ export default function Categorie({ catData, InitialCart }) {
                     <label>Vendeurs</label>
                     {entreprises.map((entreprise) => {
                         return(
-                            <span><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {entreprise.nom}</span>
+                            <span key={entreprise.idEntreprise}><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {entreprise.nom}</span>
                         )
                     })}
                 </div>}
@@ -227,7 +227,7 @@ export default function Categorie({ catData, InitialCart }) {
                         {/* Affichage des produits de la catégorie */}
                         {produitsTries.map((produit) => {
                             return (
-                                <div className='group'>
+                                <div className='group' key={produit.idProduit}>
                                     <Link
                                         href={`/products/${produit.idProduit}`}
                                         key={produit.idProduit}
