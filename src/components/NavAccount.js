@@ -8,9 +8,8 @@ export default function NavAccount(){
         <nav className="">
             <ul className="flex flex-col m-3">
                 <li className={`${pathname === "/account" ? "underline" : ""} text-xl`}><Link href="/account">Espace utilisateur</Link></li>
-                <li className={`${pathname === "/register" ? "underline" : ""} text-xl`}><Link href="/register">Historique</Link></li>
-                <li className={`${pathname === "/register" ? "underline" : ""} text-xl`}><Link href="/register">Contrats</Link></li>
-
+                <li className={`${pathname === "/" ? "underline" : ""} text-xl`}><Link href="/">Historique</Link></li>
+                <li className={`${pathname === "/" ? "underline" : ""} text-xl`}><Link href="/">Contrats</Link></li>
             </ul>
         </nav>
     )

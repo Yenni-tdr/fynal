@@ -22,24 +22,25 @@ const SidebarLink = styled.div`
 `;
 
 const SidebarLabel = styled.span`
-  margin-left: 16px;
-`;
+    margin-left: 16px;
 
-const SidebarMenu = ({ item, closeSidebar }) => {
-  return (
-    <>
-      <SidebarLink>
-        <Link legacyBehavior href={item.path}>
-          <a onClick={closeSidebar}>
-            <div className="flex">
-              <span className="mt-1">{item.icon}</span>
-              <SidebarLabel>{item.title}</SidebarLabel>
-            </div>
-          </a>
-        </Link>
-      </SidebarLink>
-    </>
-  );
-};
+`
+
+const SidebarMenu = ({item, closeSidebar}) => {
+    return(
+        <>
+        <SidebarLink>
+            <Link legacyBehavior href={item.path}>  
+                <a onClick={closeSidebar}>
+                    <div className="flex">
+                        <span className="mt-1">{item.icon}</span>
+                        <SidebarLabel>{item.title}</SidebarLabel>
+                    </div>
+                </a>  
+            </Link>
+        </SidebarLink>
+        </>
+    )
+}
 
 export default SidebarMenu;
