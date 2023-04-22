@@ -10,12 +10,14 @@ const AccountBody = () => {
     const [cookies, setCookies] = useCookies(['user']);
     const router = useRouter();
 
+    // Permet de revenir à l'accueil si l'on est pas connecté
     useEffect(()=>{
         if(!cookies['user']){
             router.push('/')
         }
     })
 
+    // Fonction permettant d'obtenir un index
     function formatMonth(indexMonth) {
         return (indexMonth < 10) ? '0' + indexMonth.toString() : indexMonth.toString();
     }
@@ -26,9 +28,13 @@ const AccountBody = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const birthDate = new Date(cookies?.user?.dateNaissance);
-    const birthDateString = birthDate.getFullYear()  + "-" + formatMonth(birthDate.getMonth()+1)+ "-" + birthDate.getDate();
 
+    function birthDateString(date){
+        const dateFormat = new Date(date)
+        return dateFormat.getFullYear()  + "-" + formatMonth(dateFormat.getMonth()+1)+ "-" + dateFormat.getDate();
+    }
+
+    const birthDateDisplay = birthDateString(cookies?.user?.dateNaissance)
 
     const {register: registerProfile, handleSubmit: handleSubmitProfile, formState: {errors: errorsProfile}, reset: resetProfile} = useForm({
         resolver: yupResolver(profileSchema),
@@ -37,7 +43,7 @@ const AccountBody = () => {
             firstName:cookies?.user?.prenom,
             lastName:cookies?.user?.nom,
             email:cookies?.user?.email,
-            birthDate:birthDateString,
+            birthDate:birthDateDisplay,
             sex:cookies?.user?.genre,
         }
     });
@@ -81,7 +87,8 @@ const AccountBody = () => {
         console.log("test1")
         try{
             const userIdObj = {userId: cookies?.user?.idUtilisateur}
-            const sendData = {...userIdObj, ...data}
+            const birthDateObj = {birthDate: new Date(birthDateString(data.birthDate))};
+            const sendData = {...userIdObj, ...data, ...birthDateObj}
             console.log(JSON.stringify(sendData));
             const response = await fetch('/api/user/updateProfile',{
                 method: 'POST',
@@ -93,11 +100,6 @@ const AccountBody = () => {
             const result = await response.json();
             console.log("test2 :", result)
             if(response.ok){
-                const user = {...cookies?.user, ...result}
-                setCookies('user', user, {
-                    path: '/',
-                    maxAge: 60 * 60 * 24 * 30,
-                })
                 await router.reload();
             }else{
                 setError(result.message);
@@ -127,11 +129,6 @@ const AccountBody = () => {
             const result = await response.json();
             console.log("test2 :", result)
             if(response.ok){
-                const user = {...cookies?.user, ...result}
-                setCookies('user', user, {
-                    path: '/',
-                    maxAge: 60 * 60 * 24 * 30,
-                })
                 await router.reload();
             }else{
                 setError(result.message);
@@ -326,56 +323,53 @@ const AccountBody = () => {
                     </div>
                     <table className="w-2/3 bg-red-300">
                         <tbody>
-                        <tr className="w-full">
-                            <td className="w-1/2"><label htmlFor="addressBody" className="">Corps de l'adresse</label></td>
-                            <td className="w-1/2">
-                            <input {...registerAddress("addressBody")} type="textarea" id="addressBody" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.addressBody ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} required disabled={!changeOnAddress}/>
-                                <p className="error-form">
-                                    {errorsAddress.addressBody && <span>{errorsAddress.addressBody.message}</span>}
-                                </p>
-                            </td>
-                        </tr>
-                        <tr className="">
-                            <td><label htmlFor="addressAddition">Complément</label></td>
-                            <td>
-                                <input {...registerAddress("addressAddition")} type="text" id="addressAddition" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.addressAddition ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`}  required disabled={!changeOnAddress}/>
-                                <p className="error-form">
-                                    {errorsAddress.addressAddition && <span>{errorsAddress.addressAddition.message}</span>}
-                                </p>
-                            </td>
-                        </tr>
-                        <tr className="">
-                            <td><label htmlFor="postcode">Code postal</label></td>
-                            <td>
-                                <input {...registerAddress("postcode")} type="number" id="postcode" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.postcode ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} required disabled={!changeOnAddress}/>
-                                <p className="error-form">
-                                    {errorsAddress.postcode && <span>{errorsAddress.postcode.message}</span>}
-                                </p>
-                            </td>
-                        </tr>
-                        <tr className="">
-                            <td><label htmlFor="city">Ville</label></td>
-                            <td>
-                                <input {...registerAddress("city")} type="text" id="city" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.city ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} disabled={!changeOnAddress}/>
-                                <p className="error-form">
-                                    {errorsAddress.city && <span>{errorsAddress.city.message}</span>}
-                                </p>
-                            </td>
-                        </tr>
-                        <tr className="">
-                            <td><label htmlFor="country">Pays</label></td>
-                            <td>
-                                <input {...registerAddress("country")} type="text" id="city" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.country ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} disabled={!changeOnAddress}/>
-                                <p className="error-form">
-                                    {errorsAddress.country && <span>{errorsAddress.country.message}</span>}
-                                </p>
-                            </td>
-                        </tr>
-
+                            <tr className="w-full">
+                                <td className="w-1/2"><label htmlFor="addressBody" className="">Corps de l'adresse</label></td>
+                                <td className="w-1/2">
+                                <input {...registerAddress("addressBody")} type="textarea" id="addressBody" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.addressBody ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} required disabled={!changeOnAddress}/>
+                                    <p className="error-form">
+                                        {errorsAddress.addressBody && <span>{errorsAddress.addressBody.message}</span>}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr className="">
+                                <td><label htmlFor="addressAddition">Complément</label></td>
+                                <td>
+                                    <input {...registerAddress("addressAddition")} type="text" id="addressAddition" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.addressAddition ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`}  required disabled={!changeOnAddress}/>
+                                    <p className="error-form">
+                                        {errorsAddress.addressAddition && <span>{errorsAddress.addressAddition.message}</span>}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr className="">
+                                <td><label htmlFor="postcode">Code postal</label></td>
+                                <td>
+                                    <input {...registerAddress("postcode")} type="number" id="postcode" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.postcode ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} required disabled={!changeOnAddress}/>
+                                    <p className="error-form">
+                                        {errorsAddress.postcode && <span>{errorsAddress.postcode.message}</span>}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr className="">
+                                <td><label htmlFor="city">Ville</label></td>
+                                <td>
+                                    <input {...registerAddress("city")} type="text" id="city" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.city ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} disabled={!changeOnAddress}/>
+                                    <p className="error-form">
+                                        {errorsAddress.city && <span>{errorsAddress.city.message}</span>}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr className="">
+                                <td><label htmlFor="country">Pays</label></td>
+                                <td>
+                                    <input {...registerAddress("country")} type="text" id="country" className={`peer ${!changeOnAddress ? "border-0" : errorsAddress.country ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} disabled={!changeOnAddress}/>
+                                    <p className="error-form">
+                                        {errorsAddress.country && <span>{errorsAddress.country.message}</span>}
+                                    </p>
+                                </td>
+                            </tr>
                         </tbody>
-
                     </table>
-
                 </form>
             </section>
         </div>

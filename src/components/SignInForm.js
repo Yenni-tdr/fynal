@@ -38,7 +38,7 @@ const SignInForm = () => {
                 console.log(result)
                 setCookie('user', result, {
                     path: '/',
-                    MaxAge: 60 * 60 * 24 * 30,
+                    MaxAge: 60 * 60 * 24 * 15,
                 })
                 await router.replace("/");
                 //await router.push("/");
