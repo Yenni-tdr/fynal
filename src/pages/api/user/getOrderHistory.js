@@ -24,25 +24,6 @@ export default async function handler(req, res){
             },
         });
 
-
-        /*
-        const commandes = await prisma.commande.findMany({
-            where:{
-                Utilisateur: {
-                    idUtilisateur: userId
-                }
-            },
-            include:{
-                PanierProduit:{
-                    select:{
-                        quantite: true,
-                        Produit: true
-                    }
-                }
-            }
-        })
-         */
-
         const commandes = utilisateur.Commande;
 
         console.log(commandes)
