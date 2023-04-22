@@ -200,6 +200,7 @@ export default function Categorie({ catData, InitialCart }) {
             <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
             {/* Affichage des filtres */}
+
             <div className='flex justify-end gap-4 mr-10 mt-10'>
                 <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
                     <option disabled value={DEFAULT}>Trier par :</option>
@@ -221,6 +222,7 @@ export default function Categorie({ catData, InitialCart }) {
                     })}
                 </div>}
             </div>
+            
             <div className="bg-white">
                 <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
