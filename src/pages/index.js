@@ -3,9 +3,13 @@ import Head from "next/head";
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
+// import { fillDatabaseAdmin } from '../fonctions/fillDB';
+// import { fillDatabaseProducts } from '../fonctions/fillDB';
 
 export async function getStaticProps() {
   const categoriesSideMenu = await getCategorieIdData();
+  // await fillDatabaseAdmin();
+  // await fillDatabaseProducts();
   return {
     props: {
       categoriesSideMenu,

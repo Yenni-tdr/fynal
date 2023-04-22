@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Commande } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { Commande } from "@prisma/client";
+import { prisma } from "@/db";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default async (req: NextApiRequest, res: NextApiResponse) => {
