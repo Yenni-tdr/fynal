@@ -31,6 +31,11 @@ export const passwordSchema = Yup.object().shape({
         .oneOf([Yup.ref("password"), null], "Les mots de passes doivent correspondrent"),
 });
 
+export const simplePasswordSchema = Yup.object().shape({
+    actualPassword: Yup.string()
+        .required("Le mot de passe actuel est requis pour pouvoir le changer")
+})
+
 export const otherProfileDataSchema = Yup.object().shape({
     birthDate: Yup.date()
         .nullable()
@@ -78,5 +83,6 @@ export const addressSchema = Yup.object().shape({
 
 export const registerSchema =  baseDataSchema.concat(passwordSchema);
 export const profileSchema = baseDataSchema.concat(otherProfileDataSchema);
+export const passwordProfileSchema = simplePasswordSchema.concat(passwordSchema);
 export const saltRounds = 10;
 export const SESSION_NAME = 'fynal_session';
