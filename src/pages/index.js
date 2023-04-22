@@ -1,23 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
+import { getProductIndex } from "../fonctions/productIndex";
+import { ProductCard } from "../components/ProductCard";
 // import { fillDatabaseAdmin } from '../fonctions/fillDB';
 // import { fillDatabaseProducts } from '../fonctions/fillDB';
 
 export async function getStaticProps() {
+  const Cart = await prisma.commande.findMany({
+      where: { idCommande: 8, etatCommande: 0 },
+      include: {
+          PanierProduit: true,
+      },
+  });
+  const produitsIndex = (await getProductIndex()).produits;
   const categoriesSideMenu = await getCategorieIdData();
   // await fillDatabaseAdmin();
   // await fillDatabaseProducts();
+
+  const InitialCart = Cart ? Cart : [{ idCommande: 0 }];
+
   return {
     props: {
+      InitialCart,
+      produitsIndex,
       categoriesSideMenu,
     },
   };
 }
 
-export default function Home({ categoriesSideMenu }) {
+async function newCartData(product, commande) {
+  const IDCOMMANDE = commande.idCommande === 0 ? 0 : commande.idCommande;
+  const existItem =
+    IDCOMMANDE === 0
+      ? false
+      : commande.PanierProduit.find((x) => x.idProduit === product.idProduit);
+  const exist = existItem ? true : false;
+  console.log(exist);
+  console.log(IDCOMMANDE);
+  const quantity = existItem ? existItem.quantite + 1 : 1;
+  console.log(quantity);
+  // console.log(quantity)
+  if (product.stock < quantity) {
+      alert("Produit plus en stock");
+      return;
+  }
+  const response = await fetch("../api/panierAddButton", {
+      method: "POST",
+      body: JSON.stringify({
+          idProduit: product.idProduit,
+          idCommande: IDCOMMANDE,
+          quantite: quantity,
+          exist: exist,
+      }),
+  });
+
+  if (!response.ok) {
+      console.log(response);
+      throw new Error(response.statusText);
+  }
+
+  const updatedCart = await response.json();
+  return updatedCart;
+}
+
+export default function Home({ InitialCart, produitsIndex }) {
   const slider = [
     {
       id: 1,
@@ -56,48 +105,67 @@ export default function Home({ categoriesSideMenu }) {
       imageAlt: "Product",
     },
   ];
-  const products = [
-    {
-      id: 1,
-      name: "T-shirt uni",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
-      price: "20€",
-      color: "Black",
-    },
-    {
-      id: 2,
-      name: "Porte mines crayon",
-      href: "#",
-      price: "30€",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
-      imageAlt:
-        "Hand holding black machined steel mechanical pencil with brass tip and top.",
-    },
-    {
-      id: 3,
-      name: "Mug nomade",
-      href: "#",
-      price: "30€",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg",
-      imageAlt:
-        "Olive drab green insulated bottle with flared screw lid and flat top.",
-    },
-    {
-      id: 4,
-      name: "Recharge de papier",
-      href: "#",
-      price: "7€",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg",
-      imageAlt:
-        "Person using a pen to cross a task off a productivity paper card.",
-    },
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "T-shirt uni",
+  //     href: "#",
+  //     imageSrc:
+  //       "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+  //     imageAlt: "Front of men's Basic Tee in black.",
+  //     price: "20€",
+  //     color: "Black",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Porte mines crayon",
+  //     href: "#",
+  //     price: "30€",
+  //     imageSrc:
+  //       "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
+  //     imageAlt:
+  //       "Hand holding black machined steel mechanical pencil with brass tip and top.",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Mug nomade",
+  //     href: "#",
+  //     price: "30€",
+  //     imageSrc:
+  //       "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg",
+  //     imageAlt:
+  //       "Olive drab green insulated bottle with flared screw lid and flat top.",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Recharge de papier",
+  //     href: "#",
+  //     price: "7€",
+  //     imageSrc:
+  //       "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg",
+  //     imageAlt:
+  //       "Person using a pen to cross a task off a productivity paper card.",
+  //   },
+  // ];
+  
+  const [cart, setCartItems] = useState(InitialCart[0]);
+
+  async function handleNewCartData(product, commande) {
+    try {
+        const updatedProduct = await newCartData(product, commande);
+        console.log(updatedProduct);
+        //   setCartItems((prevCart) => {
+        //     const updatedProducts = prevCart.PanierProduit.map((p) =>
+        //       p.idProduit === updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit : p
+        //     );
+        //     console.log(updatedProducts);
+        //     return { ...prevCart, PanierProduit: updatedProducts };
+        setCartItems(updatedProduct);
+        console.log(updatedProduct);
+    } catch (error) {
+        console.log(error);
+    }
+  }
 
   return (
     <>
@@ -150,42 +218,46 @@ export default function Home({ categoriesSideMenu }) {
         </div>
       </section>
 
-      <section className="font-sans font-semibold text-2xl">
-        <h2 className="underline underline-offset-8 text-black decoration-slate-600 ml-4 lg:ml-56 ">
+      <section>
+        <h2 className="underline underline-offset-8 text-black decoration-slate-600 ml-4 lg:ml-56 font-sans font-semibold text-2xl">
           LES PRODUITS DU MOMENT
         </h2>
         <div className="bg-white -mt-14 sm:-ml-50s">
           <div className="mx-auto max-w-2xl py-16 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {products.map((product) => (
-                <div key={product.id} className="group relative">
-                  <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
-                    <img
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
-                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                    />
-                  </div>
-                  <div className="mt-4 flex justify-between">
-                    <div>
-                      <h3 className="text-sm text-gray-700">
-                        <a href={product.href}>
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-0"
-                          />
-                          {product.name}
-                        </a>
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {product.color}
-                      </p>
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {product.price}
-                    </p>
-                  </div>
-                </div>
+              {produitsIndex.map((product) => (
+
+                // <div key={product.idProduit} className="group relative">
+                //   <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
+                //     <img
+                //       src={product.image}
+                //       alt={product.image}
+                //       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                //     />
+                //   </div>
+                //   <div className="mt-4 flex justify-between">
+                //     <div>
+                //       <h3 className="text-sm text-gray-700">
+                //         <a href={product.href}>
+                //           <span
+                //             aria-hidden="true"
+                //             className="absolute inset-0"
+                //           />
+                //           {product.name}
+                //         </a>
+                //       </h3>
+                //       <p className="mt-1 text-sm text-gray-500">
+                //         {product.color}
+                //       </p>
+                //     </div>
+                //     <p className="text-sm font-medium text-gray-900">
+                //       {product.price}
+                //     </p>
+                //   </div>
+                // </div>
+
+                <ProductCard key={product.idProduit} produit={product} cart={cart} handleNewCartData={handleNewCartData} ></ProductCard>
+
               ))}
             </div>
           </div>

@@ -5,8 +5,6 @@ import { useRouter } from 'next/router';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
 import { getCategorieIdData } from '../../fonctions/SidebarData';
 import { updateProducts } from '../../fonctions/filter';
-import Link from "next/link";
-
 import { ProductCard } from '../../components/ProductCard';
 
 import {
