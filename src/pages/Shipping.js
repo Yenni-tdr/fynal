@@ -150,12 +150,12 @@ export default function Shipping({ InitialCart }) {
         className="mx-auto max-w-screen-md"
         onSubmit={handleSubmit(submitHandler)}
       >
-        <h1 className="mb-4 text-xl">Adresse de livraison</h1>
+        <h1 className="mb-6  text-xl font-bold text-gray-900 sm:text-3xl text-center mt-8">Adresse de livraison</h1>
         <div className="mb-4">
           <label htmlFor="Nom">Rue</label>
           <input
             defaultValue={shippingAdress.numeroNomRue}
-            className="w-full border-solid border-2  rounded border-black"
+            className=" w-full border-solid border-2  rounded border-black py-1 px-1"
             id="numeroNomRue"
             autoFocus
             {...register("numeroNomRue", {
@@ -170,7 +170,7 @@ export default function Shipping({ InitialCart }) {
           <label htmlFor="Nom">Complément d'adresse</label>
           <input
             defaultValue={shippingAdress.complement}
-            className="w-full border-solid border-2  rounded border-black"
+            className="w-full border-solid border-2  rounded border-black  py-1 px-1"
             id="complement"
             autoFocus
             {...register("complement", { required: false })}
@@ -180,7 +180,7 @@ export default function Shipping({ InitialCart }) {
           <label htmlFor="Nom">Ville</label>
           <input
             defaultValue={shippingAdress.ville}
-            className="w-full border-solid border-2  rounded border-black"
+            className="w-full border-solid border-2  rounded border-black  py-1 px-1"
             id="ville"
             autoFocus
             {...register("ville", { required: "Veuillez rentrer une ville" })}
@@ -193,7 +193,7 @@ export default function Shipping({ InitialCart }) {
           <label htmlFor="Nom">codePostal</label>
           <input
             defaultValue={shippingAdress.codePostal}
-            className="w-full border-solid border-2  rounded border-black"
+            className="w-full border-solid border-2  rounded border-black  py-1 px-1"
             id="codePostal"
             autoFocus
             {...register("codePostal", {
@@ -208,7 +208,7 @@ export default function Shipping({ InitialCart }) {
           <label htmlFor="Nom">Pays</label>
           <input
             defaultValue={shippingAdress.pays}
-            className="w-full border-solid border-2  rounded border-black"
+            className="w-full border-solid border-2  rounded border-black  py-1 px-1" 
             id="pays"
             autoFocus
             {...register("pays", { required: "Veuillez rentrer un pays" })}
@@ -220,7 +220,7 @@ export default function Shipping({ InitialCart }) {
         <div className="mb-4 flex justify-between">
           <button
             disabled={isSubmitting}
-            className="rounded-lg bg-blue-500 px-5 py-3 text-base mb-3 font-medium text-white transition duration-200 hover:bg-blue-600 active:bg-blue-700"
+            className= " text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
           >
             Next
           </button>

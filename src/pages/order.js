@@ -115,7 +115,7 @@ export default function order({ InitialCart }) {
                 {cart.Adresse.pays}
               </div>
               <Link
-                className=" mt-4 w-full text-center border-zinc-300 border-5 px-5 py-2.5 font-medium bg-gray-200 hover:bg-gray-300 hover:text-gray-800  text-gray-800 rounded-lg text-sm"
+                className="mt-10 w-full text-center border-5 px-5 py-2.5 text-normal text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                 href="/Shipping"
               >
                 Modifier
@@ -125,7 +125,7 @@ export default function order({ InitialCart }) {
               <h2 className="mb-2 text-xl font-semibold">Moyen de paiement</h2>
               <div>{cart.method_payment}</div>
               <Link
-                className="mt-4 w-full text-center border-zinc-300 border-5 px-5 py-2.5 font-medium bg-gray-200 hover:bg-gray-300 hover:text-gray-800  text-gray-800 rounded-lg text-sm"
+                className="mt-10 w-full text-center border-5 px-5 py-2.5 text-normal text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                 href="/Shipping"
               >
                 Modifier
@@ -174,7 +174,7 @@ export default function order({ InitialCart }) {
               </table>
               <div className="mt-5">
                 <Link
-                  className="mt-10 w-full text-center border-zinc-300 border-5 px-5 py-2.5 font-medium bg-gray-200 hover:bg-gray-300 hover:text-gray-800  text-gray-800 rounded-lg text-sm"
+                  className="mt-10 w-full text-center border-5 px-5 py-2.5 text-normal text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                   href="/Cart"
                 >
                   Modifier
@@ -221,7 +221,7 @@ export default function order({ InitialCart }) {
               </table>
 
               <Link
-                className="mt-5 mb-4 w-full text-center border-zinc-300 border-5 px-5 py-2.5 font-medium bg-gray-200 hover:bg-gray-300 hover:text-gray-800  text-gray-800 rounded-lg text-sm"
+                className="mt-10 w-full text-center border-5 px-5 py-2.5 text-normal text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                 href="/Cart"
               >
                 Modifier
@@ -254,7 +254,7 @@ export default function order({ InitialCart }) {
                   <button
                     disabled={load}
                     onClick={orderHandler}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                   >
                     {load ? "Chargement..." : "Commande"}
                   </button>

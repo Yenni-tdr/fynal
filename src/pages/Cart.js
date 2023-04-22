@@ -236,34 +236,34 @@ export default function Cart({ InitialCart }) {
                       <div className="flex justify-between">
                         <dt>TVA</dt>
                         <dd>
-                          {0.2 *
+                          { (0.2 *
                             cart.PanierProduit.reduce(
                               (acc, currentValue) =>
                                 acc +
-                                currentValue.Produit.prix *
-                                  currentValue.quantite,
+                                (currentValue.Produit.prix *
+                                  currentValue.quantite),
                               0
-                            )}
+                            ) ).toFixed(2)}
                         </dd>
                       </div>
 
                       <div className="flex justify-between !text-base font-medium">
                         <dt>Total</dt>
                         <dd>
-                          {cart.PanierProduit.reduce(
-                            (acc, currentValue) =>
+                          { (cart.PanierProduit.reduce( 
+                            (acc, currentValue) => 
                               acc +
                               currentValue.Produit.prix * currentValue.quantite,
                             0
                           ) +
-                            0.2 *
-                              cart.PanierProduit.reduce(
+                            0.2 * 
+                              cart.PanierProduit.reduce( 
                                 (acc, currentValue) =>
                                   acc +
                                   currentValue.Produit.prix *
                                     currentValue.quantite,
                                 0
-                              )}
+                              ) ).toFixed(2)}
                         </dd>
                       </div>
                     </dl>
@@ -271,7 +271,7 @@ export default function Cart({ InitialCart }) {
                     <div className="flex justify-end">
                       <a
                         href="/Shipping"
-                        className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        className="text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                       >
                         Paiement
                       </a>
