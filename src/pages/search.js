@@ -4,6 +4,7 @@ import * as FaIcons from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { updateProducts } from '../fonctions/filter';
+import Link from 'next/link';
 
 import {
     DEFAULT,
@@ -16,14 +17,22 @@ import {
 } from '../const/const';
 
 export async function getServerSideProps(context) {
-    console.log(context.query.q);   
     const catData = await getProductsData(context.query.q);
+    const Cart = await prisma.commande.findMany({
+        where: { idCommande: 8, etatCommande: 0 },
+        include: {
+            PanierProduit: true,
+        },
+    });
     const categoriesSideMenu = await getCategorieIdData();
+
+    const InitialCart = Cart ? Cart : [{ idCommande: 0 }];
     
     return {
         props: {
             catData,
             categoriesSideMenu,
+            InitialCart,
         },
     };
 }
@@ -45,7 +54,42 @@ let actualSort = {
     entrepriseArray: [],
 }
 
-export default function Categorie({ catData }) {
+async function newCartData(product, commande) {
+    const IDCOMMANDE = commande.idCommande === 0 ? 0 : commande.idCommande;
+    const existItem =
+      IDCOMMANDE === 0
+        ? false
+        : commande.PanierProduit.find((x) => x.idProduit === product.idProduit);
+    const exist = existItem ? true : false;
+    console.log(exist);
+    console.log(IDCOMMANDE);
+    const quantity = existItem ? existItem.quantite + 1 : 1;
+    console.log(quantity);
+    // console.log(quantity)
+    if (product.stock < quantity) {
+        alert("Produit plus en stock");
+        return;
+    }
+    const response = await fetch("../api/panierAddButton", {
+        method: "POST",
+        body: JSON.stringify({
+            idProduit: product.idProduit,
+            idCommande: IDCOMMANDE,
+            quantite: quantity,
+            exist: exist,
+        }),
+    });
+  
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(response.statusText);
+    }
+  
+    const updatedCart = await response.json();
+    return updatedCart;
+}
+
+export default function Categorie({ catData, InitialCart }) {
 
     let produits = catData.produits;
     actualSort.vendeurArray = catData.vendeurs;
@@ -57,6 +101,8 @@ export default function Categorie({ catData }) {
         eventFilter: "",
     });
     const [produitsTries, setProduits] = useState(produits);
+    
+    const [cart, setCartItems] = useState(InitialCart[0]);
 
     const router = useRouter();
 
@@ -98,6 +144,23 @@ export default function Categorie({ catData }) {
         });
     }
 
+    async function handleNewCartData(product, commande) {
+        try {
+            const updatedProduct = await newCartData(product, commande);
+            console.log(updatedProduct);
+            //   setCartItems((prevCart) => {
+            //     const updatedProducts = prevCart.PanierProduit.map((p) =>
+            //       p.idProduit === updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit : p
+            //     );
+            //     console.log(updatedProducts);
+            //     return { ...prevCart, PanierProduit: updatedProducts };
+            setCartItems(updatedProduct);
+            console.log(updatedProduct);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div>
             {produits.length === 0 ? (
@@ -131,28 +194,47 @@ export default function Categorie({ catData }) {
                 <div className="bg-white">
                     <div className="mx-auto max-w-2xl -mt-16 px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                            {/* Affichage des produits de la catégorie */}
                             {produitsTries.map((produit) => {
                                 return (
-                                    <a key={produitsTries.idProduit} href={'/'} className="group">
-                                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                                        <img
-                                        src={produit.image}
-                                        alt={produit.nom}
-                                        height={10}
-                                        width={10}
-                                        className="h-full w-full object-cover object-center group-hover:opacity-75"
-                                        />
-                                    </div>
-                                    <div className='flex flex-row justify-between'>
-                                        <div>
-                                            <h3 className="mt-4 text-sm text-gray-700">{produit.nom}</h3>
-                                            <p className="mt-1 text-lg font-medium text-gray-900">{produit.prix}</p>
+                                    <div className='group' key={produit.idProduit}>
+                                        <Link
+                                            href={`/products/${produit.idProduit}`}
+                                            key={produit.idProduit}
+                                        >
+                                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                                                <img
+                                                src={produit.image}
+                                                alt={produit.nom}
+                                                height={10}
+                                                width={10}
+                                                className="h-full w-full object-cover object-center group-hover:opacity-75"
+                                                />
+                                            </div>
+                                        </Link>
+                                        <div className='flex flex-row'>
+                                            <div>
+                                            <h3 className="mt-4 text-sm text-gray-700">
+                                                {produit.nom}
+                                            </h3>
+                                            <p className="mt-1 text-lg font-medium text-gray-900">
+                                                {produit.prix} €
+                                            </p>
+                                            </div>
+                                            <button className=" mt-7 text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
+                                                onClick={async (e) => {
+                                                    try {
+                                                    await handleNewCartData(produit, cart);
+                                                    e.target.reset();
+                                                    } catch (err) {
+                                                    console.log(err);
+                                                    }
+                                                }}
+                                            >
+                                                Ajouter au panier
+                                            </button>
                                         </div>
-                                        <button id='addCart' className="bg-slate-200 hover:bg-slate-300 text-black text-xl font-semibold py-2 px-4 mt-4 mr-2 rounded shadow"
-                                                onClick={() => addToCart(produit)}> <FaIcons.FaCartPlus/>
-                                        </button>
                                     </div>
-                                    </a>
                                 );
                             })}
                         </div>
