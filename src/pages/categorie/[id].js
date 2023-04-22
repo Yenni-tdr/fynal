@@ -242,13 +242,13 @@ export default function Categorie({ catData, InitialCart }) {
                                             />
                                         </div>
                                     </Link>
-                                    <div className='flex flex-row space-x-44'>
+                                    <div className='flex flex-row'>
                                         <div>
                                         <h3 className="mt-4 text-sm text-gray-700">
                                             {produit.nom}
                                         </h3>
                                         <p className="mt-1 text-lg font-medium text-gray-900">
-                                            {produit.prix}
+                                            {produit.prix} €
                                         </p>
                                         </div>
                                         <button className=" mt-7 text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
