@@ -13,17 +13,17 @@ const SignInForm = () => {
     const [error, setError] = useState("");
     const router = useRouter();
 
+    // Utilisation du hook useForm pour gérer le formulaire de connexion des utilisateurs plus facilement
     const {register, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(signInSchema),
         mode: "onChange"
     });
 
+    // Fonction executé lorsque le formulaire de connexion est validé
     const onSubmit = async (data) =>{
         setIsLoading(true);
         setError("");
-        console.log("test1")
         try{
-            console.log(JSON.stringify(data));
             const response = await fetch('/api/auth/signin',{
                 method: 'POST',
                 headers: {
@@ -32,16 +32,14 @@ const SignInForm = () => {
                 body: JSON.stringify(data)
             });
             const result = await response.json();
-            console.log("test2 :", result)
             if(response.ok){
-                //await router.push("/signin");
                 console.log(result)
+                // enregistrement de id utilisateur dans un cookie servant de session
                 setCookie('user', result, {
                     path: '/',
                     MaxAge: 60 * 60 * 24 * 15,
                 })
                 await router.replace("/");
-                //await router.push("/");
             }else{
                 setError(result.message);
             }

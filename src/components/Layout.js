@@ -7,6 +7,7 @@ export default function Layout({ children }) {
 
     const [cookies, setCookies, removeCookie] = useCookies(['user']);
 
+    // Requête fetch permettant de récupérer les informations de l'utilisateur et de les stocker dans le cookie
     const fetcher = url => fetch(url,{
         method: 'POST',
         headers: {
@@ -23,6 +24,7 @@ export default function Layout({ children }) {
             })
         })
 
+    // Envoie de la requête à chaque chargement de la page à l'aide d'SWR
     const {error:errorSWR, isLoading: isLoadingSWR} = useSWR(cookies['user'] ? '/api/user/getSessionData' : null, fetcher, {
 
     })

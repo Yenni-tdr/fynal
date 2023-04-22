@@ -10,17 +10,17 @@ const RegisterForm = () => {
     const [error, setError] = useState("");
     const router = useRouter();
 
+    // Utilisation du hook useForm pour gérer le formulaire d'enregistrement d'utilisateur plus facilement
     const {register, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(registerSchema),
         mode: "onChange"
     });
 
+    // Fonction executé lorsque le formulaire d'enregistrement est validé
     const onSubmit = async (data) => {
         setIsLoading(true);
         setError("");
-        console.log("test1")
         try{
-            console.log(JSON.stringify(data));
             const response = await fetch('/api/auth/register',{
                 method: 'POST',
                 headers: {
@@ -29,7 +29,6 @@ const RegisterForm = () => {
                 body: JSON.stringify(data)
             });
             const result = await response.json();
-            console.log("test2 :", result)
             if(response.ok){
                 await router.push("/signin");
             }else{

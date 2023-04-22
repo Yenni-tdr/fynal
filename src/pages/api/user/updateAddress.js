@@ -5,11 +5,12 @@ import { prisma } from '../../../../db';
 
 export default async function handler(req, res){
 
-
+    // Verification de la méthode de la requête
     if(req.method !== 'POST'){
         return res.status(405).json({message: 'Méthode non autorisée.'});
     }
 
+    // Verification des données reçues à l'aide d'un schema pré-défini
     try {
         await addressSchema.validate(req.body);
     }catch (error){
@@ -19,6 +20,8 @@ export default async function handler(req, res){
     const {userId, addressBody, addressAddition, postcode, city, country} = req.body;
 
     try{
+        // Mise à jour de l'adresse de l'utilisateur dans la base de données
+        // Le bloc try, catch permet de récupérer les erreurs en cas de besoin, si l'utilisateur n'est pas trouvé par exemple
         const changedUser = await prisma.utilisateur.update({
             where:{
                 idUtilisateur: userId
