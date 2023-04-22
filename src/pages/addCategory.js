@@ -21,10 +21,12 @@ const errorsDefault = {
 export default function AddCategory() {
 
     const [errors, setErrors] = useState(errorsDefault);
+    const [buttonState, setButtonState] = useState(false);
 
     const router = useRouter();
 
     const handleSubmit = async (event) => {
+        setButtonState(true);
         event.preventDefault();
 
         const data = {
@@ -48,7 +50,10 @@ export default function AddCategory() {
         const result = await response.json();
 
         if(result.data === "ok") router.push('/successAddCategory');
-        else setErrors(result.data);
+        else {
+            setButtonState(false);
+            setErrors(result.data);
+        }
         
     }
 
@@ -63,7 +68,6 @@ export default function AddCategory() {
             <h2 className='block text-gray-500 font-bold mt-5 ml-5 md:mb-0 pr-4'>Pour ajouter une catégorie, remplissez les champs suivants et appuyez sur le bouton en fin de page pour confirmer. Les champs avec une étoile doivent être obligatoirement remplis.</h2>
             <div className="flex items-center justify-center">
                 <form onSubmit={handleSubmit} className="w-full max-w-sm mt-5">
-
                     { formFields.map((formField) => {
                         return (
                             <div key={formField.id} className="mb-6">
@@ -82,7 +86,7 @@ export default function AddCategory() {
                     <div className="md:flex md:items-center mb-20">
                         <div className="md:w-1/3"></div>
                         <div className="md:w-2/3">
-                            <button type="submit" className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">Ajouter</button>
+                            <button type="submit" disabled={buttonState} className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">Ajouter</button>
                         </div>
                     </div>
                 </form>

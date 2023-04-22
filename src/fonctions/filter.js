@@ -3,7 +3,11 @@ import {
     FILTRE_PRIX_DECROISSANT_STRING,
     FILTRE_ALPHABETIQUE_CROISSANT_STRING,
     FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
-} from '../const/const';
+    FILTRE_DELAIS_1_5,
+    FILTRE_DELAIS_6_10,
+    FILTRE_DELAIS_11_20,
+    FILTRE_DELAIS_20_SUP
+} from '../const/filtre';
 
 /*
 * Cette fonction permet d'appliquer un tri en fonction du type de tri en entrée.
@@ -33,6 +37,34 @@ function sortSwitch(produitsTries, sortType) {
             break;
         default:
             console.log("switchSort error");
+            break;
+    }
+}
+
+function delaisLivraisonSwitch(produitsTries, delaisLivraisonType) {
+    switch (delaisLivraisonType) {
+        case FILTRE_DELAIS_1_5:
+            return produitsTries.filter((produit) => {
+                return produit.delaisLivraison <= 5;
+            });
+            break;
+        case FILTRE_DELAIS_6_10:
+            return produitsTries.filter((produit) => {
+                return produit.delaisLivraison > 5 && produit.delaisLivraison <= 10;
+            });
+            break;
+        case FILTRE_DELAIS_11_20:
+            return produitsTries.filter((produit) => {
+                return produit.delaisLivraison > 10 && produit.delaisLivraison <= 20;
+            });
+            break;
+        case FILTRE_DELAIS_20_SUP:
+            return produitsTries.filter((produit) => {
+                return produit.delaisLivraison > 20;
+            });
+            break;
+        default:
+            console.log("delaisLivraisonSwitch error");
             break;
     }
 }
@@ -87,6 +119,7 @@ export function updateProducts(produits, actualSort) {
     if(actualSort.stockCheckbox) produitsTries = stockFilter(produitsTries);
     if(actualSort.reductionCheckbox) produitsTries = reductionFilter(produitsTries);
     if(actualSort.entrepriseArray.length > 0) produitsTries = entrepriseFilter(produitsTries, actualSort.vendeurArray, actualSort.entrepriseArray);
+    if(actualSort.delaisLivraisonType != false) produitsTries = delaisLivraisonSwitch(produitsTries, actualSort.delaisLivraisonType);
     if(actualSort.sortType != false) sortSwitch(produitsTries, actualSort.sortType);
 
     return produitsTries;
