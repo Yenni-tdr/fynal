@@ -5,11 +5,12 @@ import { prisma } from '../../../../db';
 
 export default async function handler(req, res){
 
-
+    // Verification de la méthode de la requête
     if(req.method !== 'POST'){
         return res.status(405).json({message: 'Méthode non autorisée.'});
     }
 
+    // Verification des données reçues à l'aide d'un schema pré-défini
     try {
         await profileSchema.validate(req.body);
     }catch (error){
@@ -18,17 +19,9 @@ export default async function handler(req, res){
 
     const {userId, firstName, lastName, email, birthDate, sex} = req.body;
 
-    /*
-    const hashedPassword = bcrypt.hash(password, saltRounds, function (err, hash) {
-        if(err){
-            return res.status(500).json({error, message: 'Erreur lors du hashage du mot de passe'})
-        }
-        return hash
-    });
-
-    console.log(password +" " + hashedPassword)
-     */
     try{
+        // Mise à jour des informations de l'utilisateur dans la base de données
+        // Le bloc try, catch permet de récupérer les erreurs en cas de besoin, si l'utilisateur n'est pas trouvé par exemple
         const changedUser = await prisma.utilisateur.update({
             where:{
                 idUtilisateur: userId
