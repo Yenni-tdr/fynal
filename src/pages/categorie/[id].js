@@ -15,7 +15,11 @@ import {
     FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
     FILTRE_STOCK,
     FILTRE_REDUCTION,
-} from '../../const/const';
+    FILTRE_DELAIS_1_5,
+    FILTRE_DELAIS_6_10,
+    FILTRE_DELAIS_11_20,
+    FILTRE_DELAIS_20_SUP
+} from '../../const/filtre';
 
 // Cette fonction permet de générer tous les chemins possibles en fonction des catégories présentes dans la BDD
 export async function getStaticPaths() {
@@ -59,9 +63,17 @@ const sorts = [
     FILTRE_ALPHABETIQUE_DECROISSANT_STRING,
 ]
 
+const delaisLivraisonArray = [
+    FILTRE_DELAIS_1_5,
+    FILTRE_DELAIS_6_10,
+    FILTRE_DELAIS_11_20,
+    FILTRE_DELAIS_20_SUP,
+]
+
 // Object permettant de savoir l'état du tri et des filtres appliqués
 let actualSort = {
     sortType: false,
+    delaisLivraisonType: false,
     stockCheckbox: false,
     reductionCheckbox: false,
     vendeurArray: [],
@@ -139,6 +151,7 @@ export default function Categorie({ catData, InitialCart }) {
         // (Le reload ne devrait pas petre nécessaire en principe mais avec la manière dont on a utilisé les hooks d'état, nous sommes obligés de le faire)
         const handleRouteChange = (url) => {
             actualSort.sortType = false;
+            actualSort.delaisLivraisonType = false;
             actualSort.stockCheckbox = false;
             actualSort.reductionCheckbox = false;
             actualSort.vendeurArray = [],
@@ -149,6 +162,7 @@ export default function Categorie({ catData, InitialCart }) {
 
         // On vérifie quelle action a été effectuée, si c'est le choix d'un nouveau tri ou l'application d'un filtre
         if(sorts.includes(filter.filterValue)) actualSort.sortType = filter.filterValue;
+        else if(delaisLivraisonArray.includes(filter.filterValue)) actualSort.delaisLivraisonType = filter.filterValue;
         else if(filter.filterValue === FILTRE_STOCK) actualSort.stockCheckbox = !actualSort.stockCheckbox;
         else if(filter.filterValue === FILTRE_REDUCTION) actualSort.reductionCheckbox = !actualSort.reductionCheckbox;
         else if(actualSort.entrepriseArray.includes(filter.filterValue)) {
@@ -208,6 +222,13 @@ export default function Categorie({ catData, InitialCart }) {
                     <option value={FILTRE_PRIX_DECROISSANT_STRING}>{FILTRE_PRIX_DECROISSANT_STRING}</option>
                     <option value={FILTRE_ALPHABETIQUE_CROISSANT_STRING}>{FILTRE_ALPHABETIQUE_CROISSANT_STRING}</option>
                     <option value={FILTRE_ALPHABETIQUE_DECROISSANT_STRING}>{FILTRE_ALPHABETIQUE_DECROISSANT_STRING}</option>
+                </select>
+                <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
+                    <option disabled value={DEFAULT}>Delais de livraison :</option>
+                    <option value={FILTRE_DELAIS_1_5}>{FILTRE_DELAIS_1_5}</option>
+                    <option value={FILTRE_DELAIS_6_10}>{FILTRE_DELAIS_6_10}</option>
+                    <option value={FILTRE_DELAIS_11_20}>{FILTRE_DELAIS_11_20}</option>
+                    <option value={FILTRE_DELAIS_20_SUP}>{FILTRE_DELAIS_20_SUP}</option>
                 </select>
                 <div className='flex flex-col gap-1'>
                     <span><input type="checkbox" id='stockCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_STOCK, eventCheckbox)}/> {FILTRE_STOCK}</span>

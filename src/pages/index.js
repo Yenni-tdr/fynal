@@ -47,7 +47,7 @@ async function newCartData(product, commande) {
       alert("Produit plus en stock");
       return;
   }
-  const response = await fetch("../api/panierAddButton", {
+  const response = await fetch("/api/panierAddButton", {
       method: "POST",
       body: JSON.stringify({
           idProduit: product.idProduit,
@@ -105,48 +105,6 @@ export default function Home({ InitialCart, produitsIndex }) {
       imageAlt: "Product",
     },
   ];
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "T-shirt uni",
-  //     href: "#",
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-  //     imageAlt: "Front of men's Basic Tee in black.",
-  //     price: "20€",
-  //     color: "Black",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Porte mines crayon",
-  //     href: "#",
-  //     price: "30€",
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
-  //     imageAlt:
-  //       "Hand holding black machined steel mechanical pencil with brass tip and top.",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Mug nomade",
-  //     href: "#",
-  //     price: "30€",
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg",
-  //     imageAlt:
-  //       "Olive drab green insulated bottle with flared screw lid and flat top.",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Recharge de papier",
-  //     href: "#",
-  //     price: "7€",
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg",
-  //     imageAlt:
-  //       "Person using a pen to cross a task off a productivity paper card.",
-  //   },
-  // ];
   
   const [cart, setCartItems] = useState(InitialCart[0]);
 
