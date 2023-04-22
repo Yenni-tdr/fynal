@@ -1,5 +1,10 @@
 import * as Yup from "yup";
 
+
+export const idUserSchema = Yup.object().shape({
+    userId: Yup.number()
+})
+
 export const baseDataSchema = Yup.object().shape({
     firstName: Yup.string()
         .trim()

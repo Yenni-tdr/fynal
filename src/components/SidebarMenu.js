@@ -22,8 +22,9 @@ const SidebarLink = styled.div`
 `;
 
 const SidebarLabel = styled.span`
-  margin-left: 16px;
-`;
+    margin-left: 16px;
+
+`
 
 const SidebarMenu = ({item, closeSidebar}) => {
     return(
