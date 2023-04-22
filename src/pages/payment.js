@@ -4,10 +4,11 @@ import { getCategorieIdData } from "../fonctions/SidebarData";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { Commande } from "@prisma/client";
 
 export async function getServerSideProps() {
   const categoriesSideMenu = await getCategorieIdData();
-  const InitialCart = await prisma.commande.findMany({
+  const Cart = await prisma.commande.findMany({
     where: {
       idCommande: 8,
       etatCommande: 0,
@@ -26,6 +27,15 @@ export async function getServerSideProps() {
       },
     },
   });
+  const InitialCart = Cart.length !== 0 ? Cart : [{ idCommande: 0, method_payment : false, idAdresse : false }];
+  if (!InitialCart[0].idAdresse) {
+    return {
+      redirect: {
+        destination: '/Shipping',
+        permanent: false,
+      },
+    }
+  }
   return {
     props: {
       categoriesSideMenu,
@@ -39,11 +49,14 @@ export default function payment({ InitialCart }) {
 
   const [cart, setCart] = useState(InitialCart[0]);
 
+  console.log(cart);
+
   const router = useRouter();
 
   useEffect(() => {
+
     if (!cart.idAdresse) {
-      return router.push("/Shipping");
+      router.push("/Shipping");
     }
 
     setPaymentMeth(cart.method_payment || "");

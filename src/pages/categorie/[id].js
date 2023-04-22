@@ -81,22 +81,22 @@ async function newCartData(product, commande) {
     console.log(quantity);
     // console.log(quantity)
     if (product.stock < quantity) {
-      alert("Produit plus en stock");
-      return;
+        alert("Produit plus en stock");
+        return;
     }
     const response = await fetch("../api/panierAddButton", {
-      method: "POST",
-      body: JSON.stringify({
-        idProduit: product.idProduit,
-        idCommande: IDCOMMANDE,
-        quantite: quantity,
-        exist: exist,
-      }),
+        method: "POST",
+        body: JSON.stringify({
+            idProduit: product.idProduit,
+            idCommande: IDCOMMANDE,
+            quantite: quantity,
+            exist: exist,
+        }),
     });
   
     if (!response.ok) {
-      console.log(response);
-      throw new Error(response.statusText);
+        console.log(response);
+        throw new Error(response.statusText);
     }
   
     const updatedCart = await response.json();
@@ -244,10 +244,14 @@ export default function Categorie({ catData, InitialCart }) {
                                     </Link>
                                     <div className='flex flex-row space-x-44'>
                                         <div>
-                                            <h3 className="mt-4 text-sm text-gray-700">{produit.nom}</h3>
-                                            <p className="mt-1 text-lg font-medium text-gray-900">{produit.prix}€</p>
+                                        <h3 className="mt-4 text-sm text-gray-700">
+                                            {produit.nom}
+                                        </h3>
+                                        <p className="mt-1 text-lg font-medium text-gray-900">
+                                            {produit.prix}
+                                        </p>
                                         </div>
-                                        <button
+                                        <button className=" mt-7 text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                                             onClick={async (e) => {
                                                 try {
                                                 await handleNewCartData(produit, cart);
@@ -257,11 +261,8 @@ export default function Categorie({ catData, InitialCart }) {
                                                 }
                                             }}
                                         >
-                                            ADD TO CART
+                                            Ajouter au panier
                                         </button>
-                                        {/* <button id='addCart' className="bg-slate-200 hover:bg-slate-300 text-black  text-xl font-semibold py-2 px-4 mt-4 rounded shadow"
-                                                onClick={() => addToCart(produit)}> <FaIcons.FaCartPlus/>
-                                        </button> */}
                                     </div>
                                 </div>
                             );

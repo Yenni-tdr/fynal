@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-// import SidebarData  from './SidebarData';
 import SidebarMenu from "./SidebarMenu";
 import styled from "styled-components";
 
