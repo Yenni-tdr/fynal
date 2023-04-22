@@ -5,13 +5,13 @@ import {useEffect, useState} from "react";
 
 export default function AccountMenu(){
 
-    // State / Props
     const [hasMounted, setHasMounted] = useState(false);
 
     const router = useRouter();
     const [cookies, setCookie, removeCookie] = useCookies(['user']);
     const user = cookies['user']
 
+    // Suppression du cookie pour déconnecter l'utilisateur
     const removeCookieUser = () =>{
         removeCookie('user');
         router.replace('/');
@@ -26,6 +26,7 @@ export default function AccountMenu(){
     // Render
     if (!hasMounted) return null;
 
+    // Menu différent selon le statut de l'utilisateur : non connecté, simple acheteur, vendeur, livreur ou admin.
     if(!user){
         return (
             <>
