@@ -27,7 +27,6 @@ export default function Layout({ children }) {
 
     })
 
-
   return (  
     <>
       <Nav childrenProps={children.props.categoriesSideMenu} />

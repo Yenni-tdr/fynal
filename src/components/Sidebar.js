@@ -1,7 +1,7 @@
-import React, {useRef, useEffect, useState} from 'react';
-// import SidebarData  from './SidebarData';
-import SidebarMenu  from './SidebarMenu';
-import styled from 'styled-components';
+
+import React, { useRef, useEffect, useState } from "react";
+import SidebarMenu from "./SidebarMenu";
+import styled from "styled-components";
 
 const SidebarNav = styled.nav`
     background: rgb(28 25 23);

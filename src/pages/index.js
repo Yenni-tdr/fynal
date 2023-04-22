@@ -2,19 +2,19 @@ import React from 'react';
 import Head from 'next/head'
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
-import { getCategorieIdData } from '../fonctions/SidebarData';
+import { getCategorieIdData } from "../fonctions/SidebarData";
 // import { fillDatabaseAdmin } from '../fonctions/fillDB';
 // import { fillDatabaseProducts } from '../fonctions/fillDB';
 
 export async function getStaticProps() {
-    // await fillDatabaseAdmin();
-    // await fillDatabaseProducts();
-    const categoriesSideMenu = await getCategorieIdData();
-    return {
-        props: {
-            categoriesSideMenu,
-        },
-    };
+  const categoriesSideMenu = await getCategorieIdData();
+  // await fillDatabaseAdmin();
+  // await fillDatabaseProducts();
+  return {
+    props: {
+      categoriesSideMenu,
+    },
+  };
 }
 
 export default function Home() {
@@ -164,11 +164,18 @@ export default function Home() {
       <div className="ml-42 mt-8 font-sans font-semibold text-2xl">
           <h3>Télécharger notre application</h3>
           <p>Disponible sur l'App Store et Google Play</p>
-      </div>
-      <div className="mt-0">
-          <a href="#"><Image src="/images/apps.png" alt="img" height={200} width={200}></Image></a>
-      </div>
-      </section>  
-  </>
-  )
+        </div>
+        <div className="mt-0">
+          <a href="#">
+            <Image
+              src="/images/apps.png"
+              alt="img"
+              height={200}
+              width={200}
+            ></Image>
+          </a>
+        </div>
+      </section>
+    </>
+  );
 }

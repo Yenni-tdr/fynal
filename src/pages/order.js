@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 export async function getServerSideProps() {
   const categoriesSideMenu = await getCategorieIdData();
-  const InitialCart = await prisma.commande.findMany({
+  const Cart = await prisma.commande.findMany({
     where: {
       idCommande: 8,
       etatCommande: 0,
@@ -27,6 +27,15 @@ export async function getServerSideProps() {
       },
     },
   });
+  const InitialCart = Cart.length !== 0 ? Cart : [{ idCommande: 0, method_payment : false, idAdresse : false, Utilisateur : false, PanierProduit : false }];
+  if (!InitialCart[0].method_payment) {
+    return {
+      redirect: {
+        destination: '/payment',
+        permanent: false,
+      },
+    }
+  }
   return {
     props: {
       categoriesSideMenu,
