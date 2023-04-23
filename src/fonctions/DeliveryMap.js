@@ -1,10 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import "leaflet-routing-machine";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.js";
-import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 
 const DeliveryMap = ({ addresses }) => {
   const mapRef = useRef(null);
