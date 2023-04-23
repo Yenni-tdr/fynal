@@ -1,4 +1,5 @@
 import { prisma } from "../../db";
+import arrayUnique from "./uniqueValuesFromArray";
 
 export async function getProductsData(searchTerm) {
    
@@ -12,8 +13,36 @@ export async function getProductsData(searchTerm) {
         ],
       },
     })
+
+    const vendeurFiltre = arrayUnique( 
+      produits.map((produit) => { 
+          return produit.idVendeur 
+      })
+    );
+    const vendeurs = await prisma.vendeur.findMany({
+        select: {
+            idVendeur: true,
+            idEntreprise: true,
+        },
+        where: {
+            idVendeur: { in: vendeurFiltre },
+        }
+    });
+
+    const entrepriseFiltre = arrayUnique( 
+        vendeurs.map((vendeur) => { 
+            return vendeur.idEntreprise 
+        })
+    );
+    const entreprises = await prisma.entreprise.findMany({
+        where: {
+            idEntreprise: { in: entrepriseFiltre },
+        }
+    });
   
     return {
         produits,
+        vendeurs,
+        entreprises,
     }
 }

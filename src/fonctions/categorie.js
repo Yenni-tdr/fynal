@@ -21,14 +21,12 @@ export async function getAllCategoriesID() {
     return paths;
 }
 
-
 /*
 * Cette fonction permet de récupérer les informations de tous les produits associés à la catégorie sélectionnée ainsi que les informations sur les vendeurs et les entreprises
 * pour pouvoir définir les filtres.
 *
 * Valeur de retour : tableau d'objets dans lequels sont contenus les produits, les informations sur les vendeurs, les entreprises
 */
-
 export async function getCategorieProductsData(id) {
     const categorie = await prisma.categorie.findMany({
         where: {

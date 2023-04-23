@@ -1,6 +1,9 @@
 import React from "react";
 
-
+/*
+* Component permettant d'afficher un footer sur la page.
+* Cet élément doit être présent sur toutes les pages, il est donc intégré dans le component Layout.
+*/
 export default function Footer(){
     return(
         <footer className="footer items-center flex place-content-between p-3 bg-black text-neutral-content bottom-0 fixed mt-0">

@@ -1,22 +1,30 @@
 import { prisma } from "../../../db";
 import verifProduct from "../../fonctions/verifProduct";
 
+/*
+* Cet handler permet de récupérer les informations entrées par un vendeur sur un produit qu'il souhaite ajouter.
+*
+* Valeur de retour : un message contenant les erreurs s'il y en a, sinon un message pour signaler qu'il n'y a pas eu de problème.
+*/
 export default async function handler(req, res) {
+    // On récupère les informations
     let produit = req.body;
 
+    // On récupère les informations sur les catégories, et en particulier les IDs, pour pouvoir vérifier si l'ID entré par le vendeur existe bien.
     const categories = await prisma.categorie.findMany({
         where: {},
         select: {
             idCategorie: true,
         }
     });
-
     const idCategories = categories.map((categorie) => {
         return categorie.idCategorie;
     });
 
+    // On vérifie s'il y a des erreurs dans les informations entrées par le vendeur
     const errors = verifProduct(produit, idCategories);
 
+    // On convertie les valeurs entrées pour qu'il n'y ait pas de conflit avec la BDD
     produit.stock = parseInt(produit.stock);
     produit.delaisLivraison = parseInt(produit.delaisLivraison);
     produit.prix = parseFloat(produit.prix);
@@ -40,6 +48,8 @@ export default async function handler(req, res) {
     else produit.categorie = parseInt(produit.categorie);
     // ajouter pour vendeur
 
+    // Si l'objet 'errors' contient au moins une erreur, on renvoie un message contenant les erreurs en question
+    // Sinon, on ajoute le produit dans la BDD et on renvoie un message pour signaler qu'il n'y a pas eu de problème.
     if(Object.values(errors).includes(true)) res.status(200).json({ data: errors });
     else {
         const produitAjoute = await prisma.produit.create({
