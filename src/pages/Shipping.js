@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import cookie from "cookie";
+// import { commandeUser } from "../fonctions/commandeUser";
 import isNotConnected from "../fonctions/isNotConnected";
 import { useNavigate } from "react-router";
 
@@ -17,7 +18,9 @@ export async function getServerSideProps({ req }) {
 
   // // si l'user est pas connecté, on le renvois vers signin
   isNotConnected(cookies);
+  // const user = cookies.user;
   const user = JSON.parse(cookies.user);
+  console.log(user);
 
   const categoriesSideMenu = await getCategorieIdData();
   const Cart = await prisma.commande.findMany({
@@ -63,10 +66,19 @@ export async function getServerSideProps({ req }) {
   };
 }
 
+// const wait = function(duration = 1000){
+//     return new Promise((resolve) =>{
+//         window.setTimeout(resolve, duration)
+//     })
+// }
+
 export default function Shipping({ InitialCart, user }) {
   const [cart, setCart] = useState(InitialCart);
 
+  console.log(cart[0]);
   const router = useRouter();
+
+  console.log(cart[0].PanierProduit);
 
   useEffect(() => {
     if (!cart[0].PanierProduit) {
@@ -92,6 +104,7 @@ export default function Shipping({ InitialCart, user }) {
     codePostal,
     pays,
   }) => {
+    // await wait(1000);
     const response = await fetch("/api/shippingAdress", {
       method: "POST",
       body: JSON.stringify({
@@ -105,12 +118,46 @@ export default function Shipping({ InitialCart, user }) {
         pays: pays,
       }),
     });
+    console.log(response);
     if (!response.ok) {
+      console.log(response);
       throw new Error(response.statusText);
     }
 
     const updatedProduct = await response.json();
     router.push("/payment");
+
+    // const cartData = {
+    //   idCommande: cart[0].idCommande,
+    //   idUtilisateur: cart[0].idUtilisateur,
+    //   AdressePrev: cart[0].Adresse || cart[0].Utilisateur.Adresse,
+    //   numeroNomRue: numeroNomRue,
+    //   ville: ville,
+    //   codePostal: Number(codePostal),
+    //   pays: pays,
+    //   complement : complement,
+    //   idAdresse: cart[0].idAdresse,
+    //   complement: complement,
+    // };
+    // console.log(cartData);
+    // if (
+    //   cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue &&
+    //   cartData.ville === cartData.AdressePrev.ville &&
+    //   cartData.pays === cartData.AdressePrev.pays &&
+    //   cartData.codePostal === cartData.AdressePrev.codePostal
+    // ) {
+    //   console.log(true);
+    //   console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
+    //   console.log(cartData.ville === cartData.AdressePrev.ville);
+    //   console.log(cartData.pays === cartData.AdressePrev.pays);
+    //   console.log(cartData.codePostal === cartData.AdressePrev.codePostal);
+    // } else {
+    //   console.log(false);
+    //   console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
+    //   console.log(cartData.ville === cartData.AdressePrev.ville);
+    //   console.log(cartData.pays === cartData.AdressePrev.pays);
+    //   console.log(cartData.codePostal === cartData.AdressePrev.codePostal);
+    // }
   };
 
   const shippingAdress = cart[0].Adresse
@@ -136,6 +183,7 @@ export default function Shipping({ InitialCart, user }) {
             autoFocus
             {...register("numeroNomRue", {
               required: "Veuillez rentrer une rue",
+              minLength: { value: 5, message: "5 caractère requis" },
             })}
           />
           {errors.numeroNomRue && (
@@ -149,7 +197,9 @@ export default function Shipping({ InitialCart, user }) {
             className="w-full border-solid border-2  rounded border-black  py-1 px-1"
             id="complement"
             autoFocus
-            {...register("complement", { required: false })}
+            {...register("complement", {
+              required: false,
+            })}
           />
         </div>
         <div className="mb-4">
@@ -159,7 +209,10 @@ export default function Shipping({ InitialCart, user }) {
             className="w-full border-solid border-2  rounded border-black  py-1 px-1"
             id="ville"
             autoFocus
-            {...register("ville", { required: "Veuillez rentrer une ville" })}
+            {...register("ville", {
+              required: "Veuillez rentrer une ville",
+              minLength: { value: 5, message: "5 caractère requis" },
+            })}
           />
           {errors.ville && (
             <div className="text-red-500">{errors.ville.message}</div>
@@ -174,6 +227,11 @@ export default function Shipping({ InitialCart, user }) {
             autoFocus
             {...register("codePostal", {
               required: "Veuillez rentrer un code postal",
+              pattern: {
+                value: /^[0-9]{3,10}$/,
+                message: "Veuillez ne rentrer que des chiffres",
+              },
+              minLength: { value: 3, message: "3 chiffres requis" },
             })}
           />
           {errors.codePostal && (
@@ -187,7 +245,10 @@ export default function Shipping({ InitialCart, user }) {
             className="w-full border-solid border-2  rounded border-black  py-1 px-1"
             id="pays"
             autoFocus
-            {...register("pays", { required: "Veuillez rentrer un pays" })}
+            {...register("pays", {
+              required: "Veuillez rentrer un pays",
+              minLength: { value: 5, message: "5 caractère requis" },
+            })}
           />
           {errors.pays && (
             <div className="text-red-500">{errors.pays.message}</div>
