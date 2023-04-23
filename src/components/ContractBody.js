@@ -8,6 +8,7 @@ import {contractSchema} from "../const";
 
 
 const ContractBody = () => {
+    const [hasMounted, setHasMounted] = useState(false);
     const [cookies, setCookies, removeCookie] = useCookies(['user']);
     const router = useRouter()
 
@@ -129,15 +130,22 @@ const ContractBody = () => {
     }
 
     const setTypeContract = () =>{
-        setIsDisabledSeller(contracts.length === 0 || contracts[0].ContratVendeur === null || contracts[0].etat !== 2);
-        setIsDisabledDeliverer(contracts.length === 0 || contracts[0].ContratLivreur === null || contracts[0].etat !== 2);
+        setIsDisabledSeller(contracts.length !== 0 && (contracts[0].ContratVendeur === null || contracts[0].etat !== 2));
+        setIsDisabledDeliverer(contracts.length !== 0 && (contracts[0].ContratLivreur === null || contracts[0].etat !== 2));
         // isDisabledSeller && isDisabledDeliverer ? "" : isDisabledSeller ? "Deliverer" : isDisabledDeliverer ? "Seller" : ""
     }
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, [])
+
+    // Render
+    if (!hasMounted) return null;
 
     return (
         <div className="py-3 px-4 sm:px-6 lg:px-8 flex flex-col items-center flex-1">
             <div className="">
-                <h1 className="text-2xl font-semibold my-2">Contrats {contracts && (contracts[0]?.ContratVendeur !== null ? "vendeur" : contracts[0].ContratLivreur !== null ? "livreur" : "")}</h1>
+                <h1 className="text-2xl font-semibold my-2">Contrats {cookies?.user?.status === 1 ? "vendeur" : cookies?.user?.status === 2 ? "livreur" : ""}</h1>
             </div>
             {contracts?.length === 0 &&
                 <p className="my-10">Vous n'avez pas encore de contrat avec Fynal</p>
