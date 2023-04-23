@@ -1,11 +1,14 @@
 import React from "react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 
 export async function getServerSideProps() {
   const categoriesSideMenu = await getCategorieIdData();
-  const InitialCart = await prisma.commande.findUnique({
-    where: { idCommande: 8 },
+  const InitialCart = await prisma.commande.findMany({
+    where: {
+      idCommande: 8,
+      etatCommande: 0,
+    },
     include: {
       PanierProduit: {
         include: {
@@ -28,10 +31,10 @@ async function UpdateQuantity(product, quantity) {
     return updatedCart;
   }
 
-  if(quantity < 1){
-   const updatedCart = deleteProductFromCart(product)
-   console.log(updatedCart)
-   return updatedCart;
+  if (quantity < 1) {
+    const updatedCart = deleteProductFromCart(product);
+    console.log(updatedCart);
+    return updatedCart;
   }
 
   const response = await fetch("/api/cartUpdateQuantityButton", {
@@ -70,7 +73,7 @@ async function deleteProductFromCart(product) {
 }
 
 export default function Cart({ InitialCart }) {
-  const [cart, setCart] = useState(InitialCart);
+  const [cart, setCart] = useState(InitialCart[0]);
 
   async function handleUpdateQuantity(product, quantity) {
     try {
@@ -109,7 +112,7 @@ export default function Cart({ InitialCart }) {
                 Votre panier
               </h1>
             </header>
-            {cart ? 
+            {cart ? (
               <div className="mt-8">
                 {cart.PanierProduit.map((product) => {
                   return (
@@ -146,10 +149,8 @@ export default function Cart({ InitialCart }) {
                         <div className="flex flex-1 items-center justify-end gap-2">
                           <div>Prix : {product.Produit.prix}</div>
                           <form>
-                            <label for="Line1Qty" className="sr-only">
-                              
-                            </label>
-                            
+                            <label for="Line1Qty" className="sr-only"></label>
+
                             <button
                               onClick={async (e) => {
                                 try {
@@ -222,24 +223,55 @@ export default function Cart({ InitialCart }) {
                     <dl className="space-y-0.5 text-sm text-gray-700">
                       <div className="flex justify-between">
                         <dt>Sous-total</dt>
-                        <dd>{cart.PanierProduit.reduce((acc, currentValue)=> acc + currentValue.Produit.prix * currentValue.quantite, 0 )}</dd>
+                        <dd>
+                          {cart.PanierProduit.reduce(
+                            (acc, currentValue) =>
+                              acc +
+                              currentValue.Produit.prix * currentValue.quantite,
+                            0
+                          )}
+                        </dd>
                       </div>
 
                       <div className="flex justify-between">
                         <dt>TVA</dt>
-                        <dd>{0.2 *(cart.PanierProduit.reduce((acc, currentValue)=> acc + currentValue.Produit.prix * currentValue.quantite, 0 ))}</dd>
+                        <dd>
+                          { (0.2 *
+                            cart.PanierProduit.reduce(
+                              (acc, currentValue) =>
+                                acc +
+                                (currentValue.Produit.prix *
+                                  currentValue.quantite),
+                              0
+                            ) ).toFixed(2)}
+                        </dd>
                       </div>
 
                       <div className="flex justify-between !text-base font-medium">
                         <dt>Total</dt>
-                        <dd>{cart.PanierProduit.reduce((acc, currentValue)=> acc + currentValue.Produit.prix * currentValue.quantite, 0 ) + 0.2 *(cart.PanierProduit.reduce((acc, currentValue)=> acc + currentValue.Produit.prix * currentValue.quantite, 0 ))}</dd>
+                        <dd>
+                          { (cart.PanierProduit.reduce( 
+                            (acc, currentValue) => 
+                              acc +
+                              currentValue.Produit.prix * currentValue.quantite,
+                            0
+                          ) +
+                            0.2 * 
+                              cart.PanierProduit.reduce( 
+                                (acc, currentValue) =>
+                                  acc +
+                                  currentValue.Produit.prix *
+                                    currentValue.quantite,
+                                0
+                              ) ).toFixed(2)}
+                        </dd>
                       </div>
                     </dl>
 
                     <div className="flex justify-end">
                       <a
-                        href="#"
-                        className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        href="/Shipping"
+                        className="text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                       >
                         Paiement
                       </a>
@@ -247,13 +279,12 @@ export default function Cart({ InitialCart }) {
                   </div>
                 </div>
               </div>
-            : 
+            ) : (
               <div>
                 {/* <Link href="/">Panier vide</Link> */}
                 <a href="/"> Panier vide</a>
-               
               </div>
-            }
+            )}
           </div>
         </div>
       </section>
