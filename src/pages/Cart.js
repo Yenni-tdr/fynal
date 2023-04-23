@@ -1,12 +1,36 @@
 import React from "react";
 import { useState } from "react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
+import cookie from "cookie";
+import { useRouter } from "next/router";
+// import { commandeUser } from "../fonctions/commandeUser";
+import isNotConnected from "../fonctions/isNotConnected";
+import { prixReductionArrondi } from "../fonctions/prixReductionArrondi";
 
-export async function getServerSideProps() {
+// récupération des cookies
+function isAuth(req) {
+  return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
+}
+
+export async function getServerSideProps({ req }) {
+  const cookies = isAuth(req);
+
+  // // si l'user est pas connecté, on le renvois vers signin
+  if (!cookies.user) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+  // const user = cookies.user;
+  const user = JSON.parse(cookies.user);
+
   const categoriesSideMenu = await getCategorieIdData();
   const InitialCart = await prisma.commande.findMany({
     where: {
-      idCommande: 8,
+      idUtilisateur: user.idUtilisateur,
       etatCommande: 0,
     },
     include: {
@@ -17,8 +41,10 @@ export async function getServerSideProps() {
       },
     },
   });
+
   return {
     props: {
+      user: user,
       categoriesSideMenu,
       InitialCart,
     },
@@ -72,17 +98,19 @@ async function deleteProductFromCart(product) {
   return updatedCart;
 }
 
-export default function Cart({ InitialCart }) {
+export default function Cart({ InitialCart, user }) {
   const [cart, setCart] = useState(InitialCart[0]);
+  console.log(user);
 
   async function handleUpdateQuantity(product, quantity) {
     try {
       const updatedProduct = await UpdateQuantity(product, quantity);
       console.log(updatedProduct);
       // setCart((prevCart) => {
-      //   const updatedProducts = prevCart.PanierProduit.map((p) =>
-      //     // p.idProduit = updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit.idProduit : updatedProduct.PanierProduit.idProduit
-      //     p = updatedProduct.PanierProduit
+      //   const updatedProducts = prevCart.PanierProduit.map(
+      //     (p) =>
+      //       // p.idProduit = updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit.idProduit : p
+      //       (p = updatedProduct.PanierProduit)
       //   );
       //   console.log(updatedProducts);
       //   return { ...prevCart, PanierProduit: updatedProducts };
@@ -102,6 +130,20 @@ export default function Cart({ InitialCart }) {
     }
   }
 
+  const totalPrice = cart?.PanierProduit?.reduce(
+    (acc, currentValue) =>
+      acc +
+      prixReductionArrondi(
+        currentValue.Produit.prix,
+        currentValue.Produit.reduction
+      ) *
+        currentValue.quantite,
+    0
+  );
+
+  const HT = prixReductionArrondi(totalPrice, 0);
+  const TVA = Math.round((HT * 0.2 + Number.EPSILON) * 100) / 100;
+
   return (
     <>
       <section>
@@ -117,7 +159,10 @@ export default function Cart({ InitialCart }) {
                 {cart.PanierProduit.map((product) => {
                   return (
                     <ul className="space-y-4">
-                      <li className="flex items-center gap-4">
+                      <li
+                        className="flex items-center gap-4"
+                        key={product.Produit.idProduit}
+                      >
                         <img
                           src={product.Produit.image}
                           alt={product.Produit.nom}
@@ -223,48 +268,17 @@ export default function Cart({ InitialCart }) {
                     <dl className="space-y-0.5 text-sm text-gray-700">
                       <div className="flex justify-between">
                         <dt>Sous-total</dt>
-                        <dd>
-                          {cart.PanierProduit.reduce(
-                            (acc, currentValue) =>
-                              acc +
-                              currentValue.Produit.prix * currentValue.quantite,
-                            0
-                          )}
-                        </dd>
+                        <dd>{HT}</dd>
                       </div>
 
                       <div className="flex justify-between">
                         <dt>TVA</dt>
-                        <dd>
-                          { (0.2 *
-                            cart.PanierProduit.reduce(
-                              (acc, currentValue) =>
-                                acc +
-                                (currentValue.Produit.prix *
-                                  currentValue.quantite),
-                              0
-                            ) ).toFixed(2)}
-                        </dd>
+                        <dd>{TVA}</dd>
                       </div>
 
                       <div className="flex justify-between !text-base font-medium">
                         <dt>Total</dt>
-                        <dd>
-                          { (cart.PanierProduit.reduce( 
-                            (acc, currentValue) => 
-                              acc +
-                              currentValue.Produit.prix * currentValue.quantite,
-                            0
-                          ) +
-                            0.2 * 
-                              cart.PanierProduit.reduce( 
-                                (acc, currentValue) =>
-                                  acc +
-                                  currentValue.Produit.prix *
-                                    currentValue.quantite,
-                                0
-                              ) ).toFixed(2)}
-                        </dd>
+                        <dd>{TVA + HT}</dd>
                       </div>
                     </dl>
 
