@@ -5,6 +5,7 @@ import { getAllCategoriesID } from "../../fonctions/categorie";
 import { getCategorieIdData } from "../../fonctions/SidebarData";
 import { CategoryForm } from "../../components/categoryForm";
 
+// On récupère tous les chemins possibles 
 export async function getStaticPaths() {
     const paths = await getAllCategoriesID();
     
@@ -14,6 +15,7 @@ export async function getStaticPaths() {
     }
 }
 
+// On récupère les informations nécessaires en fonction du chemin
 export async function getStaticProps({ params }) {
     const catData = await prisma.categorie.findMany({
         where: {
@@ -35,6 +37,9 @@ const errorsDefault = {
     description: false,
 }
 
+/*
+* Fonction permettant de modifier les informations d'une caétgorie.
+*/
 export default function ModifCategory({ catData }) {
 
     const [errors, setErrors] = useState(errorsDefault);
@@ -42,6 +47,7 @@ export default function ModifCategory({ catData }) {
 
     const router = useRouter();
 
+    // On récupère les informations entrées grâce à un form, on traite ensuite ces informations grâce à une API route
     const handleSubmit = async (event) => {
         setButtonState(true);
         event.preventDefault();
