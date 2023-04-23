@@ -5,8 +5,6 @@ import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 import { getProductIndex } from "../fonctions/productIndex";
 import { ProductCard } from "../components/ProductCard";
-// import { fillDatabaseAdmin } from '../fonctions/fillDB';
-// import { fillDatabaseProducts } from '../fonctions/fillDB';
 
 export async function getStaticProps() {
   const Cart = await prisma.commande.findMany({
@@ -17,8 +15,6 @@ export async function getStaticProps() {
   });
   const produitsIndex = (await getProductIndex()).produits;
   const categoriesSideMenu = await getCategorieIdData();
-  // await fillDatabaseAdmin();
-  // await fillDatabaseProducts();
 
   const InitialCart = Cart ? Cart : [{ idCommande: 0 }];
 
@@ -94,12 +90,6 @@ export default function Home({ InitialCart, produitsIndex }) {
     },
     {
       id: 5,
-      imageSrc:
-        "https://www.dlapparel.com/wp/wp-content/uploads/2021/06/banner-about-3.jpg",
-      imageAlt: "Product",
-    },
-    {
-      id: 6,
       imageSrc:
         "https://www.winnings.com.au/datadump/brand-modules/sub-zero-mod-1.jpg",
       imageAlt: "Product",

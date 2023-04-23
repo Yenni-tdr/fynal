@@ -21,6 +21,12 @@ export default async function handler(req, res) {
         return categorie.idCategorie;
     });
 
+    const vendeur = await prisma.vendeur.findMany({
+        where: {
+            idUtilisateur: parseInt(produit.vendeur),
+        },
+    });
+
     // On vérifie s'il y a des erreurs dans les informations entrées par le vendeur
     const errors = verifProduct(produit, idCategories);
 
@@ -46,7 +52,6 @@ export default async function handler(req, res) {
 
     if(produit.categorie === '') produit.categorie = undefined;
     else produit.categorie = parseInt(produit.categorie);
-    // ajouter pour vendeur
 
     // Si l'objet 'errors' contient au moins une erreur, on renvoie un message contenant les erreurs en question
     // Sinon, on ajoute le produit dans la BDD et on renvoie un message pour signaler qu'il n'y a pas eu de problème.
@@ -78,7 +83,7 @@ export default async function handler(req, res) {
                 },
                 Vendeur: {
                     connect: {
-                        idVendeur: 0,
+                        idVendeur: vendeur[0].idVendeur,
                     },
                 },
             },

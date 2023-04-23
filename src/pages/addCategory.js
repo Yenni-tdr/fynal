@@ -18,6 +18,9 @@ const errorsDefault = {
     description: false,
 }
 
+/*
+* Fonction permettant de créer une caétgorie.
+*/
 export default function AddCategory() {
 
     const [errors, setErrors] = useState(errorsDefault);
@@ -25,6 +28,7 @@ export default function AddCategory() {
 
     const router = useRouter();
 
+    // On récupère les informations entrées grâce à un form, on traite ensuite ces informations grâce à une API route
     const handleSubmit = async (event) => {
         setButtonState(true);
         event.preventDefault();
@@ -49,7 +53,7 @@ export default function AddCategory() {
         const response = await fetch(endpoint, options);
         const result = await response.json();
 
-        if(result.data === "ok") router.push('/successAddCategory');
+        if(result.data === "ok") router.push('/manageCategory');
         else {
             setButtonState(false);
             setErrors(result.data);
