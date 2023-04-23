@@ -1,33 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 import { getProductIndex } from "../fonctions/productIndex";
 import { ProductCard } from "../components/ProductCard";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+import useSWR from "swr";
+
+// import { fillDatabaseAdmin } from '../fonctions/fillDB';
+// import { fillDatabaseProducts } from '../fonctions/fillDB';
 
 export async function getStaticProps() {
-  const Cart = await prisma.commande.findMany({
-      where: { idCommande: 8, etatCommande: 0 },
-      include: {
-          PanierProduit: true,
-      },
-  });
   const produitsIndex = (await getProductIndex()).produits;
   const categoriesSideMenu = await getCategorieIdData();
-
-  const InitialCart = Cart ? Cart : [{ idCommande: 0 }];
+  // await fillDatabaseAdmin();
+  // await fillDatabaseProducts();
 
   return {
     props: {
-      InitialCart,
       produitsIndex,
       categoriesSideMenu,
     },
   };
 }
 
-async function newCartData(product, commande) {
+async function newCartData(product, commande, idUtilisateur) {
   const IDCOMMANDE = commande.idCommande === 0 ? 0 : commande.idCommande;
   const existItem =
     IDCOMMANDE === 0
@@ -40,32 +39,63 @@ async function newCartData(product, commande) {
   console.log(quantity);
   // console.log(quantity)
   if (product.stock < quantity) {
-      alert("Produit plus en stock");
-      return;
+    alert("Produit plus en stock");
+    return;
   }
   const response = await fetch("/api/panierAddButton", {
-      method: "POST",
-      body: JSON.stringify({
-          idProduit: product.idProduit,
-          idCommande: IDCOMMANDE,
-          quantite: quantity,
-          exist: exist,
-      }),
+    method: "POST",
+    body: JSON.stringify({
+      idProduit: product.idProduit,
+      idCommande: IDCOMMANDE,
+      quantite: quantity,
+      exist: exist,
+      idUtilisateur: idUtilisateur,
+    }),
   });
 
   if (!response.ok) {
-      console.log(response);
-      throw new Error(response.statusText);
+    console.log(response);
+    throw new Error(response.statusText);
   }
 
   const updatedCart = await response.json();
   return updatedCart;
 }
 
-export default function Home({ InitialCart, produitsIndex }) {
+export default function Home({ produitsIndex }) {
+  const [cookies] = useCookies(["user"]);
+  const router = useRouter();
+  const [cart, setCartItems] = useState(0);
+  console.log(cart);
+  const fetcher = (url) =>
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idUtilisateur: cookies?.user?.idUtilisateur }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const InitialCart =
+          data.length !== 0
+            ? data
+            : [{ idCommande: 0, idUtilisateur: cookies?.user?.idUtilisateur }];
+        setCartItems(InitialCart[0]);
+      });
 
-  const [hasMounted, setHasMounted] = useState(false);
+  // Envoie de la requête à chaque chargement de la page à l'aide d'SWR
+  const {
+    data,
+    error: errorSWR,
+    isLoading: isLoadingSWR,
+  } = useSWR(cookies["user"] ? "/api/getCommandStaticProps" : null, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
+  console.log(cart);
   const slider = [
     {
       id: 1,
@@ -94,36 +124,43 @@ export default function Home({ InitialCart, produitsIndex }) {
     {
       id: 5,
       imageSrc:
+        "https://www.dlapparel.com/wp/wp-content/uploads/2021/06/banner-about-3.jpg",
+      imageAlt: "Product",
+    },
+    {
+      id: 6,
+      imageSrc:
         "https://www.winnings.com.au/datadump/brand-modules/sub-zero-mod-1.jpg",
       imageAlt: "Product",
     },
   ];
-  
-  const [cart, setCartItems] = useState(InitialCart[0]);
 
-  async function handleNewCartData(product, commande) {
+  async function handleNewCartData(product, commande, idUtilisateur) {
     try {
-        const updatedProduct = await newCartData(product, commande);
-        console.log(updatedProduct);
-        //   setCartItems((prevCart) => {
-        //     const updatedProducts = prevCart.PanierProduit.map((p) =>
-        //       p.idProduit === updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit : p
-        //     );
-        //     console.log(updatedProducts);
-        //     return { ...prevCart, PanierProduit: updatedProducts };
-        setCartItems(updatedProduct);
-        console.log(updatedProduct);
+      if (!cookies["user"]) {
+        alert("Veuillez vous connecter pour ajouter un produit");
+        router.push("/signin");
+      }
+      console.log(idUtilisateur);
+      console.log(commande);
+      const updatedProduct = await newCartData(
+        product,
+        commande,
+        idUtilisateur
+      );
+      console.log(updatedProduct);
+      //   setCartItems((prevCart) => {
+      //     const updatedProducts = prevCart.PanierProduit.map((p) =>
+      //       p.idProduit === updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit : p
+      //     );
+      //     console.log(updatedProducts);
+      //     return { ...prevCart, PanierProduit: updatedProducts };
+      setCartItems(updatedProduct);
+      console.log(updatedProduct);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
   }
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, [])
-
-  // Render
-  if (!hasMounted) return null;
 
   return (
     <>
@@ -184,7 +221,6 @@ export default function Home({ InitialCart, produitsIndex }) {
           <div className="mx-auto max-w-2xl py-16 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
               {produitsIndex.map((product) => (
-
                 // <div key={product.idProduit} className="group relative">
                 //   <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
                 //     <img
@@ -214,8 +250,13 @@ export default function Home({ InitialCart, produitsIndex }) {
                 //   </div>
                 // </div>
 
-                <ProductCard key={product.idProduit} produit={product} cart={cart} handleNewCartData={handleNewCartData} ></ProductCard>
-
+                <ProductCard
+                  key={product.idProduit}
+                  produit={product}
+                  cart={cart}
+                  idUtilisateur={cookies?.user?.idUtilisateur}
+                  handleNewCartData={handleNewCartData}
+                ></ProductCard>
               ))}
             </div>
           </div>
