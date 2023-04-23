@@ -5,12 +5,26 @@ import Image from "next/image";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import cookie from "cookie";
+import isNotConnected from "../fonctions/isNotConnected";
+import { prixReductionArrondi } from "../fonctions/prixReductionArrondi";
 
-export async function getServerSideProps() {
+function isAuth(req) {
+  return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
+}
+
+export async function getServerSideProps({ req }) {
+  const cookies = isAuth(req);
+
+  // // si l'user est pas connecté, on le renvois vers signin
+  isNotConnected(cookies);
+  // const user = cookies.user;
+  const user = JSON.parse(cookies.user);
+
   const categoriesSideMenu = await getCategorieIdData();
   const Cart = await prisma.commande.findMany({
     where: {
-      idCommande: 8,
+      idUtilisateur: user.idUtilisateur,
       etatCommande: 0,
     },
     include: {
@@ -20,48 +34,71 @@ export async function getServerSideProps() {
         },
       },
       Adresse: true,
-      Utilisateur: {
-        include: {
-          Adresse: true,
-        },
-      },
     },
   });
-  const InitialCart = Cart.length !== 0 ? Cart : [{ idCommande: 0, method_payment : false, idAdresse : false, Utilisateur : false, PanierProduit : false }];
+  const InitialCart =
+    Cart.length !== 0
+      ? Cart
+      : [
+          {
+            idCommande: 0,
+            method_payment: false,
+            idAdresse: false,
+            Utilisateur: false,
+            PanierProduit: false,
+          },
+        ];
   if (!InitialCart[0].method_payment) {
     return {
       redirect: {
-        destination: '/payment',
+        destination: "/payment",
         permanent: false,
       },
-    }
+    };
   }
   return {
     props: {
       categoriesSideMenu,
       InitialCart,
+      user,
     },
   };
 }
 
-export default function order({ InitialCart }) {
+export default function order({ InitialCart, user }) {
+  //initialisation du useState avec état initiale InitialCar[0]
   const [cart, setCart] = useState(InitialCart[0]);
+
   const router = useRouter();
 
+  // une fois la page chargé on vérifié encore une fois si la méthode de paiement est selectionné sinon on le renvois sur la page payment
   useEffect(() => {
     if (!cart.method_payment) {
       return router.push("/payment");
     }
   }, [cart.method_payment, router]);
 
+  //  useState pour bouton chargement
   const [load, setLoad] = useState(false);
 
+  // calcul du délais de livraison, on prend le plus long
+  const max = cart.PanierProduit.reduce(function (prev, current) {
+    return prev.Produit.delaisLivraison > current.Produit.delaisLivraison
+      ? prev
+      : current;
+  });
+
+  const dateLivraison = max.Produit.delaisLivraison;
+  console.log(dateLivraison);
+
+  // requete fetch api pour signaler que ma commande est prête à l'achat
   const orderHandler = async () => {
     setLoad(true);
     const response = await fetch("/api/orderEnd", {
       method: "POST",
       body: JSON.stringify({
         idCommande: cart.idCommande,
+        dateLivraison: dateLivraison,
       }),
     });
     const updatedProduct = await response.json();
@@ -77,12 +114,22 @@ export default function order({ InitialCart }) {
     router.push("/");
   };
 
-  const totalPrice = cart.PanierProduit.reduce(
+  // prix totale du panier avec réduction incluse
+  const totalP = cart.PanierProduit.reduce(
     (acc, currentValue) =>
-      acc + currentValue.Produit.prix * currentValue.quantite,
+      acc +
+      prixReductionArrondi(
+        currentValue.Produit.prix,
+        currentValue.Produit.reduction
+      ) *
+        currentValue.quantite,
     0
   );
-  const TVA = totalPrice * 0.2;
+
+  // on le refait une deuxieme fois car l'arrondis ne passe pas la haut
+  const HT = prixReductionArrondi(totalP, 0);
+  //prix comprenant la TVA
+  const TVA = Math.round((HT * 0.2 + Number.EPSILON) * 100) / 100;
 
   return (
     <>
@@ -101,9 +148,9 @@ export default function order({ InitialCart }) {
                 Adresse de livraison
               </h2>
               <div>
-                {cart.Utilisateur.nom}
+                {user.nom}
                 &nbsp;
-                {cart.Utilisateur.prenom}
+                {user.prenom}
                 <br />
                 {cart.Adresse.numeroNomRue}
                 <br />
@@ -235,7 +282,7 @@ export default function order({ InitialCart }) {
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Panier</div>
-                    <div>${totalPrice}</div>
+                    <div>${HT}</div>
                   </div>
                 </li>
                 <li>
@@ -247,7 +294,7 @@ export default function order({ InitialCart }) {
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Total</div>
-                    <div>${TVA + totalPrice}</div>
+                    <div>${TVA + HT}</div>
                   </div>
                 </li>
                 <li>

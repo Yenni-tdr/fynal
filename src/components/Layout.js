@@ -3,10 +3,6 @@ import Nav from './Nav';
 import Footer from './Footer';
 import {useCookies} from "react-cookie";
 import useSWR from 'swr'
-
-/*
-* Component global du site, il est intégré dans le fichier _app afin qu'il soit présent sur toutes les pages.
-*/ 
 export default function Layout({ children }) {
 
     const [cookies, setCookies, removeCookie] = useCookies(['user']);
