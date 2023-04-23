@@ -1,5 +1,4 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import { Commande } from '@prisma/client';
 import { prisma } from '@/db';
 
 // eslint-disable-next-line import/no-anonymous-default-export
