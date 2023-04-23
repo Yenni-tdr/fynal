@@ -1,10 +1,12 @@
 import { ErrorDiv } from "./ErrorDiv"
 
+// Définition des champs du formulaire
 const formFields = [
     { labelString: "Libellé* :", id: "libelle" },
     { labelString: "Description* :", id: "description" },
 ]
 
+// En fonction du form, on veut soit modifier soit supprimer une catégorie
 function typeForm(type) {
     if(type == 0) {
         return "Ajouter";
@@ -13,6 +15,10 @@ function typeForm(type) {
     }
 }
 
+/*
+* Component affichant le formulaire pour ajouter/modifier une catégorie.
+* On récupère en entrée les différentes informations nécessaires à l'affichage du component.
+*/
 export const CategoryForm = ({handleSubmit, buttonState, errors, type}) => {
     return (
         <div className="flex items-center justify-center">
