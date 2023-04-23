@@ -91,7 +91,7 @@ const ContractBody = () => {
             const result = await response.json();
             if(response.ok){
                 console.log(result)
-                //await router.reload();
+                await router.reload();
             }else{
                 setError(result.message);
             }
@@ -117,7 +117,7 @@ const ContractBody = () => {
             const result = await response.json();
             if(response.ok){
                 console.log(result)
-                //await router.reload();
+                await router.reload();
             }else{
                 setError(result.message);
             }
@@ -129,8 +129,8 @@ const ContractBody = () => {
     }
 
     const setTypeContract = () =>{
-        setIsDisabledSeller(contracts.length !== 0 || contracts[0].ContratVendeur === null || contracts[0].etat !== 2);
-        setIsDisabledDeliverer(contracts.length !== 0 || contracts[0].ContratLivreur === null || contracts[0].etat !== 2);
+        setIsDisabledSeller(contracts.length === 0 || contracts[0].ContratVendeur === null || contracts[0].etat !== 2);
+        setIsDisabledDeliverer(contracts.length === 0 || contracts[0].ContratLivreur === null || contracts[0].etat !== 2);
         // isDisabledSeller && isDisabledDeliverer ? "" : isDisabledSeller ? "Deliverer" : isDisabledDeliverer ? "Seller" : ""
     }
 
