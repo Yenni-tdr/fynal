@@ -1,7 +1,7 @@
 import { prixReductionArrondi } from "../fonctions/prixReductionArrondi"
 
 /*
-* Componant servant à afficher le prix d'un produit sur la page produit.
+* Component servant à afficher le prix d'un produit sur la page produit.
 * Le prix affiché dépend de la présence ou non d'une réduction.
 */
 export const PrixProduitProduit = ({ prix, reduction, stock }) => {
