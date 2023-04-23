@@ -7,8 +7,7 @@ import {useEffect, useState} from "react";
 const Contract = () => {
     return (
         <main className="flex flex-1">
-            <NavAccount />
-            <ContractBody/>
+            <ContractAdminBody/>
         </main>
     );
 };
