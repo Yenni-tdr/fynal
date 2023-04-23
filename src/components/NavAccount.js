@@ -8,7 +8,7 @@ export default function NavAccount(){
     const {pathname} = router;
     if(cookies?.user?.status !== 3){
         return (
-            <nav className="fixed">
+            <nav className="">
                 <ul className="flex flex-col m-3">
                     <li className={`${pathname === "/account" ? "underline" : ""} text-xl`}><Link href="/account">Espace utilisateur</Link></li>
                     <li className={`${pathname === "/history" ? "underline" : ""} text-xl`}><Link href="/history">Historique</Link></li>
