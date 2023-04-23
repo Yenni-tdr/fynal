@@ -59,7 +59,6 @@ const DeliveryMap = ({ addresses }) => {
           routingControlRef.current.remove();
         }
 
-
         routingControlRef.current = L.Routing.control({
           waypoints,
           routeWhileDragging: true,
@@ -79,8 +78,7 @@ const DeliveryMap = ({ addresses }) => {
         }).addTo(map);
       }
     };
-
-    geocodeAddresses();
+      geocodeAddresses();
     }
     
     return () => {
@@ -91,7 +89,7 @@ const DeliveryMap = ({ addresses }) => {
     };
   }, []);
 
-  return <div ref={mapRef} style={{ height: "555px", zIndex:1}} />;
+  return <div ref={mapRef} style={{ height: "400px", objectFit: "cover", zIndex:1}} />;
 };
 
 export default DeliveryMap;

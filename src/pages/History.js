@@ -16,7 +16,21 @@ const Historique = ({commandes}) => {
               <div className="bg-gray-200 flex gap-4 rounded-lg p-4 mt-4 mx-4 md:mx-10 lg:mx-20 xl:mx-32">
                 <p className="text-gray-600 text-sm">Date de commande : {commande.dateCommande}</p>
                 <p className="text-gray-600 text-sm">ID de commande : {commande.idCommande}</p>
-                <p className="text-gray-600 text-sm">Etat de la commande : {commande.etatCommande}</p>
+                <p className="text-gray-600 text-sm">
+                  Etat de la commande :{" "}
+                  {(() => {
+                    switch (commande.etatCommande) {
+                      case 0:
+                        return <span className="text-orange-400 font-semibold">Panier en cours</span>;
+                      case 1:
+                        return <span className="text-yellow-300 font-semibold">En cours de livraison</span>;
+                      case 2:
+                        return <span className="text-green-400 font-semibold">Livré</span>;
+                      default:
+                        return null;
+                    }
+                  })()}
+                </p>
                 <p className="text-gray-600 text-sm">Total : {total} €</p>
               </div>
               <div className="bg-gray-200 rounded-lg p-4 mt-4 mx-4 md:mx-10 lg:mx-20 xl:mx-32">
