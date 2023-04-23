@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { prisma } from "../../db";
+import { cookie } from "cookie";
 
 const Historique = ({commandes}) => {
   const [total, setTotalItem] = useState(0);
@@ -8,29 +9,15 @@ const Historique = ({commandes}) => {
     <div>
       <div className="py-3 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <h1 className="text-2xl font-semibold ">Historique des commandes</h1>
+          <h1 className="text-2xl font-semibold ">Historique des commandes</h1>   
         </div>
-        {commandes.map((commande) => {
+        {commandes.map((commande) => { // On parcourt l'ensemble des commandes
           return(
             <div key={commande.idCommande}>
               <div className="bg-gray-200 flex gap-4 rounded-lg p-4 mt-4 mx-4 md:mx-10 lg:mx-20 xl:mx-32">
                 <p className="text-gray-600 text-sm">Date de commande : {commande.dateCommande}</p>
                 <p className="text-gray-600 text-sm">ID de commande : {commande.idCommande}</p>
-                <p className="text-gray-600 text-sm">
-                  Etat de la commande :{" "}
-                  {(() => {
-                    switch (commande.etatCommande) {
-                      case 0:
-                        return <span className="text-orange-400 font-semibold">Panier en cours</span>;
-                      case 1:
-                        return <span className="text-yellow-300 font-semibold">En cours de livraison</span>;
-                      case 2:
-                        return <span className="text-green-400 font-semibold">Livré</span>;
-                      default:
-                        return null;
-                    }
-                  })()}
-                </p>
+                <p className="text-gray-600 text-sm">Etat de la commande : {commande.etatCommande}</p>
                 <p className="text-gray-600 text-sm">Total : {total} €</p>
               </div>
               <div className="bg-gray-200 rounded-lg p-4 mt-4 mx-4 md:mx-10 lg:mx-20 xl:mx-32">
@@ -48,8 +35,7 @@ const Historique = ({commandes}) => {
                       useEffect(() => {
                         const sum = commande.PanierProduit.map(item => item.Produit.prix * item.quantite).reduce((acc, val) => acc + val, 0);
                         setTotalItem(sum);
-                      }, [commande.PanierProduit]); 
-                      console.log("Neyzz", Data);
+                      }, [commande.PanierProduit]); // On éxécute useEffect uniquement lorsque commande.PanierProduit change
                       return(
                         <tr className="border-b pb-4" key={Data.Produit.idProduit}>
                           <td className="px-4 py-2">
@@ -76,22 +62,21 @@ const Historique = ({commandes}) => {
   );
 };
 
+// Fonction pour extraire les cookies d'une requête ou d'un document
+function isAuth(req){
+  return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
+}
 
 export async function getServerSideProps() {
-  const UtilisateurId = 4;
   const Utilisateur = prisma.utilisateur;
-  
-  try {
-    //const utilisateurs = await Utilisateur.findMany();
+  const cookies = isAuth(req); // Extraction des cookies en utilisant la fonction isAuth
+  const user = JSON.parse(cookies.user); // Conversion du cookie 'user' en objet JSON
 
+  try {
+    // Récupération des produits commandé par l'utilisateur connecté 
     const utilisateur = await Utilisateur.findUnique({
       where: {
-        idUtilisateur: UtilisateurId,
-        /*
-        idUtilisateur: {
-          in: utilisateurs.map((utilisateur) => utilisateur.idUtilisateur),
-        },
-        */
+        idUtilisateur: user.idUtilisateur,
       },
       include: {
         Commande: {
@@ -106,14 +91,16 @@ export async function getServerSideProps() {
       },
     });
 
-    const commandes = utilisateur.Commande;
+  const commandes = utilisateur.Commande;
 
-    return {
-      props: {
-        commandes,
-      },
-    };
-  } catch (error) {
+
+  return { // On retourne les commandes
+    props: {
+      commandes,
+    },
+  }
+
+  } catch (error) {  // Capture d'une éventuelle erreur
     console.error(error);
     return {
       props: {

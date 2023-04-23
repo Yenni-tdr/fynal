@@ -3,7 +3,6 @@ import { prisma } from "../../db";
 import cookie from 'cookie';
 
 const Stats = ({ vendeur }) => {
-
   return (
     <div className="py-3 px-4 flex flex-col gap-2 sm:px-6 lg:px-8">
       <div className="max-w-3xl">
@@ -29,35 +28,37 @@ const Stats = ({ vendeur }) => {
   );
 };
 
+// Fonction pour extraire les cookies d'une requête ou d'un document
 function isAuth(req){
     return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
 }
 
 export async function getServerSideProps({req}) {
-  const Vendeur = prisma.Vendeur;
-  const cookies = isAuth(req);
-  const user = JSON.parse(cookies.user);
-  try {
-
+    const Vendeur = prisma.Vendeur;
+    const cookies = isAuth(req); // Extraction des cookies en utilisant la fonction isAuth
+    const user = JSON.parse(cookies.user); // Conversion du cookie 'user' en objet JSON
+    try {
+    // On cherche l'utilisateur correspondant dans la BDD
     const vendeur = await Vendeur.findUnique({
       where: {
         idUtilisateur: user.idUtilisateur,
       },
     });
 
+    // On retourne l'objet vendeur
     return {
-      props: {
-        vendeur,
-      },
+        props: {
+            vendeur,
+        },
     };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        vendeur: [],
-      },
-    };
-  }
+    } catch (error) { // Capture d'une éventuelle erreur
+        console.error(error);
+        return {
+            props: {
+            vendeur: [],
+        },
+        };
+    }
 }
 
 export default Stats;
