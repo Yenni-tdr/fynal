@@ -15,7 +15,7 @@ export default async function handler(req, res){
 
     console.log(req.body)
 
-    const {userId, contractType, startDate, endDate, company, comission, license, vehicule} = req.body;
+    const {userId, contractType, startDate, endDate, company, commission, license, vehicle} = req.body;
 
     try {
         if(contractType === "Seller"){
@@ -28,27 +28,20 @@ export default async function handler(req, res){
                     etat: 0,
                     ContratVendeur: {
                         create: {
-                            comission: comission
+                            comission: commission
                         }
                     }
+                }
+            })
+            const entreprise = await prisma.entreprise.create({
+                data:{
+                    nom: company
                 }
             })
             const vendeur = await prisma.vendeur.create({
                 data: {
                     idUtilisateur: userId,
-                    Entreprise: {
-                        upsert:{
-                            where:{
-                                nom: company
-                            },
-                            update:{
-                                nom: company
-                            },
-                            create: {
-                                nom: company
-                            }
-                        }
-                    }
+                    idEntreprise: entreprise.idEntreprise
                 }
             })
             console.log(contract)
@@ -79,7 +72,7 @@ export default async function handler(req, res){
                 data: {
                     idUtilisateur: userId,
                     permis: license,
-                    vehicule: vehicule
+                    vehicule: vehicle
                 }
             })
 

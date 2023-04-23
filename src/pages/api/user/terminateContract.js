@@ -24,28 +24,33 @@ export default async function handler(req, res){
             data:{
                 etat: 2
             },
+        })
+        const contractType = await prisma.contrat.findMany({
+            where: {
+                idUtilisateur: userId,
+            },
             include:{
                 ContratVendeur: true,
                 ContratLivreur: true,
-            }
+            },
         })
-        if(contract.ContratVendeur !== null){
+        if(contractType[0].ContratVendeur !== null){
             const vendeur = await prisma.vendeur.update({
                 where: {
-                    idUtilisateur: contract.idUtilisateur
+                    idUtilisateur: userId
                 },
                 data:{
-                    valid: false
+                    Valide: false
                 }
             })
         }
-        else if(contract.ContratLivreur !== null){
+        else if(contractType[0].ContratLivreur !== null){
             const livreur = await prisma.livreur.update({
                 where: {
                     idUtilisateur: contract.idUtilisateur
                 },
                 data:{
-                    valid: false
+                    Valide: false
                 }
             })
         }

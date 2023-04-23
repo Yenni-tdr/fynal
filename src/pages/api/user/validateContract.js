@@ -13,7 +13,7 @@ export default async function handler(req, res){
         return res.status(400).json({error, message: 'Erreur dans le formulaire'})
     }
 
-    const {contractId, userId} = req.body;
+    const {contractId} = req.body;
 
     try {
         const contract = await prisma.contrat.update({
@@ -35,7 +35,7 @@ export default async function handler(req, res){
                     idUtilisateur: contract.idUtilisateur
                 },
                 data:{
-                    valid: true
+                    Valide: true
                 }
             })
         }
@@ -45,7 +45,7 @@ export default async function handler(req, res){
                     idUtilisateur: contract.idUtilisateur
                 },
                 data:{
-                    valid: true
+                    Valide: true
                 }
             })
         }
