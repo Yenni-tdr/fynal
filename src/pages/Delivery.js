@@ -10,18 +10,22 @@ const Delivery = ({commandes}) => {
   const [showDeliveryMap, setShowDeliveryMap] = useState(false);
   const DeliveryMap = dynamic(() => import('../fonctions/DeliveryMap'), { ssr: false });
 
+  // Fonction qui retourne les 2 premiers chiffres du code postal
   const getCP = (codePostal) => {
     return String(codePostal).substring(0,2);
   };
 
+  // Fonction qui retourne une adresse sous le bon format pour l'affichage
   const getAdress = (adresse) => {
     return `${adresse?.numeroNomRue} ${adresse?.ville}, ${adresse?.codePostal}`;
   };
-
+  
+  // Fonction qui gère le clic sur le bouton d'optimisation de livraison
   const handleOptimizeClick = () => {
     setShowDeliveryMap(true);
   };
   
+  // useEffect qui met à jour la liste des adresses de livraison en fonction des commandes et de l'utilisateur connecté
   React.useEffect(() => {
     const newAdresses = [];
     newAdresses.push(getAdress(cookies.user.adresse));
@@ -37,7 +41,7 @@ const Delivery = ({commandes}) => {
     setAdresses(newAdresses);
   }, [commandes, cookies.user]);
 
-
+  // Fonction qui affiche la carte de livraison si elle est visible
   const handleOptimiserTrajet = () => {
     return(
       <div>
@@ -46,6 +50,7 @@ const Delivery = ({commandes}) => {
     )
   };
 
+  // Fonction qui met à jour l'état des commandes pour indiquer qu'elles ont été livrées
   const handleCommandeLivree = async () => {
     try {
       await fetch("/api/changeCommandeState", {
@@ -87,6 +92,7 @@ const Delivery = ({commandes}) => {
 export async function getServerSideProps() {
   const Commande = prisma.Commande;
   
+  // Recherche des commandes qui ne sont pas livrées et inclusion de l'adresse correspondante
   try {
     const commandes = await Commande.findMany({
       where: {
