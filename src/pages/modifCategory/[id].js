@@ -1,13 +1,30 @@
+import { prisma } from "../../../db";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { getCategorieIdData } from "../fonctions/SidebarData";
-import { CategoryForm } from "../components/categoryForm";
+import { getAllCategoriesID } from "../../fonctions/categorie";
+import { getCategorieIdData } from "../../fonctions/SidebarData";
+import { CategoryForm } from "../../components/categoryForm";
 
-export async function getStaticProps() {
+export async function getStaticPaths() {
+    const paths = await getAllCategoriesID();
+    
+    return {
+        paths,
+        fallback: false,
+    }
+}
+
+export async function getStaticProps({ params }) {
+    const catData = await prisma.categorie.findMany({
+        where: {
+            idCategorie: parseInt(params.id),
+        }
+    });
     const categoriesSideMenu = await getCategorieIdData();
     
     return {
         props: {
+            catData: catData,
             categoriesSideMenu: categoriesSideMenu,
         },
     };
@@ -18,7 +35,7 @@ const errorsDefault = {
     description: false,
 }
 
-export default function AddCategory() {
+export default function ModifCategory({ catData }) {
 
     const [errors, setErrors] = useState(errorsDefault);
     const [buttonState, setButtonState] = useState(false);
@@ -32,11 +49,12 @@ export default function AddCategory() {
         const data = {
             libelle: event.target.libelle.value,
             description: event.target.description.value,
+            idCategorie : catData[0].idCategorie,
         };
 
         const JSONdata = JSON.stringify(data);
 
-        const endpoint = '/api/addCategoryToDB';
+        const endpoint = '/api/modifCategory';
 
         const options = {
             method: 'POST',
@@ -49,7 +67,7 @@ export default function AddCategory() {
         const response = await fetch(endpoint, options);
         const result = await response.json();
 
-        if(result.data === "ok") router.push('/successAddCategory');
+        if(result.data === "ok") router.push('/modifCategoryHome');
         else {
             setButtonState(false);
             setErrors(result.data);
@@ -57,11 +75,9 @@ export default function AddCategory() {
         
     }
 
-    return(
+    return (
         <div>
-            <h1 className='text-center mt-8 font-semibold text-3xl italic'>Ajouter une categorie</h1>
-            <h2 className='block text-gray-500 font-bold mt-5 ml-5 md:mb-0 pr-4'>Pour ajouter une catégorie, remplissez les champs suivants et appuyez sur le bouton en fin de page pour confirmer. Les champs avec une étoile doivent être obligatoirement remplis.</h2>
-            <CategoryForm handleSubmit={handleSubmit} buttonState={buttonState} errors={errors} type={0}></CategoryForm>
+            <CategoryForm handleSubmit={handleSubmit} buttonState={buttonState} errors={errors} type={1}></CategoryForm>
         </div>
-    );
+    )
 }
