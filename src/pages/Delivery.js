@@ -9,7 +9,6 @@ const Delivery = ({commandes}) => {
   const [adresses, setAdresses] = useState([]);
   const [showDeliveryMap, setShowDeliveryMap] = useState(false);
   const DeliveryMap = dynamic(() => import('../fonctions/DeliveryMap'), { ssr: false });
-  console.log("BRAVA", commandes);
 
   const getCP = (codePostal) => {
     return String(codePostal).substring(0,2);
@@ -27,8 +26,6 @@ const Delivery = ({commandes}) => {
     const newAdresses = [];
     newAdresses.push(getAdress(cookies.user.adresse));
     commandes.forEach((commande) => {
-      console.log("BREE", cookies.user.adresse.codePostal);
-      console.log("FREE", commande.Adresse.codePostal);
       if (
         getCP(cookies?.user?.adresse?.codePostal) ===
           getCP(commande.Adresse.codePostal) &&
@@ -40,7 +37,6 @@ const Delivery = ({commandes}) => {
     setAdresses(newAdresses);
   }, [commandes, cookies.user]);
 
-  console.log("YUPA",adresses); 
 
   const handleOptimiserTrajet = () => {
     return(
