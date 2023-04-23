@@ -1,3 +1,5 @@
+import { prixReductionArrondi } from "../fonctions/prixReductionArrondi"
+
 export const PrixProduitCategorie = ({ prix, reduction }) => {
     if(reduction > 0) {
         return (
@@ -11,7 +13,7 @@ export const PrixProduitCategorie = ({ prix, reduction }) => {
                     </p>
                 </div>
                 <p className="mt-1 text-lg font-medium text-gray-900">
-                    {Math.round(((prix - (reduction/100)*prix) + Number.EPSILON) * 100) / 100} €
+                    {prixReductionArrondi(prix, reduction)} €
                 </p>
             </div>
         )
@@ -21,7 +23,6 @@ export const PrixProduitCategorie = ({ prix, reduction }) => {
                 <p className="mt-1 mb-8 text-lg font-medium text-gray-900">
                     {prix} €
                 </p>
-                {/* <p className="mt-1 text-lg invisible">test</p> */}
             </div>
         )
     }
