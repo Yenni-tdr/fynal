@@ -173,7 +173,7 @@ export default function order({ InitialCart, user }) {
               <div>{cart.method_payment}</div>
               <Link
                 className="mt-10 w-full text-center border-5 px-5 py-2.5 text-normal text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
-                href="/Shipping"
+                href="/payment"
               >
                 Modifier
               </Link>
