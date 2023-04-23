@@ -2,15 +2,6 @@ import React, {useState, useEffect} from "react";
 import {useCookies} from "react-cookie";
 import useSWR from "swr";
 import {useRouter} from "next/router";
-
-export async function getStaticProps() {
-  const categoriesSideMenu = await getCategorieIdData();
-  return {
-    props: {
-      categoriesSideMenu,
-    },
-  };
-}
  
 const HistoryBody = (categoriesSideMenu) => {
     const [cookies, setCookies, removeCookie] = useCookies(['user']);
