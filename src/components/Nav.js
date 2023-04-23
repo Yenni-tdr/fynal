@@ -14,6 +14,7 @@ export default function Nav({ childrenProps }) {
 
     const [hasMounted, setHasMounted] = useState(false);
     const [cookies] = useCookies(['user']);
+    const user = cookies['user']
 
     const [sidebar, setSidebar] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -48,8 +49,8 @@ export default function Nav({ childrenProps }) {
     
     function showAccountMenu2() {
 
-        if(cookies['user'] ){
-            if(cookies.user.status > 0){return(
+        if(user ){
+            if(user.status > 0){return(
                 <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
                             <img className="h-6 w-6" src="gear.svg"/>
