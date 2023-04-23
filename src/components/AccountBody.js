@@ -180,7 +180,7 @@ const AccountBody = () => {
     if (!hasMounted) return null;
 
     return (
-        <div className="flex flex-col items-center flex-1">
+        <div className="flex flex-col items-center flex-1 mx-5">
             <h2 className="mt-2 text-2xl font-semibold">Espace utilisateur</h2>
             <section className="flex flex-col items-center flex-1 w-full shadow mr-1 my-2 p-2">
                 <form onSubmit={handleSubmitProfile(onSubmitProfile)} className="w-full flex flex-col items-center">
@@ -244,15 +244,15 @@ const AccountBody = () => {
                                     {changeOnProfile &&
                                         <>
                                             <label className="mr-1">
-                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radio-man" value="Homme" className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
+                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radio-man" value="Homme" defaultChecked={cookies?.user?.genre === "Homme"} className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
                                                 Homme
                                             </label>
                                             <label className="mr-1">
-                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioWoman" value="Femme" className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
+                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioWoman" value="Femme" defaultChecked={cookies?.user?.genre === "Femme"} className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
                                                 Femme
                                             </label>
                                             <label className="">
-                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioOther" value="Autre" className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
+                                                <input {...registerProfile("sex")} type="radio" name="sex" id="radioOther" value="Autre" defaultChecked={cookies?.user?.genre === "Autre"} className={`peer h-4 ${errorsProfile.sex ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} />
                                                 Autre
                                             </label>
                                             <p className="error-form">
@@ -320,7 +320,7 @@ const AccountBody = () => {
                     }
                 </form>
             </section>
-            <section className="flex flex-col items-center flex-1 w-full shadow mr-1 my-2 p-2">
+            <section className="flex flex-col items-center flex-1 w-full shadow mr-1 my-2 p-2 mb-20">
                 <form onSubmit={handleSubmitAddress(onSubmitAddress)} className="w-full flex flex-col items-center">
                     <div className="w-full flex justify-between">
                         <div className="w-3/5 flex justify-center">

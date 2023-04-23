@@ -1,8 +1,8 @@
 import NavAccount from '../components/NavAccount'
 import RegisterForm from '../components/RegisterForm'
+import AccountBody from "../components/AccountBody";
 
 import { getCategorieIdData } from '../fonctions/SidebarData';
-import AccountBody from "../components/AccountBody";
 export async function getStaticProps() {
     const categoriesSideMenu = await getCategorieIdData();
     return {

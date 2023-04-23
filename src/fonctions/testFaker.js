@@ -26,14 +26,13 @@ export function createRandomProduct() {
         10,
         faker.datatype.number(20),
         faker.datatype.float({min: 1, max: 1000, precision: 0.01}),
-        // 0,
         10,
         faker.datatype.number(10000),
         faker.datatype.number(10000),
         faker.datatype.number(10000),
         faker.datatype.number(10000),
         faker.datatype.number({min: 1, max: 2}),
-        0
+        1
     );
 
     return randomProduct;

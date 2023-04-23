@@ -5,6 +5,7 @@ import { getCategorieIdData } from "../../fonctions/SidebarData";
 import { prisma } from "../../../db";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { PrixProduitProduit } from "../../components/PrixProduitProduit";
 
 export async function getStaticPaths() {
   const products = await prisma.produit.findMany({
@@ -140,11 +141,9 @@ export default function Products({ products, InitialCart }) {
                 </p>
               </div>
               <div className="flex">
-                <span className="title-font font-medium text-2xl text-gray-900">
-                  {product.prix > 0 ? product.prix + " €" : "Rupture de stock"}
-                </span>
+                <PrixProduitProduit prix={product.prix} reduction={product.reduction} stock={product.stock}></PrixProduitProduit>
                 <button
-                  className="flex ml-auto text-white  bg-stone-800 border-0 py-2 px-6 focus:outline-none hover:bg-stone-950 rounded-lg transition ease-in duration-200"
+                  className="ml-auto text-white bg-stone-800 border-0 py-2 px-6 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                   onClick={async (e) => {
                     try {
                       await handleNewCartData(product, cart);

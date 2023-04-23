@@ -89,56 +89,78 @@ export default function payment({ InitialCart }) {
   return (
     <>
       <CheckoutStepsOrder activeStep={2} />
-      <form className="mx-auto- max-w-screen-md" onSubmit={submitHandler}>
-        <ul class="grid gap-6 md:w-8/12 lg:w-6/12 sm:w-full md:grid-cols-1 content-center">
-          {["Paypal", "Stripe"].map((payment) => (
-            <li key={payment}>
-              <input
-                type="radio"
-                id={payment}
-                name="paymentMeth"
-                class="hidden peer"
-                checked={paymentMethod === payment}
-                onChange={() => setPaymentMeth(payment)}
-                required
-              ></input>
-              <label
-                htmlFor={payment}
-                class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-              >
-                <div class="block">
-                  <div class="w-full">{payment}</div>
+      <form onSubmit={submitHandler}>
+        <section className="max-w-[900px] mx-auto px-8 pt-10">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-700 mb-8 text-center">
+                Moyen de paiement :
+          </h1>
+                
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            
+            {["Mastercard", "Visa","Paypal"].map((payment) => (
+                
+              <label htmlFor={payment} className="relative w-full corsor-pointer">
+                <input className="peer hidden" type="radio" id={payment} name="paymentMeth"
+                  checked={paymentMethod === payment}
+                  onChange={() => setPaymentMeth(payment)}
+                  required
+                />
+                <div className="flex items-center sm:justify-center
+                p-5 pr-16 sm:p-8 gap-5
+                h-24 sm:h-40 w-full
+                bg-white
+                border-2 border-gray-200
+                rounded-md transition
+                peer-checked:border-blue-500
+                peer-checked:shadow-lg
+                peer-checked:-translate-y-1">
+                  <img
+                    className="w-20 h-16 sm:w-full sm:h-full object-center"
+                    src={`/logo_${payment}.svg`}
+                    alt={payment}
+                  />
+                  <p className="static sm:absolute 
+                  top-full sm:mt-1 
+                  text-center text-lg sm:text-xl 
+                  w-auto sm:w-full 
+                  opacity-70 font-medium">
+                    Payer avec {payment}
+                  </p>
                 </div>
-                <svg
-                  aria-hidden="true"
-                  class="w-6 h-6 ml-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
+                <div className="absolute top-1/2 sm:-top-4 right-6 sm:-right-3 
+                -translate-y-1/2 sm:translate-y-0 -mt-1
+                bg-blue-500 text-white 
+                h-8 w-8 p-0.5 
+                rounded-full transition 
+                peer-checked:scale-100 scale-0">
+                  <img src="/icon_check.svg" alt=""/>
+                </div>
               </label>
-            </li>
-          ))}
-        </ul>
-        <div className="mb-4 flex justify-between py-5 px-7">
-          <button
-            onClick={() => router.push("/Shipping")}
-            type="button"
-            className="inline-block rounded bg-info px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#54b4d3] transition duration-150 ease-in-out hover:bg-info-600 hover:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] focus:bg-info-600 focus:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] focus:outline-none focus:ring-0 active:bg-info-700 active:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(84,180,211,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.2),0_4px_18px_0_rgba(84,180,211,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.2),0_4px_18px_0_rgba(84,180,211,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.2),0_4px_18px_0_rgba(84,180,211,0.1)]"
-          >
-            Retour
-          </button>
-          <button className="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
-            Next
-          </button>
-        </div>
+              
+            ))}
+
+            </div>
+            
+            <div  className="mt-20 flex justify-between">
+              <button
+                onClick={() => router.push("/Shipping")}
+                type="button"
+                className="
+                text-normal px-4 py-2 text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
+              >
+                Retour
+              </button>
+              <button className="text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none">
+                Poursuivre
+              </button>
+            </div>
+          
+        </section>
       </form>
     </>
+
+    
   );
 }
+
+

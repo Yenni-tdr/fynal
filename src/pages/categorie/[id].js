@@ -28,7 +28,6 @@ export async function getStaticPaths() {
     return {
         paths,
         fallback: false,
-        // fallback: true,
     }
 }
 
@@ -77,7 +76,7 @@ let actualSort = {
     stockCheckbox: false,
     reductionCheckbox: false,
     vendeurArray: [],
-    entrepriseArray: [],
+    utilisateursVendeursArray: [],
 }
 
 async function newCartData(product, commande) {
@@ -117,14 +116,6 @@ async function newCartData(product, commande) {
 
 export default function Categorie({ catData, InitialCart }) {
 
-    // voir pour peut être faire une page de chargement avec fallback: true
-    // si on le fait ici, le faire aussi pour les pages produits
-    // const router = useRouter();
-
-    // if(router.isFallback) {
-    //     return <div>Loading...</div>
-    // }
-
     // On récupère les informations venant de la BDD et on les organise
     const infosCategorie = {
         libelle: catData[0].libelle,
@@ -132,7 +123,8 @@ export default function Categorie({ catData, InitialCart }) {
     };
     let produits = catData.produits;
     actualSort.vendeurArray = catData.vendeurs;
-    let entreprises = catData.entreprises;
+    // let entreprises = catData.entreprises;
+    let utilisateursVendeurs = catData.utilisateursVendeurs;
 
     // Déclaration des hooks d'état permettant d'appliquer les filtres sur la page
     const [filter, setFilter] = useState({
@@ -155,7 +147,7 @@ export default function Categorie({ catData, InitialCart }) {
             actualSort.stockCheckbox = false;
             actualSort.reductionCheckbox = false;
             actualSort.vendeurArray = [],
-            actualSort.entrepriseArray = [],
+            actualSort.utilisateursVendeursArray = [],
             router.reload();
         }
         router.events.on('routeChangeComplete', handleRouteChange);
@@ -165,10 +157,10 @@ export default function Categorie({ catData, InitialCart }) {
         else if(delaisLivraisonArray.includes(filter.filterValue)) actualSort.delaisLivraisonType = filter.filterValue;
         else if(filter.filterValue === FILTRE_STOCK) actualSort.stockCheckbox = !actualSort.stockCheckbox;
         else if(filter.filterValue === FILTRE_REDUCTION) actualSort.reductionCheckbox = !actualSort.reductionCheckbox;
-        else if(actualSort.entrepriseArray.includes(filter.filterValue)) {
-            actualSort.entrepriseArray.splice(actualSort.entrepriseArray.indexOf(filter.filterValue), 1);
+        else if(actualSort.utilisateursVendeursArray.includes(filter.filterValue)) {
+            actualSort.utilisateursVendeursArray.splice(actualSort.utilisateursVendeursArray.indexOf(filter.filterValue), 1);
         } else {
-            actualSort.entrepriseArray.push(filter.filterValue);
+            actualSort.utilisateursVendeursArray.push(filter.filterValue);
         }
 
         // On met à jour les produits en fonctions du tri et des filtres
@@ -202,19 +194,13 @@ export default function Categorie({ catData, InitialCart }) {
         }
     }
 
-    /*
-    Gestion des filtres :
-    - delaisLivraison : faire un slider (si possible, sinon un menu deroulant), directement regarder dans le tableau 'produits', pas besoin de récupérer d'information au préalable
-    - categorie : cases à cocher '[case] Nom catégorie', comparer avec les valeurs dans le tableau, récupérer au préalable les catégories des produits affichés sur la page (donc afficher ce filtre seulement si l'utilisateur fait une recherche)
-    */
-
     // Affichage de la page
     return (
         <div>
             <h1 className='text-center mt-8 font-semibold text-3xl italic'>{ infosCategorie.libelle }</h1>
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
+            
             {/* Affichage des filtres */}
-
             <div className='flex justify-end gap-4 mr-10 mt-10'>
                 <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
                     <option disabled value={DEFAULT}>Trier par :</option>
@@ -234,11 +220,11 @@ export default function Categorie({ catData, InitialCart }) {
                     <span><input type="checkbox" id='stockCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_STOCK, eventCheckbox)}/> {FILTRE_STOCK}</span>
                     <span><input type='checkbox' id='reductionCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_REDUCTION, eventCheckbox)}/> {FILTRE_REDUCTION}</span>
                 </div>
-                {entreprises.length > 1 && <div className='flex flex-col gap-1'>
+                {utilisateursVendeurs.length > 1 && <div className='flex flex-col gap-1'>
                     <label>Vendeurs</label>
-                    {entreprises.map((entreprise) => {
+                    {utilisateursVendeurs.map((utilisateursVendeur) => {
                         return(
-                            <span key={entreprise.idEntreprise}><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {entreprise.nom}</span>
+                            <span key={utilisateursVendeur.idUtilisateur}><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {utilisateursVendeur.nom} {utilisateursVendeur.prenom}</span>
                         )
                     })}
                 </div>}
@@ -251,46 +237,12 @@ export default function Categorie({ catData, InitialCart }) {
                         {produitsTries.map((produit) => {
                             return (
 
-                                // <div className='group' key={produit.idProduit}>
-                                //     <Link
-                                //         href={`/products/${produit.idProduit}`}
-                                //         key={produit.idProduit}
-                                //     >
-                                //         <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                                //             <img
-                                //             src={produit.image}
-                                //             alt={produit.nom}
-                                //             height={10}
-                                //             width={10}
-                                //             className="h-full w-full object-cover object-center group-hover:opacity-75"
-                                //             />
-                                //         </div>
-                                //     </Link>
-                                //     <div className='flex flex-row'>
-                                //         <div>
-                                //         <h3 className="mt-4 text-sm text-gray-700">
-                                //             {produit.nom}
-                                //         </h3>
-                                //         <p className="mt-1 text-lg font-medium text-gray-900">
-                                //             {produit.prix} €
-                                //         </p>
-                                //         </div>
-                                //         <button className=" mt-7 text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
-                                //             onClick={async (e) => {
-                                //                 try {
-                                //                 await handleNewCartData(produit, cart);
-                                //                 e.target.reset();
-                                //                 } catch (err) {
-                                //                 console.log(err);
-                                //                 }
-                                //             }}
-                                //         >
-                                //             Ajouter au panier
-                                //         </button>
-                                //     </div>
-                                // </div>
-
-                                <ProductCard key={produit.idProduit} produit={produit} cart={cart} handleNewCartData={handleNewCartData} ></ProductCard>
+                                <ProductCard 
+                                    key={produit.idProduit} 
+                                    produit={produit} 
+                                    cart={cart} 
+                                    handleNewCartData={handleNewCartData}>
+                                </ProductCard>
 
                             );
                         })}
