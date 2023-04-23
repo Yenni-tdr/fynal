@@ -1,6 +1,6 @@
 import NavAccount from "../components/NavAccount";
 import HistoryBody from "../components/HistoryBody";
-import { getCategorieIdData } from "../fonctions/SiebarData";
+import { getCategorieIdData } from "../fonctions/SidebarData";
 
 export async function getStaticProps() {
   const categoriesSideMenu = await getCategorieIdData();
