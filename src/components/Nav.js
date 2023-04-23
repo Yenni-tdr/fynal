@@ -1,15 +1,19 @@
-import React, {useState} from "react";
+import React, {useEffect,useState} from "react";
 
 import {useRouter} from "next/router";
 import * as FaIcons from 'react-icons/fa';
 import Sidebar from './Sidebar';
 import Link from "next/link";
 import confetti from 'canvas-confetti';
+import {useCookies} from "react-cookie";
 
 import AccountMenu from "@/src/components/AccountMenu";
 
 
 export default function Nav({ childrenProps }) {
+
+    const [hasMounted, setHasMounted] = useState(false);
+    const [cookies] = useCookies(['user']);
 
     const [sidebar, setSidebar] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -41,7 +45,36 @@ export default function Nav({ childrenProps }) {
     function handleClick() {
         generateConfetti();
     }
+
+    function showAdmin() {
+
+        if(cookies['user'] ){
+            if(cookies.user.idUtilisateur === 0){return(
+                <div className="dropdown dropdown-end">
+                        <label tabIndex={0} className="btn btn-ghost btn-circle">
+                            <img className="h-6 w-6" src="gear.svg"/>
+                            </label>
+                            <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                            
+                                <li><Link href="/manageCategory" className="justify-between">Gestion des catégories</Link></li>
+                                <li><Link href="/addProduct" className="justify-between">Ajouter un produit</Link></li>
+                                <li><Link href="/contractAdmin" className="justify-between">Contrat</Link></li>
+             
+                            </ul>
+                        
+                </div>
+                )
+                }
+        } 
+        
+    }
     
+    useEffect(() => {
+        setHasMounted(true);
+    }, [])
+
+    // Render
+    if (!hasMounted) return null;
 
     return (
     <> 
@@ -55,6 +88,9 @@ export default function Nav({ childrenProps }) {
                     </Link>
                 </div>
                 <div className="navbar-end">
+                    
+                    {showAdmin()}                 
+                    
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
                             <div className="indicator">
