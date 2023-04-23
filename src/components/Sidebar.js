@@ -17,9 +17,6 @@ const SidebarWrap = styled.div`
   width: 100%;
 `;
 
-/*
-* Component servant à afficher le menu sur le côté gauche.
-*/
 const Sidebar = ({ sidebarState, childrenProps }) => {
   if (!sidebarState) return null;
 

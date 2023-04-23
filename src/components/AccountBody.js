@@ -31,12 +31,12 @@ const AccountBody = () => {
 
 
     // Fonction permettant de convertir une date en String
-    function dateString(date){
+    function birthDateString(date){
         const dateFormat = new Date(date)
         return dateFormat.getFullYear()  + "-" + formatMonth(dateFormat.getMonth()+1)+ "-" + dateFormat.getDate();
     }
 
-    const birthDateDisplay = dateString(cookies?.user?.dateNaissance)
+    const birthDateDisplay = birthDateString(cookies?.user?.dateNaissance)
 
     // Utilisation du hook useForm pour gérer le formulaire de la modification de profile plus facilement
     const {register: registerProfile, handleSubmit: handleSubmitProfile, formState: {errors: errorsProfile}, reset: resetProfile} = useForm({
@@ -95,7 +95,7 @@ const AccountBody = () => {
         setError("");
         try{
             const userIdObj = {userId: cookies?.user?.idUtilisateur}
-            const birthDateObj = {birthDate: new Date(dateString(data.birthDate))};
+            const birthDateObj = {birthDate: new Date(birthDateString(data.birthDate))};
             const sendData = {...userIdObj, ...data, ...birthDateObj}
             const response = await fetch('/api/user/updateProfile',{
                 method: 'POST',

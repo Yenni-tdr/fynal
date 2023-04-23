@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 
-
-// Fonction pour récupérer les catégories dans la sidebar
 export async function getStaticProps() {
   const categoriesSideMenu = await getCategorieIdData();
   return {
@@ -14,7 +12,6 @@ export async function getStaticProps() {
 }
 
 export default function FooterRedirect(){
-    // On récupère l'id de la page à afficher
     const router = useRouter();
     const q = router.query.q;
 
@@ -29,8 +26,7 @@ export default function FooterRedirect(){
         }, 2000);
       }
     }, [showPopup]);
-
-    // Popup de validation du formulaire
+  
     const handleClick = (event) => {
         event.preventDefault();
         setShowPopup(true);

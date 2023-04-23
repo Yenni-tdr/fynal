@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 import { ErrorDiv } from "../components/ErrorDiv";
-import { useCookies } from "react-cookie";
 
 export async function getStaticProps() {
     const categoriesSideMenu = await getCategorieIdData();
@@ -14,7 +13,6 @@ export async function getStaticProps() {
     };
 }
 
-// On définie tous les types d'erreur possibles
 const errorsDefault = {
     nom: false,
     reference: false,
@@ -32,29 +30,16 @@ const errorsDefault = {
     vendeur: false,
 }
 
-/*
-* Cette page permet à un vendeur d'ajouter un produit.
-* Il a accès à un formulaire dans lequel il indique les caractéristiques du produit qu'il veut ajouter.
-*/
 export default function AddProduct() {
 
     const [errors, setErrors] = useState(errorsDefault);
     const [buttonState, setButtonState] = useState(false);
 
-    const [cookies] = useCookies(["user"]);
-
     const router = useRouter();
 
-    // Gestion du formulaire
-    // On récupère les informations entrées, et on les envoie à l'API où elles seront vérifiées puis envoyer sur la BDD s'il n'y a pas de problème
     const handleSubmit = async (event) => {
         setButtonState(true);
         event.preventDefault();
-
-        if (!cookies["user"]) {
-            alert("Veuillez vous connecter pour ajouter un produit");
-            router.push("/signin");
-        }
 
         const data = {
             nom: event.target.nom.value,
@@ -70,7 +55,6 @@ export default function AddProduct() {
             poids: event.target.poids.value,
             image: event.target.image.value,
             categorie: event.target.categorie.value,
-            vendeur: cookies?.user?.idUtilisateur,
         };
 
         const JSONdata = JSON.stringify(data);
@@ -96,7 +80,6 @@ export default function AddProduct() {
         
     }
 
-    // Définition des champs du formulaire
     const formFields = [
         { labelString: "Nom* :", id: "nom" },
         { labelString: "Référence* :", id: "reference" },

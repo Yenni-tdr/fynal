@@ -2,8 +2,9 @@ import React, {useState, useEffect} from "react";
 import {useCookies} from "react-cookie";
 import useSWR from "swr";
 import {useRouter} from "next/router";
- 
-const HistoryBody = (categoriesSideMenu) => {
+
+
+const HistoryBody = () => {
     const [cookies, setCookies, removeCookie] = useCookies(['user']);
     const router = useRouter()
 

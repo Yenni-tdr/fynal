@@ -96,9 +96,9 @@ function reductionFilter(produitsTries) {
 *
 * Valeur de retour : le tableau des produits sans ceux dont l'entreprise n'a pas été cochée par l'utilisateur.
 */
-function vendeurFilter(produitsTries, vendeurArray, utilisateursVendeursArray) {
+function entrepriseFilter(produitsTries, vendeurArray, entrepriseArray) {
     const vendeursEntreprises = vendeurArray.filter((vendeur) => {
-        return utilisateursVendeursArray.includes(vendeur.idEntreprise);
+        return entrepriseArray.includes(vendeur.idEntreprise);
     }).map((vendeur) => {
         return vendeur.idVendeur;
     });
@@ -118,7 +118,7 @@ export function updateProducts(produits, actualSort) {
 
     if(actualSort.stockCheckbox) produitsTries = stockFilter(produitsTries);
     if(actualSort.reductionCheckbox) produitsTries = reductionFilter(produitsTries);
-    if(actualSort.utilisateursVendeursArray.length > 0) produitsTries = vendeurFilter(produitsTries, actualSort.vendeurArray, actualSort.utilisateursVendeursArray);
+    if(actualSort.entrepriseArray.length > 0) produitsTries = entrepriseFilter(produitsTries, actualSort.vendeurArray, actualSort.entrepriseArray);
     if(actualSort.delaisLivraisonType != false) produitsTries = delaisLivraisonSwitch(produitsTries, actualSort.delaisLivraisonType);
     if(actualSort.sortType != false) sortSwitch(produitsTries, actualSort.sortType);
 

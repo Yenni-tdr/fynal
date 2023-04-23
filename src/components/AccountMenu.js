@@ -48,7 +48,7 @@ export default function AccountMenu(){
         return (
             <>
                 <li><Link href="/account" className="justify-between">Espace utilisateur</Link></li>
-                <li><Link href="/history" className="justify-between">Historique</Link></li>
+                <li><Link href="/" className="justify-between">Dashboard Vendeur</Link></li>
                 <li><button onClick={() => removeCookieUser()}>Deconnexion</button></li>
             </>
         )
@@ -57,7 +57,7 @@ export default function AccountMenu(){
         return (
             <>
                 <li><Link href="/account" className="justify-between">Espace utilisateur</Link></li>
-                <li><Link href="/history" className="justify-between">Historique</Link></li>
+                <li><Link href="/" className="justify-between">Dashboard Livreur</Link></li>
                 <li><button onClick={() => removeCookieUser()}>Deconnexion</button></li>
             </>
         )
@@ -66,6 +66,7 @@ export default function AccountMenu(){
         return (
             <>
                 <li><Link href="/account" className="justify-between">Espace utilisateur</Link></li>
+                <li><Link href="/" className="justify-between">Dashboard Admin</Link></li>
                 <li><button onClick={() => removeCookieUser()}>Deconnexion</button></li>
             </>
         )

@@ -5,7 +5,9 @@ import { getCategorieIdData } from "../../fonctions/SidebarData";
 import { prisma } from "../../../db";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { PrixProduitProduit } from "../../components/PrixProduitProduit";
+import { useCookies } from "react-cookie";
+import cookie from "cookie";
+import useSWR from "swr";
 
 export async function getStaticPaths() {
   const products = await prisma.produit.findMany({
@@ -34,45 +36,37 @@ export async function getStaticProps(context) {
     },
   });
 
-  const Cart = await prisma.commande.findMany({
-    where: { idCommande: 8, etatCommande: 0 },
-    include: {
-      PanierProduit: true,
-    },
-  });
-
-  const InitialCart = Cart.length !== 0 ? Cart : [{ idCommande: 0 }];
-  console.log(InitialCart);
   return {
     props: {
       products: prodData,
       categoriesSideMenu,
-      InitialCart,
     },
   };
 }
-
+// fonction pour reload la page
 function reload() {
   const router = useRouter();
   router.reload();
 }
 
-async function newCartData(product, commande) {
+//fonction qui ajoute un produit au panier
+async function newCartData(product, commande, idUtilisateur) {
+  //vérification si la commande existe déja
   const IDCOMMANDE = commande.idCommande === 0 ? 0 : commande.idCommande;
+  //si elle existe alors on cherche si le produit ajouter existe déja
   const existItem =
     IDCOMMANDE === 0
       ? false
       : commande.PanierProduit.find((x) => x.idProduit === product.idProduit);
   const exist = existItem ? true : false;
-  console.log(exist);
-  console.log(IDCOMMANDE);
+  // update de la quantité en fonction de l'existence du produit
   const quantity = existItem ? existItem.quantite + 1 : 1;
-  console.log(quantity);
-  // console.log(quantity)
+  // si quantité plus importante que le stock alors reload la page
   if (product.stock < quantity) {
     alert("Produit plus en stock");
     reload();
   }
+  //envois de notre requete à l'api panierAddButton dans laquelle se passeront les test et les mise a jour de la commande
   const response = await fetch("../api/panierAddButton", {
     method: "POST",
     body: JSON.stringify({
@@ -80,28 +74,70 @@ async function newCartData(product, commande) {
       idCommande: IDCOMMANDE,
       quantite: quantity,
       exist: exist,
+      idUtilisateur: idUtilisateur,
     }),
   });
-
+  // si la requete fetch c'est mal passé
   if (!response.ok) {
     console.log(response);
     throw new Error(response.statusText);
   }
 
+  // retour de la commande avec le panier à jour
   const updatedCart = await response.json();
   return updatedCart;
 }
 
-export default function Products({ products, InitialCart }) {
-  console.log(InitialCart);
+export default function Products({ products }) {
+  const router = useRouter();
+  // Récupération des cookies user
+  const [cookies] = useCookies(["user"]);
+  //initialisation du useState pour l'état des produits avec initiValue : products[0]
   const [product, setProduct] = useState(products[0]);
+  //initialisation du useState pour l'état du panier avec initiValue 0
 
-  const [cart, setCartItems] = useState(InitialCart[0]);
+  const [cart, setCartItems] = useState(0);
+
+  const fetcher = (url) =>
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idUtilisateur: cookies?.user?.idUtilisateur }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const InitialCart = data
+          ? data
+          : [{ idCommande: 0, idUtilisateur: cookies?.user?.idUtilisateur }];
+        setCartItems(InitialCart[0]);
+      });
+
+  // Envoie de la requête à chaque chargement de la page à l'aide d'SWR
+  const {
+    data,
+    error: errorSWR,
+    isLoading: isLoadingSWR,
+  } = useSWR(cookies["user"] ? "../api/getCommandStaticProps" : null, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
   console.log(cart);
 
-  async function handleNewCartData(product, commande) {
+  async function handleNewCartData(product, commande, idUtilisateur) {
     try {
-      const updatedProduct = await newCartData(product, commande);
+      // vérification que l'user est bien connecté sinon on le redirige vers la page de connexion
+      if (!cookies["user"]) {
+        alert("Veuillez vous connecter pour ajouter un produit");
+        router.push("/signin");
+      }
+      const updatedProduct = await newCartData(
+        product,
+        commande,
+        idUtilisateur
+      );
       console.log(updatedProduct);
       //   setCartItems((prevCart) => {
       //     const updatedProducts = prevCart.PanierProduit.map((p) =>
@@ -141,12 +177,18 @@ export default function Products({ products, InitialCart }) {
                 </p>
               </div>
               <div className="flex">
-                <PrixProduitProduit prix={product.prix} reduction={product.reduction} stock={product.stock}></PrixProduitProduit>
+                <span className="title-font font-medium text-2xl text-gray-900">
+                  {product.prix > 0 ? product.prix + " €" : "Rupture de stock"}
+                </span>
                 <button
-                  className="ml-auto text-white bg-stone-800 border-0 py-2 px-6 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
+                  className="flex ml-auto text-white  bg-stone-800 border-0 py-2 px-6 focus:outline-none hover:bg-stone-950 rounded-lg transition ease-in duration-200"
                   onClick={async (e) => {
                     try {
-                      await handleNewCartData(product, cart);
+                      await handleNewCartData(
+                        product,
+                        cart,
+                        cookies?.user?.idUtilisateur
+                      );
                       e.target.reset();
                     } catch (err) {
                       console.log(err);
@@ -157,7 +199,10 @@ export default function Products({ products, InitialCart }) {
                 </button>
               </div>
               <div className="flex">
-                <Link href={"/categorie/" + product.idCategorie} className="ml-auto normal-case text-lg mt-4 hover:underline hover:text-black">            
+                <Link
+                  href={"/categorie/" + product.idCategorie}
+                  className="ml-auto normal-case text-lg mt-4 hover:underline hover:text-black"
+                >
                   Retour aux catégories
                 </Link>
               </div>

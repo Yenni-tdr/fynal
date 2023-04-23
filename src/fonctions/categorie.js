@@ -48,35 +48,29 @@ export async function getCategorieProductsData(id) {
     const vendeurs = await prisma.vendeur.findMany({
         select: {
             idVendeur: true,
-            idUtilisateur: true,
+            idEntreprise: true,
         },
         where: {
             idVendeur: { in: vendeurFiltre },
         }
     });
 
-    const utilisateursVendeursFiltre = arrayUnique( 
+    const entrepriseFiltre = arrayUnique( 
         vendeurs.map((vendeur) => { 
-            return vendeur.idUtilisateur 
+            return vendeur.idEntreprise 
         })
     );
-
-    const utilisateursVendeurs = await prisma.utilisateur.findMany({
+    const entreprises = await prisma.entreprise.findMany({
         where: {
-            idUtilisateur: { in: utilisateursVendeursFiltre }
-        },
-        select: {
-            idUtilisateur: true,
-            nom: true,
-            prenom: true,
+            idEntreprise: { in: entrepriseFiltre },
         }
-    })
+    });
 
     return {
         id,
         produits,
         vendeurs,
-        utilisateursVendeurs,
+        entreprises,
         ...categorie,
     }
 }
