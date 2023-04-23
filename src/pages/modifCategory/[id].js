@@ -54,7 +54,7 @@ export default function ModifCategory({ catData }) {
 
         const JSONdata = JSON.stringify(data);
 
-        const endpoint = '/api/modifCategory';
+        const endpoint = '/api/modif/modifCategory';
 
         const options = {
             method: 'POST',
@@ -67,7 +67,7 @@ export default function ModifCategory({ catData }) {
         const response = await fetch(endpoint, options);
         const result = await response.json();
 
-        if(result.data === "ok") router.push('/modifCategoryHome');
+        if(result.data === "ok") router.push('/manageCategory');
         else {
             setButtonState(false);
             setErrors(result.data);
