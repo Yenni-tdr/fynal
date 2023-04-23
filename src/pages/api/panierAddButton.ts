@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const newCommand = await prisma.commande.create({
       data: {
         etatCommande: 0,
-        idUtilisateur: 1,
+        idUtilisateur: cartData.idUtilisateur,
         PanierProduit: {
           create: [
             {

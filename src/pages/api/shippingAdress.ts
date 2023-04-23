@@ -9,7 +9,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
   const cartData = JSON.parse(req.body);
 
+  //si l'adresse existe déja on lie l'idAdresse a notre commande
   if (
+    cartData.AdressePrev !== null &&
     cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue &&
     cartData.ville === cartData.AdressePrev.ville &&
     cartData.pays === cartData.AdressePrev.pays &&
@@ -25,6 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
   } else {
+    // si elle n'existe pas on l'a crée
     const changeAdress = await prisma.adresse.create({
       data: {
         ville: cartData.ville,
@@ -56,6 +59,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       Adresse: true,
     },
   });
+
+  console.log(returnData);
 
   res.json(returnData);
 };
