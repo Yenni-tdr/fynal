@@ -11,4 +11,12 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports  = {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias['leaflet-control-geocoder$'] = 'leaflet-control-geocoder/dist/Control.Geocoder.js';
+      config.resolve.alias['leaflet-control-geocoder.css$'] = 'leaflet-control-geocoder/dist/Control.Geocoder.css';
+    }
+    return config;
+  }
+};
