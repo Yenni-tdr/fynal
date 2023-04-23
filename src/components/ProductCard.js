@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+/*
+* Component permettant d'afficher une 'carte' produit.
+* Ce component est utilisé dans les pages catégories, après une recherche, et sur la page d'accueil
+* Une 'carte' produit contient les informations principales sur le produit (image, nom, prix), mais aussi un bouton permettant de directement l'ajouter au panier
+*/
 export const ProductCard = ({ produit, cart, handleNewCartData }) => {
     return (
         <div className='group'>
