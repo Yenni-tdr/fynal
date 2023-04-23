@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { getCategorieIdData } from "../fonctions/SidebarData";
-import { CategoryForm } from "../components/categoryForm";
+import { CategoryForm } from "../components/CategoryForm";
 
 export async function getStaticProps() {
     const categoriesSideMenu = await getCategorieIdData();
