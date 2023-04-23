@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 
-
 export const idUserSchema = Yup.object().shape({
     userId: Yup.number()
 })
@@ -55,23 +54,23 @@ export const addressSchema = Yup.object().shape({
     addressBody: Yup.string()
         .when(['addressAddition', 'postcode', 'city', 'country'],{
             is: (addressAddition, postcode, city, country) => addressAddition || postcode || city || country,
-            then: Yup.string().required()
+            then: () => Yup.string().required()
         }, "Le corps de l'adresse est requis si l'un des autres champs sauf le compléments est remplis"),
     addressAddition: Yup.string(),
     postcode: Yup.number().min(5).max(5)
         .when(['addressBody', 'addressAddition', 'city', 'country'], {
             is: (addressBody, addressAddition, city, country) => addressBody || addressAddition || city || country,
-            then: Yup.string().required()
+            then: () => Yup.string().required()
         }, "Le code postale est requis si l'un des autres champs sauf le compléments est remplis"),
     city: Yup.string()
         .when(['addressBody', 'addressAddition', 'postcode', 'country'], {
             is: (addressBody, addressAddition, postcode, country) => addressBody || addressAddition || postcode || country,
-            then: Yup.string().required()
+            then: () => Yup.string().required()
         }, "La ville est requise si l'un des autres champs sauf le compléments est remplis"),
     country: Yup.string()
         .when(['addressBody', 'addressAddition', 'postcode', 'city'], {
             is: (addressBody, addressAddition, postcode, city) => addressBody || addressAddition || postcode || city,
-            then: Yup.string().required()
+            then: () => Yup.string().required()
         }, "Le pays est requis si l'un des autres champs sauf le compléments est remplis"),
 },
 [
@@ -80,6 +79,33 @@ export const addressSchema = Yup.object().shape({
     ['city', 'addressAddition'], ['city', 'country'],
     ['country', 'addressAddition']
 ])
+
+export const contractSchema = Yup.object().shape({
+    contractType: Yup.string()
+        .required("Le type de contrat est requis")
+        .oneOf(["Seller", "Deliverer"], "Erreur lors du choix du type de contrat"),
+    startDate: Yup.date()
+        .required("La date de début est requise")
+        .min(new Date(), "Erreur dans la date de début du contrat"),
+    endDate: Yup.date()
+        .required("La date de fin est requise")
+        .min(Yup.ref("startDate")),
+    commission: Yup.number()
+        .when("contractType", {
+            is: (contractType) => contractType === "Seller",
+            then: () => Yup.number()
+                .required("La commission est requise")
+                .min(0, "Le minimum possible de la commission est de 0")
+                .max(100, "Le maximum possible de la commission est de 100")
+        }),
+    affiliatedCompany: Yup.string()
+        .when("contractType", {
+            is: (contractType) => contractType === "Deliverer",
+            then: () => Yup.string()
+                .required("L'entreprise affiliée est requise")
+        })
+
+})
 
 export const registerSchema =  baseDataSchema.concat(passwordSchema);
 export const profileSchema = baseDataSchema.concat(otherProfileDataSchema);
