@@ -49,7 +49,7 @@ export default function AddCategory() {
         const response = await fetch(endpoint, options);
         const result = await response.json();
 
-        if(result.data === "ok") router.push('/successAddCategory');
+        if(result.data === "ok") router.push('/manageCategory');
         else {
             setButtonState(false);
             setErrors(result.data);
