@@ -11,7 +11,7 @@ export async function getStaticProps() {
   };
 }
 
-const History = () => {
+const History = (categoriesSideMenu) => {
     return (
         <main className="flex flex-1">
             <NavAccount />
