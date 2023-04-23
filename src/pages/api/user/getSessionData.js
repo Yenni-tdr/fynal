@@ -22,7 +22,7 @@ export default async function handler(req, res){
     try{
         // Récupération des informations de l'utilisateur dans la base de données grâce à son id
         // Le bloc try, catch permet de récupérer les erreurs en cas de besoin, si l'utilisateur n'est pas trouvé par exemple
-        const status = 0
+        let status = 0
         const userData = await prisma.utilisateur.findUnique({
             where:{
                 idUtilisateur: userId
@@ -34,7 +34,7 @@ export default async function handler(req, res){
 
         // Calcul du statut de l'utilisateur : simple acheteur(0), vendeur(1), livreur(2) ou admin(3)
         if(userData.idUtilisateur === 0){
-            const status = 3;
+            status = 3;
         }
         else{
             const sellerStatus = await prisma.vendeur.findUnique({
@@ -44,10 +44,10 @@ export default async function handler(req, res){
                 where: { idUtilisateur: userData.idUtilisateur },
             });
             if(sellerStatus){
-                const status = 1;
+                status = 1;
             }
             else if(deliveryStatus){
-                const status = 2;
+                status = 2;
             }
 
         }
@@ -63,7 +63,6 @@ export default async function handler(req, res){
             dateNaissance: userData.dateNaissance,
             adresse: userData.Adresse,
         }
-
         // Envoie de l'objet contenant les infos de l'utilisateur au côte client
         return res.status(200).json(user);
 
