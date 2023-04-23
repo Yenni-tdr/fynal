@@ -53,9 +53,10 @@ model Contrat {
   dateDebut      DateTime         @default(now()) @db.Date
   dateFin        DateTime         @db.Date
   idUtilisateur  Int
+  etat           Int              @db.SmallInt
   Utilisateur    Utilisateur      @relation(fields: [idUtilisateur], references: [idUtilisateur], onDelete: Cascade, onUpdate: NoAction)
   ContratLivreur ContratLivreur[]
-  ContratVendeur ContratVendeur[]
+  ContratVendeur ContratVendeur?
 }
 
 model ContratLivreur {
@@ -68,7 +69,7 @@ model ContratLivreur {
 model ContratVendeur {
   idContratVendeur Int     @id @default(autoincrement())
   comission        Int
-  idContrat        Int
+  idContrat        Int     @unique
   Contrat          Contrat @relation(fields: [idContrat], references: [idContrat], onDelete: Cascade, onUpdate: NoAction)
 }
 
