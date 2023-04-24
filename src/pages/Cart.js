@@ -2,9 +2,9 @@ import React from "react";
 import { useState } from "react";
 import { getCategorieIdData } from "../fonctions/SidebarData";
 import cookie from "cookie";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 // import { commandeUser } from "../fonctions/commandeUser";
-import isNotConnected from "../fonctions/isNotConnected";
+// import isNotConnected from "../fonctions/isNotConnected";
 import { prixReductionArrondi } from "../fonctions/prixReductionArrondi";
 
 // récupération des cookies
