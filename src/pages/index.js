@@ -124,12 +124,6 @@ export default function Home({ produitsIndex }) {
     {
       id: 5,
       imageSrc:
-        "https://www.dlapparel.com/wp/wp-content/uploads/2021/06/banner-about-3.jpg",
-      imageAlt: "Product",
-    },
-    {
-      id: 6,
-      imageSrc:
         "https://www.winnings.com.au/datadump/brand-modules/sub-zero-mod-1.jpg",
       imageAlt: "Product",
     },
