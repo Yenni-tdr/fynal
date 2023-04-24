@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import cookie from "cookie";
 import isNotConnected from "../fonctions/isNotConnected";
 import { prixReductionArrondi } from "../fonctions/prixReductionArrondi";
+import { prisma } from "../../db";
 
 function isAuth(req) {
   return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
