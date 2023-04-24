@@ -22,14 +22,18 @@ export const ProductCard = ({ produit, cart, idUtilisateur, handleNewCartData })
                     />
                 </div>
             </Link>
-            <div className='flex flex-row'>
+            
                 <div>
-                <h3 className="mt-4 text-sm text-gray-700">
+                <h3 className="box-border h-10 mt-4 text-sm text-gray-700">
                     {produit.nom}
                 </h3>
+                
+                <div className="flex
+                ">
                 <PrixProduitCategorie prix={produit.prix} reduction={produit.reduction}></PrixProduitCategorie>
-                </div>
-                <button className="mt-7 text-normal px-3 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
+                
+                
+                <button className=" mt-5 text-normal px-3 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
                     onClick={async (e) => {
                         try {
                         await handleNewCartData(produit, cart, idUtilisateur);
@@ -41,7 +45,9 @@ export const ProductCard = ({ produit, cart, idUtilisateur, handleNewCartData })
                 >
                     Ajouter au panier
                 </button>
-            </div>
+                </div>
+                </div>
+            
         </div>
     )
 }
