@@ -3,6 +3,7 @@ import { useCookies } from "react-cookie";
 import { prisma } from "../../db";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { comma } from "postcss/lib/list";
 
 const Delivery = ({commandes}) => {
   const [cookies] = useCookies(['user']);
@@ -21,17 +22,17 @@ const Delivery = ({commandes}) => {
   const handleOptimizeClick = () => {
     setShowDeliveryMap(true);
   };
-  
+
   React.useEffect(() => {
     const newAdresses = [];
-    newAdresses.push(getAdress(cookies.user.adresse));
+    newAdresses.push(getAdress(cookies?.user?.adresse));
     commandes.forEach((commande) => {
       if (
         getCP(cookies?.user?.adresse?.codePostal) ===
-          getCP(commande.Adresse.codePostal) &&
+          getCP(commande?.Adresse?.codePostal) &&
         newAdresses.length < 20
       ) {
-        newAdresses.push(getAdress(commande.Adresse));
+        newAdresses.push(getAdress(commande?.Adresse));
       }
     });
     setAdresses(newAdresses);
@@ -39,6 +40,7 @@ const Delivery = ({commandes}) => {
 
 
   const handleOptimiserTrajet = () => {
+    console.log("OOKK", adresses);
     return(
       <div>
           {showDeliveryMap && <div className="border-4 border-black border-solid "><DeliveryMap addresses={adresses} /> </div>}
@@ -67,12 +69,12 @@ const Delivery = ({commandes}) => {
         <div className="bg-gray-200 flex gap-4 justify-between rounded-lg p-4 mt-4 mx-4 md:mx-10 lg:mx-20 xl:mx-32">
           <p className="text-gray-600 text-xl font-semibold">Nombre de commandes à livrer : {adresses.length - 1}</p>
           {adresses.length > 1 ? (
-            <div className="flex gap-6">
+            <div className="flex flex-col sm:flex-row gap-6 mt-4 sm:mt-0">
               <button className="btn btn-primary btn-sm" onClick={handleOptimizeClick}>Optimiser trajet</button>
-              <button className="btn btn-success btn-sm " onClick={handleCommandeLivree}>Commande livrée</button>
+              <button className="btn btn-success btn-sm sm:ml-2 mt-2 sm:mt-0 " onClick={handleCommandeLivree}>Commande livrée</button>
             </div>
           ) : (
-            <div className="text-xl font-semibold">
+            <div className="text-xl font-semibold mt-4 sm:mt-0">
               Aucune commande disponible
             </div>
           )}
@@ -86,7 +88,7 @@ const Delivery = ({commandes}) => {
 
 export async function getServerSideProps() {
   const Commande = prisma.Commande;
-  
+   
   try {
     const commandes = await Commande.findMany({
       where: {
