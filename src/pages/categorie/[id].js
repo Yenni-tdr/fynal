@@ -44,7 +44,6 @@ export async function getStaticProps({ params }) {
             catData: catData,
             categoriesSideMenu: categoriesSideMenu,
         },
-        revalidate: 10
     };
 }
 
