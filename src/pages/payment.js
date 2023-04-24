@@ -111,9 +111,8 @@ export default function payment({ InitialCart }) {
               <label
                 htmlFor={payment}
                 className="relative w-full corsor-pointer"
-                key={idPayment}
+                key={idPayment++}
               >
-                <div className="invisible">{idPayment++}</div>
                 <input
                   className="peer hidden"
                   type="radio"
