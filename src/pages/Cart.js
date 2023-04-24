@@ -279,9 +279,8 @@ export default function Cart({ InitialCart, user }) {
                 </div>
               </div>
             ) : (
-              <div>
-                {/* <Link href="/">Panier vide</Link> */}
-                <a href="/"> Panier vide</a>
+              <div className="flex justify-center mt-24 h-screen">
+                <p className="text-2xl text-gray-500">Panier vide</p>
               </div>
             )}
           </div>
