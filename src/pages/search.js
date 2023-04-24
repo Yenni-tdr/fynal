@@ -1,6 +1,5 @@
 import { getProductsData } from '../fonctions/search';
 import { getCategorieIdData } from '../fonctions/SidebarData';
-import * as FaIcons from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { updateProducts } from '../fonctions/filter';
@@ -20,7 +19,7 @@ import {
     FILTRE_DELAIS_6_10,
     FILTRE_DELAIS_11_20,
     FILTRE_DELAIS_20_SUP
-} from '../../const/filtre';
+} from '../const/filtre';
 
 export async function getServerSideProps(context) {
     const catData = await getProductsData(context.query.q);
@@ -236,13 +235,13 @@ export default function Categorie({ catData, InitialCart }) {
                             {produitsTries.map((produit) => {
                                 return (
 
-                                    <ProductCard>
+                                    <ProductCard
                                         key={produit.idProduit}
                                         produit={produit}
                                         cart={cart}
                                         idUtilisateur={cookies?.user?.idUtilisateur}
                                         handleNewCartData={handleNewCartData}
-                                    </ProductCard>
+                                    ></ProductCard>
                                     
                                 );
                             })}
