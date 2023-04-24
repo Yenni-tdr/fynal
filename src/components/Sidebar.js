@@ -27,6 +27,8 @@ const Sidebar = ({ sidebarState, childrenProps }) => {
   if (!sidebarState) return null;
 
   const { data, error } = useSWR("/api/categoriesDataSidebar", fetcher);
+  
+  console.log(data);
 
   const [isOpen, setIsOpen] = useState(sidebarState);
 
