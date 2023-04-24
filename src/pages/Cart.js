@@ -157,9 +157,9 @@ export default function Cart({ InitialCart, user }) {
                         />
 
                         <div>
-                          <h3 className="text-sm text-gray-900">
-                            {product.Produit.name}
-                          </h3>
+                          <h2 className="text-sm text-gray-900">
+                            {product.Produit.nom}
+                          </h2>
 
                           <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                             <div>
