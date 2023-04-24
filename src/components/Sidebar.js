@@ -1,6 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import SidebarMenu from "./SidebarMenu";
 import styled from "styled-components";
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const SidebarNav = styled.nav`
   background: rgb(28 25 23);
@@ -22,6 +25,8 @@ const SidebarWrap = styled.div`
 */
 const Sidebar = ({ sidebarState, childrenProps }) => {
   if (!sidebarState) return null;
+
+  const { data, error } = useSWR("/api/categoriesDataSidebar", fetcher);
 
   const [isOpen, setIsOpen] = useState(sidebarState);
 
@@ -45,7 +50,7 @@ const Sidebar = ({ sidebarState, childrenProps }) => {
     <>
       <SidebarNav className="sticky top-25 z-50" sidebar={isOpen} ref={menuRef}>
         <SidebarWrap>
-          {childrenProps.map((item, index) => {
+          {data === undefined ? null : data.map((item, index) => {
             return (
               <SidebarMenu
                 item={item}
