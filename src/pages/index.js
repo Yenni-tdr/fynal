@@ -23,6 +23,7 @@ export async function getStaticProps() {
       produitsIndex,
       categoriesSideMenu,
     },
+    revalidate: 10
   };
 }
 
