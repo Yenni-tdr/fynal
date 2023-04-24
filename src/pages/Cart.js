@@ -50,9 +50,10 @@ export async function getServerSideProps({ req }) {
 }
 
 async function UpdateQuantity(product, quantity) {
-  if (product.Produit.quantite < quantity) {
-    const updatedCart = UpdateQuantity(product, product.Produit.quantite);
-    return updatedCart;
+  if (product.Produit.quantite =< quantity) {
+//     const updatedCart = UpdateQuantity(product, product.Produit.quantite);
+//     return updatedCart;
+    quantity = product.Produit.quantite;
   }
 
   if (quantity < 1) {
