@@ -95,6 +95,8 @@ export default function payment({ InitialCart }) {
     router.push("/order");
   };
 
+  let idPayment = 1;
+
   return (
     <>
       <CheckoutStepsOrder activeStep={2} />
@@ -109,7 +111,9 @@ export default function payment({ InitialCart }) {
               <label
                 htmlFor={payment}
                 className="relative w-full corsor-pointer"
+                key={idPayment}
               >
+                <div className="invisible">{idPayment++}</div>
                 <input
                   className="peer hidden"
                   type="radio"
