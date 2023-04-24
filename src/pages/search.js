@@ -4,7 +4,9 @@ import * as FaIcons from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { updateProducts } from '../fonctions/filter';
-import Link from 'next/link';
+import { ProductCard } from '../components/ProductCard';
+import { useCookies } from "react-cookie";
+import useSWR from "swr";
 
 import {
     DEFAULT,
@@ -18,25 +20,16 @@ import {
     FILTRE_DELAIS_6_10,
     FILTRE_DELAIS_11_20,
     FILTRE_DELAIS_20_SUP
-} from '../const/filtre';
+} from '../../const/filtre';
 
 export async function getServerSideProps(context) {
     const catData = await getProductsData(context.query.q);
-    const Cart = await prisma.commande.findMany({
-        where: { idCommande: 8, etatCommande: 0 },
-        include: {
-            PanierProduit: true,
-        },
-    });
     const categoriesSideMenu = await getCategorieIdData();
-
-    const InitialCart = Cart ? Cart : [{ idCommande: 0 }];
     
     return {
         props: {
             catData,
             categoriesSideMenu,
-            InitialCart,
         },
     };
 }
@@ -63,38 +56,34 @@ let actualSort = {
     stockCheckbox: false,
     reductionCheckbox: false,
     vendeurArray: [],
-    utilisateursVendeursArray: [],
+    // utilisateursVendeursArray: [],
 }
 
-async function newCartData(product, commande) {
+async function newCartData(product, commande, idUtilisateur) {
     const IDCOMMANDE = commande.idCommande === 0 ? 0 : commande.idCommande;
     const existItem =
       IDCOMMANDE === 0
         ? false
         : commande.PanierProduit.find((x) => x.idProduit === product.idProduit);
     const exist = existItem ? true : false;
-    console.log(exist);
-    console.log(IDCOMMANDE);
     const quantity = existItem ? existItem.quantite + 1 : 1;
-    console.log(quantity);
-    // console.log(quantity)
     if (product.stock < quantity) {
-        alert("Produit plus en stock");
-        return;
+      alert("Produit plus en stock");
+      return;
     }
-    const response = await fetch("/api/panierAddButton", {
-        method: "POST",
-        body: JSON.stringify({
-            idProduit: product.idProduit,
-            idCommande: IDCOMMANDE,
-            quantite: quantity,
-            exist: exist,
-        }),
+    const response = await fetch("../api/panierAddButton", {
+      method: "POST",
+      body: JSON.stringify({
+        idProduit: product.idProduit,
+        idCommande: IDCOMMANDE,
+        quantite: quantity,
+        exist: exist,
+        idUtilisateur: idUtilisateur,
+      }),
     });
   
     if (!response.ok) {
-        console.log(response);
-        throw new Error(response.statusText);
+      throw new Error(response.statusText);
     }
   
     const updatedCart = await response.json();
@@ -103,9 +92,41 @@ async function newCartData(product, commande) {
 
 export default function Categorie({ catData, InitialCart }) {
 
+    // Récupération des cookies user
+    const [cookies] = useCookies(["user"]);
+    const router = useRouter();
+    const [cart, setCartItems] = useState(0);
+
+    const fetcher = (url) =>
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idUtilisateur: cookies?.user?.idUtilisateur }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const InitialCart = data !== 0
+          ? data
+          : [{ idCommande: 0, idUtilisateur: cookies?.user?.idUtilisateur }];
+        setCartItems(InitialCart[0]);
+      });
+
+    // Envoie de la requête à chaque chargement de la page à l'aide d'SWR
+    const {
+        data,
+        error: errorSWR,
+        isLoading: isLoadingSWR,
+    } = useSWR(cookies["user"] ? "../api/getCommandStaticProps" : null, fetcher, {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+    });
+
     let produits = catData.produits;
     actualSort.vendeurArray = catData.vendeurs;
-    let utilisateursVendeurs = catData.utilisateursVendeurs;
+    // let utilisateursVendeurs = catData.utilisateursVendeurs;
 
     // Déclaration des hooks d'état permettant d'appliquer les filtres sur la page
     const [filter, setFilter] = useState({
@@ -113,10 +134,6 @@ export default function Categorie({ catData, InitialCart }) {
         eventFilter: "",
     });
     const [produitsTries, setProduits] = useState(produits);
-    
-    const [cart, setCartItems] = useState(InitialCart[0]);
-
-    const router = useRouter();
 
     useEffect(() => {
 
@@ -128,7 +145,7 @@ export default function Categorie({ catData, InitialCart }) {
             actualSort.stockCheckbox = false;
             actualSort.reductionCheckbox = false;
             actualSort.vendeurArray = [],
-            actualSort.utilisateursVendeursArray = [],
+            // actualSort.utilisateursVendeursArray = [],
             router.reload();
         }
         router.events.on('routeChangeComplete', handleRouteChange);
@@ -138,11 +155,11 @@ export default function Categorie({ catData, InitialCart }) {
         else if(delaisLivraisonArray.includes(filter.filterValue)) actualSort.delaisLivraisonType = filter.filterValue;
         else if(filter.filterValue === FILTRE_STOCK) actualSort.stockCheckbox = !actualSort.stockCheckbox;
         else if(filter.filterValue === FILTRE_REDUCTION) actualSort.reductionCheckbox = !actualSort.reductionCheckbox;
-        else if(actualSort.utilisateursVendeursArray.includes(filter.filterValue)) {
-            actualSort.utilisateursVendeursArray.splice(actualSort.utilisateursVendeursArray.indexOf(filter.filterValue), 1);
-        } else {
-            actualSort.utilisateursVendeursArray.push(filter.filterValue);
-        }
+        // else if(actualSort.utilisateursVendeursArray.includes(filter.filterValue)) {
+        //     actualSort.utilisateursVendeursArray.splice(actualSort.utilisateursVendeursArray.indexOf(filter.filterValue), 1);
+        // } else {
+        //     actualSort.utilisateursVendeursArray.push(filter.filterValue);
+        // }
 
         // On met à jour les produits en fonctions du tri et des filtres
         let filteredProducts = updateProducts(produits, actualSort);
@@ -158,20 +175,20 @@ export default function Categorie({ catData, InitialCart }) {
         });
     }
 
-    async function handleNewCartData(product, commande) {
+    async function handleNewCartData(product, commande, idUtilisateur) {
         try {
-            const updatedProduct = await newCartData(product, commande);
-            console.log(updatedProduct);
-            //   setCartItems((prevCart) => {
-            //     const updatedProducts = prevCart.PanierProduit.map((p) =>
-            //       p.idProduit === updatedProduct.PanierProduit.idProduit ? updatedProduct.PanierProduit : p
-            //     );
-            //     console.log(updatedProducts);
-            //     return { ...prevCart, PanierProduit: updatedProducts };
-            setCartItems(updatedProduct);
-            console.log(updatedProduct);
+          if (!cookies["user"]) {
+            alert("Veuillez vous connecter pour ajouter un produit");
+            router.push("/signin");
+          }
+          const updatedProduct = await newCartData(
+            product,
+            commande,
+            idUtilisateur
+          );
+          setCartItems(updatedProduct);
         } catch (error) {
-            console.log(error);
+          console.log(error);
         }
     }
 
@@ -202,14 +219,14 @@ export default function Categorie({ catData, InitialCart }) {
                         <span><input type="checkbox" id='stockCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_STOCK, eventCheckbox)}/> {FILTRE_STOCK}</span>
                         <span><input type='checkbox' id='reductionCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_REDUCTION, eventCheckbox)}/> {FILTRE_REDUCTION}</span>
                     </div>
-                    {utilisateursVendeurs.length > 1 && <div className='flex flex-col gap-1'>
+                    {/* {utilisateursVendeurs.length > 1 && <div className='flex flex-col gap-1'>
                         <label>Vendeurs</label>
                         {utilisateursVendeurs.map((utilisateursVendeur) => {
                             return(
                                 <span key={utilisateursVendeur.idUtilisateur}><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {utilisateursVendeur.nom} {utilisateursVendeur.prenom}</span>
                             )
                         })}
-                    </div>}
+                    </div>} */}
                 </div>
 
                 <div className="bg-white">
@@ -218,44 +235,15 @@ export default function Categorie({ catData, InitialCart }) {
                             {/* Affichage des produits de la catégorie */}
                             {produitsTries.map((produit) => {
                                 return (
-                                    <div className='group' key={produit.idProduit}>
-                                        <Link
-                                            href={`/products/${produit.idProduit}`}
-                                            key={produit.idProduit}
-                                        >
-                                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                                                <img
-                                                src={produit.image}
-                                                alt={produit.nom}
-                                                height={10}
-                                                width={10}
-                                                className="h-full w-full object-cover object-center group-hover:opacity-75"
-                                                />
-                                            </div>
-                                        </Link>
-                                        <div className='flex flex-row'>
-                                            <div>
-                                            <h3 className="mt-4 text-sm text-gray-700">
-                                                {produit.nom}
-                                            </h3>
-                                            <p className="mt-1 text-lg font-medium text-gray-900">
-                                                {produit.prix} €
-                                            </p>
-                                            </div>
-                                            <button className=" mt-7 text-normal px-4 py-2 ml-auto text-white  bg-stone-800 hover:bg-stone-950 rounded-lg transition ease-in duration-200 focus:outline-none"
-                                                onClick={async (e) => {
-                                                    try {
-                                                    await handleNewCartData(produit, cart);
-                                                    e.target.reset();
-                                                    } catch (err) {
-                                                    console.log(err);
-                                                    }
-                                                }}
-                                            >
-                                                Ajouter au panier
-                                            </button>
-                                        </div>
-                                    </div>
+
+                                    <ProductCard>
+                                        key={produit.idProduit}
+                                        produit={produit}
+                                        cart={cart}
+                                        idUtilisateur={cookies?.user?.idUtilisateur}
+                                        handleNewCartData={handleNewCartData}
+                                    </ProductCard>
+                                    
                                 );
                             })}
                         </div>
