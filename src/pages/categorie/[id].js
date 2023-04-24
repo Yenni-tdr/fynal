@@ -69,7 +69,7 @@ let actualSort = {
     stockCheckbox: false,
     reductionCheckbox: false,
     vendeurArray: [],
-    utilisateursVendeursArray: [],
+    // utilisateursVendeursArray: [],
 }
 
 async function newCartData(product, commande, idUtilisateur) {
@@ -149,7 +149,7 @@ export default function Categorie({ catData }) {
     };
     let produits = catData.produits;
     actualSort.vendeurArray = catData.vendeurs;
-    let utilisateursVendeurs = catData.utilisateursVendeurs;
+    // let utilisateursVendeurs = catData.utilisateursVendeurs;
 
     // Déclaration des hooks d'état permettant d'appliquer les filtres sur la page
     const [filter, setFilter] = useState({
@@ -168,7 +168,7 @@ export default function Categorie({ catData }) {
             actualSort.stockCheckbox = false;
             actualSort.reductionCheckbox = false;
             actualSort.vendeurArray = [],
-            actualSort.utilisateursVendeursArray = [],
+            // actualSort.utilisateursVendeursArray = [],
             router.reload();
         }
         router.events.on('routeChangeComplete', handleRouteChange);
@@ -178,11 +178,11 @@ export default function Categorie({ catData }) {
         else if(delaisLivraisonArray.includes(filter.filterValue)) actualSort.delaisLivraisonType = filter.filterValue;
         else if(filter.filterValue === FILTRE_STOCK) actualSort.stockCheckbox = !actualSort.stockCheckbox;
         else if(filter.filterValue === FILTRE_REDUCTION) actualSort.reductionCheckbox = !actualSort.reductionCheckbox;
-        else if(actualSort.utilisateursVendeursArray.includes(filter.filterValue)) {
-            actualSort.utilisateursVendeursArray.splice(actualSort.utilisateursVendeursArray.indexOf(filter.filterValue), 1);
-        } else {
-            actualSort.utilisateursVendeursArray.push(filter.filterValue);
-        }
+        // else if(actualSort.utilisateursVendeursArray.includes(filter.filterValue)) {
+        //     actualSort.utilisateursVendeursArray.splice(actualSort.utilisateursVendeursArray.indexOf(filter.filterValue), 1);
+        // } else {
+        //     actualSort.utilisateursVendeursArray.push(filter.filterValue);
+        // }
 
         // On met à jour les produits en fonctions du tri et des filtres
         let filteredProducts = updateProducts(produits, actualSort);
@@ -241,14 +241,14 @@ export default function Categorie({ catData }) {
                     <span><input type="checkbox" id='stockCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_STOCK, eventCheckbox)}/> {FILTRE_STOCK}</span>
                     <span><input type='checkbox' id='reductionCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(FILTRE_REDUCTION, eventCheckbox)}/> {FILTRE_REDUCTION}</span>
                 </div>
-                {utilisateursVendeurs.length > 1 && <div className='flex flex-col gap-1'>
+                {/* {utilisateursVendeurs.length > 1 && <div className='flex flex-col gap-1'>
                     <label>Vendeurs</label>
                     {utilisateursVendeurs.map((utilisateursVendeur) => {
                         return(
-                            <span key={utilisateursVendeur.idUtilisateur}><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(entreprise.idEntreprise, eventCheckbox)}/> {utilisateursVendeur.nom} {utilisateursVendeur.prenom}</span>
+                            <span key={utilisateursVendeur.idUtilisateur}><input type="checkbox" id='entrepriseCheckbox' className="checkbox" onClick={(eventCheckbox) => handleFilter(utilisateursVendeur.idUtilisateur, eventCheckbox)}/> {utilisateursVendeur.nom} {utilisateursVendeur.prenom}</span>
                         )
                     })}
-                </div>}
+                </div>} */}
             </div>
             
             <div className="bg-white">
