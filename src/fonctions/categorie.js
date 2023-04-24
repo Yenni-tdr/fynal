@@ -55,28 +55,28 @@ export async function getCategorieProductsData(id) {
         }
     });
 
-    const utilisateursVendeursFiltre = arrayUnique( 
-        vendeurs.map((vendeur) => { 
-            return vendeur.idUtilisateur 
-        })
-    );
+    // const utilisateursVendeursFiltre = arrayUnique( 
+    //     vendeurs.map((vendeur) => { 
+    //         return vendeur.idUtilisateur 
+    //     })
+    // );
 
-    const utilisateursVendeurs = await prisma.utilisateur.findMany({
-        where: {
-            idUtilisateur: { in: utilisateursVendeursFiltre }
-        },
-        select: {
-            idUtilisateur: true,
-            nom: true,
-            prenom: true,
-        }
-    })
+    // const utilisateursVendeurs = await prisma.utilisateur.findMany({
+    //     where: {
+    //         idUtilisateur: { in: utilisateursVendeursFiltre }
+    //     },
+    //     select: {
+    //         idUtilisateur: true,
+    //         nom: true,
+    //         prenom: true,
+    //     }
+    // })
 
     return {
         id,
         produits,
         vendeurs,
-        utilisateursVendeurs,
+        // utilisateursVendeurs,
         ...categorie,
     }
 }
