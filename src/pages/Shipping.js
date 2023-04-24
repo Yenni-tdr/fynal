@@ -5,9 +5,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import cookie from "cookie";
-// import { commandeUser } from "../fonctions/commandeUser";
 import isNotConnected from "../fonctions/isNotConnected";
-import { useNavigate } from "react-router";
+import { prisma } from "../../db";
 
 function isAuth(req) {
   return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
@@ -126,38 +125,6 @@ export default function Shipping({ InitialCart, user }) {
 
     const updatedProduct = await response.json();
     router.push("/payment");
-
-    // const cartData = {
-    //   idCommande: cart[0].idCommande,
-    //   idUtilisateur: cart[0].idUtilisateur,
-    //   AdressePrev: cart[0].Adresse || cart[0].Utilisateur.Adresse,
-    //   numeroNomRue: numeroNomRue,
-    //   ville: ville,
-    //   codePostal: Number(codePostal),
-    //   pays: pays,
-    //   complement : complement,
-    //   idAdresse: cart[0].idAdresse,
-    //   complement: complement,
-    // };
-    // console.log(cartData);
-    // if (
-    //   cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue &&
-    //   cartData.ville === cartData.AdressePrev.ville &&
-    //   cartData.pays === cartData.AdressePrev.pays &&
-    //   cartData.codePostal === cartData.AdressePrev.codePostal
-    // ) {
-    //   console.log(true);
-    //   console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
-    //   console.log(cartData.ville === cartData.AdressePrev.ville);
-    //   console.log(cartData.pays === cartData.AdressePrev.pays);
-    //   console.log(cartData.codePostal === cartData.AdressePrev.codePostal);
-    // } else {
-    //   console.log(false);
-    //   console.log(cartData.numeroNomRue === cartData.AdressePrev.numeroNomRue);
-    //   console.log(cartData.ville === cartData.AdressePrev.ville);
-    //   console.log(cartData.pays === cartData.AdressePrev.pays);
-    //   console.log(cartData.codePostal === cartData.AdressePrev.codePostal);
-    // }
   };
 
   const shippingAdress = cart[0].Adresse
