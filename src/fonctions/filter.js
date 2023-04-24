@@ -92,21 +92,19 @@ function reductionFilter(produitsTries) {
 }
 
 /*
-* Cette fonction filtre les produits en fonction des entreprises cochées par l'utilisateur.
-*
-* Valeur de retour : le tableau des produits sans ceux dont l'entreprise n'a pas été cochée par l'utilisateur.
+* Le filtre crée des bugs, nous n'avons pas eu le temps de le finir.
 */
-function vendeurFilter(produitsTries, vendeurArray, utilisateursVendeursArray) {
-    const vendeursEntreprises = vendeurArray.filter((vendeur) => {
-        return utilisateursVendeursArray.includes(vendeur.idEntreprise);
-    }).map((vendeur) => {
-        return vendeur.idVendeur;
-    });
-    console.log(vendeursEntreprises);
-    return produitsTries.filter((produit) => {
-        return vendeursEntreprises.includes(produit.idVendeur);
-    });
-}
+// function vendeurFilter(produitsTries, vendeurArray, utilisateursVendeursArray) {
+//     const vendeursEntreprises = vendeurArray.filter((vendeur) => {
+//         return utilisateursVendeursArray.includes(vendeur.idEntreprise);
+//     }).map((vendeur) => {
+//         return vendeur.idVendeur;
+//     });
+//     console.log(vendeursEntreprises);
+//     return produitsTries.filter((produit) => {
+//         return vendeursEntreprises.includes(produit.idVendeur);
+//     });
+// }
 
 /*
 * Cette fonction permet d'appliquer le tri et tous les filtres sélectionnés par l'utilisateur.
@@ -118,7 +116,7 @@ export function updateProducts(produits, actualSort) {
 
     if(actualSort.stockCheckbox) produitsTries = stockFilter(produitsTries);
     if(actualSort.reductionCheckbox) produitsTries = reductionFilter(produitsTries);
-    if(actualSort.utilisateursVendeursArray.length > 0) produitsTries = vendeurFilter(produitsTries, actualSort.vendeurArray, actualSort.utilisateursVendeursArray);
+    // if(actualSort.utilisateursVendeursArray.length > 0) produitsTries = vendeurFilter(produitsTries, actualSort.vendeurArray, actualSort.utilisateursVendeursArray);
     if(actualSort.delaisLivraisonType != false) produitsTries = delaisLivraisonSwitch(produitsTries, actualSort.delaisLivraisonType);
     if(actualSort.sortType != false) sortSwitch(produitsTries, actualSort.sortType);
 
