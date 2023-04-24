@@ -43,10 +43,10 @@ export default async function handler(req, res){
             const deliveryStatus = await prisma.livreur.findUnique({
                 where: { idUtilisateur: userData.idUtilisateur },
             });
-            if(sellerStatus?.Valide){
+            if(sellerStatus){
                 status = 1;
             }
-            else if(deliveryStatus?.Valide){
+            else if(deliveryStatus){
                 status = 2;
             }
 
