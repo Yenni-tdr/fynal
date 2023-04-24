@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import CheckoutStepsOrder from "../components/CheckoutStepsOrder";
 import { getCategorieIdData } from "../fonctions/SidebarData";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import isNotConnected from "../fonctions/isNotConnected";
 import cookie from "cookie";
+import { prisma } from "../../db";
 
 function isAuth(req) {
   return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
