@@ -23,11 +23,11 @@ const SidebarWrap = styled.div`
 /*
 * Component servant à afficher le menu sur le côté gauche.
 */
-const Sidebar = ({ sidebarState, childrenProps }) => {
+const Sidebar = ({ sidebarState }) => {
   if (!sidebarState) return null;
 
   const { data, error } = useSWR("/api/categoriesDataSidebar", fetcher);
-  
+
   console.log(data);
 
   const [isOpen, setIsOpen] = useState(sidebarState);
