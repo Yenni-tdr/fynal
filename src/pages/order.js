@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import CheckoutStepsOrder from "../components/CheckoutStepsOrder";
 import Link from "next/link";
 import Image from "next/image";
-import { getCategorieIdData } from "../fonctions/SidebarData";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import cookie from "cookie";
@@ -22,7 +21,6 @@ export async function getServerSideProps({ req }) {
   // const user = cookies.user;
   const user = JSON.parse(cookies.user);
 
-  const categoriesSideMenu = await getCategorieIdData();
   const Cart = await prisma.commande.findMany({
     where: {
       idUtilisateur: user.idUtilisateur,
@@ -59,7 +57,6 @@ export async function getServerSideProps({ req }) {
   }
   return {
     props: {
-      categoriesSideMenu,
       InitialCart,
       user,
     },
