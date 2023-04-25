@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCategorieIdData } from "../../fonctions/SidebarData";
 import { prisma } from "../../../db";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -28,7 +27,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const id = context.params.slug;
-  const categoriesSideMenu = await getCategorieIdData();
   const prodData = await prisma.produit.findMany({
     where: {
       idProduit: parseInt(id),
@@ -38,7 +36,6 @@ export async function getStaticProps(context) {
   return {
     props: {
       products: prodData,
-      categoriesSideMenu,
     },
   };
 }
