@@ -2,26 +2,18 @@ import React, { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { Carousel } from "flowbite-react";
-import { getCategorieIdData } from "../fonctions/SidebarData";
 import { getProductIndex } from "../fonctions/productIndex";
 import { ProductCard } from "../components/ProductCard";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 
-// import { fillDatabaseAdmin } from '../fonctions/fillDB';
-// import { fillDatabaseProducts } from '../fonctions/fillDB';
-
 export async function getStaticProps() {
   const produitsIndex = (await getProductIndex()).produits;
-  const categoriesSideMenu = await getCategorieIdData();
-  // await fillDatabaseAdmin();
-  // await fillDatabaseProducts();
 
   return {
     props: {
       produitsIndex,
-      categoriesSideMenu,
     },
   };
 }
@@ -33,11 +25,7 @@ async function newCartData(product, commande, idUtilisateur) {
       ? false
       : commande.PanierProduit.find((x) => x.idProduit === product.idProduit);
   const exist = existItem ? true : false;
-  console.log(exist);
-  console.log(IDCOMMANDE);
   const quantity = existItem ? existItem.quantite + 1 : 1;
-  console.log(quantity);
-  // console.log(quantity)
   if (product.stock < quantity) {
     alert("Produit plus en stock");
     return;
