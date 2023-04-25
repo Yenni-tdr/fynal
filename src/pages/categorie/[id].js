@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getAllCategoriesID, getCategorieProductsData } from '../../fonctions/categorie';
-import { getCategorieIdData } from '../../fonctions/SidebarData';
 import { updateProducts } from '../../fonctions/filter';
 import { ProductCard } from '../../components/ProductCard';
 import { useCookies } from "react-cookie";
@@ -37,12 +36,10 @@ export async function getStaticPaths() {
 // On récupère aussi les informations sur les catégories pour le menu sur le côté
 export async function getStaticProps({ params }) {
     const catData = await getCategorieProductsData(params.id);
-    const categoriesSideMenu = await getCategorieIdData();
     
     return {
         props: {
             catData: catData,
-            categoriesSideMenu: categoriesSideMenu,
         },
     };
 }
