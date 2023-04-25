@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { getCategorieIdData } from "../fonctions/SidebarData";
 import cookie from "cookie";
 import { prixReductionArrondi } from "../fonctions/prixReductionArrondi";
 import { prisma } from "../../db";
@@ -25,7 +24,6 @@ export async function getServerSideProps({ req }) {
   // const user = cookies.user;
   const user = JSON.parse(cookies.user);
 
-  const categoriesSideMenu = await getCategorieIdData();
   const InitialCart = await prisma.commande.findMany({
     where: {
       idUtilisateur: user.idUtilisateur,
@@ -43,7 +41,6 @@ export async function getServerSideProps({ req }) {
   return {
     props: {
       user: user,
-      categoriesSideMenu,
       InitialCart,
     },
   };
