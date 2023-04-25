@@ -27,7 +27,7 @@ export async function getStaticPaths() {
     const paths = await getAllCategoriesID();
     
     return {
-        paths,
+        paths: paths,
         fallback: true,
     }
 }
