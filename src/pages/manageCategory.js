@@ -1,7 +1,7 @@
 import { prisma } from "../../db";
 import Router from "next/router";
 
-export async function getStaticProps() {
+export async function getServerSideProps(context) {
     const categories = await prisma.categorie.findMany();
 
     return {
