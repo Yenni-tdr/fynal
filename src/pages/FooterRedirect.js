@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import { getCategorieIdData } from "../fonctions/SidebarData";
-
-
-// Fonction pour récupérer les catégories dans la sidebar
-export async function getStaticProps() {
-  const categoriesSideMenu = await getCategorieIdData();
-  return {
-    props: {
-      categoriesSideMenu,
-    },
-  };
-}
 
 export default function FooterRedirect(){
     // On récupère l'id de la page à afficher
