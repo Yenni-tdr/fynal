@@ -10,7 +10,7 @@ import AccountMenu from "@/src/components/AccountMenu";
 import AccountMenu2 from "@/src/components/AccountMenu2";
 
 
-export default function Nav({ childrenProps }) {
+export default function Nav() {
 
     const [hasMounted, setHasMounted] = useState(false);
     const [cookies] = useCookies(['user']);
@@ -152,7 +152,7 @@ export default function Nav({ childrenProps }) {
                 <div></div>
             </div>
         </header>
-        {sidebar && <Sidebar sidebarState={sidebar} childrenProps={childrenProps} onClose={() => setSidebar(false)}/>}
+        {sidebar && <Sidebar sidebarState={sidebar} onClose={() => setSidebar(false)}/>}
         </>
         )
 }
