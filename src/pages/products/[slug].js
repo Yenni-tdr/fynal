@@ -20,7 +20,7 @@ export async function getStaticPaths() {
     params: { slug: produit.idProduit.toString() },
   }));
   return {
-    paths,
+    paths: paths,
     fallback: true,
   };
 }
