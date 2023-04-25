@@ -1,18 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { getCategorieIdData } from "../fonctions/SidebarData";
 import { ErrorDiv } from "../components/ErrorDiv";
 import { useCookies } from "react-cookie";
-
-export async function getStaticProps() {
-    const categoriesSideMenu = await getCategorieIdData();
-    
-    return {
-        props: {
-            categoriesSideMenu: categoriesSideMenu,
-        },
-    };
-}
 
 // On définie tous les types d'erreur possibles
 const errorsDefault = {
