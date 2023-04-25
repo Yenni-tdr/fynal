@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import CheckoutStepsOrder from "../components/CheckoutStepsOrder";
-import { getCategorieIdData } from "../fonctions/SidebarData";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -17,11 +16,8 @@ export async function getServerSideProps({ req }) {
 
   // // si l'user est pas connecté, on le renvois vers signin
   isNotConnected(cookies);
-  // const user = cookies.user;
   const user = JSON.parse(cookies.user);
-  console.log(user);
 
-  const categoriesSideMenu = await getCategorieIdData();
   const Cart = await prisma.commande.findMany({
     where: {
       idUtilisateur: user.idUtilisateur,
@@ -58,18 +54,11 @@ export async function getServerSideProps({ req }) {
   }
   return {
     props: {
-      categoriesSideMenu,
       InitialCart,
       user,
     },
   };
 }
-
-// const wait = function(duration = 1000){
-//     return new Promise((resolve) =>{
-//         window.setTimeout(resolve, duration)
-//     })
-// }
 
 export default function Shipping({ InitialCart, user }) {
   const [cart, setCart] = useState(InitialCart);
