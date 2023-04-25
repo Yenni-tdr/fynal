@@ -2,7 +2,6 @@ import { prisma } from "../../../db";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { getAllCategoriesID } from "../../fonctions/categorie";
-import { getCategorieIdData } from "../../fonctions/SidebarData";
 import { CategoryForm } from "../../components/CategoryForm";
 
 // On récupère tous les chemins possibles 
@@ -22,12 +21,10 @@ export async function getStaticProps({ params }) {
             idCategorie: parseInt(params.id),
         }
     });
-    const categoriesSideMenu = await getCategorieIdData();
     
     return {
         props: {
             catData: catData,
-            categoriesSideMenu: categoriesSideMenu,
         },
     };
 }
