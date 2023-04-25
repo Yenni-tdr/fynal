@@ -1,15 +1,12 @@
 import { prisma } from "../../db";
 import Router from "next/router";
-import { getCategorieIdData } from "../fonctions/SidebarData";
 
 export async function getStaticProps() {
-    const categoriesSideMenu = await getCategorieIdData();
     const categories = await prisma.categorie.findMany();
 
     return {
         props: {
             categories : categories,
-            categoriesSideMenu: categoriesSideMenu,
         }
     }
 }
