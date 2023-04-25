@@ -1,5 +1,4 @@
 import { getProductsData } from '../fonctions/search';
-import { getCategorieIdData } from '../fonctions/SidebarData';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { updateProducts } from '../fonctions/filter';
@@ -23,12 +22,10 @@ import {
 
 export async function getServerSideProps(context) {
     const catData = await getProductsData(context.query.q);
-    const categoriesSideMenu = await getCategorieIdData();
     
     return {
         props: {
             catData,
-            categoriesSideMenu,
         },
     };
 }
