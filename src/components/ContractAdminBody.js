@@ -87,7 +87,7 @@ const ContractAdminBody = () => {
             {contracts?.length === 0 &&
                 <p className="my-10">Vous n'avez pas encore de contrat avec Fynal</p>
             }
-            <section className="flex flex-col items-center">
+            <section className="flex flex-col items-center box-border w-120">
                 <div className="flex flex-col items-center my-4">
                     <h3>Contrats Vendeur</h3>
                     {contracts?.map((contract) => {
@@ -107,7 +107,7 @@ const ContractAdminBody = () => {
                     }
                 </div>
 
-                <div className="flex flex-col items-center my-4">
+                <div className="flex flex-col items-center my-4 box-border w-120">
                     <h3>Contrats Livreur</h3>
                     {contracts?.map((contract) => {
                         const delivererContract = contract.ContratLivreur
