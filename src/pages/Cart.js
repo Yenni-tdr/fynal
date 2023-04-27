@@ -174,27 +174,13 @@ export default function Cart({ InitialCart, user }) {
                           </dl>
                         </div>
 
-                        <div className="flex flex-1 items-center justify-end gap-2">
+                        <div className="flex flex-1 items-center justify-end gap-3">
                           <div>Prix : {product.Produit.prix}</div>
                           <form>
+
+                          <div className="flex gap-1">
                             <label htmlFor="Line1Qty" className="sr-only"></label>
 
-                            <button
-                              onClick={async (e) => {
-                                try {
-                                  e.preventDefault();
-                                  await handleUpdateQuantity(
-                                    product,
-                                    product.quantite + 1
-                                  );
-                                } catch (err) {
-                                  console.log(err);
-                                }
-                              }}
-                            >
-                              +
-                            </button>
-                            <span id="quantity">{product.quantite}</span>
                             <button
                               onClick={async (e) => {
                                 try {
@@ -208,8 +194,26 @@ export default function Cart({ InitialCart, user }) {
                                 }
                               }}
                             >
-                              -
+                              <img className="h-4 w-4" src="/images/minus-icon.svg"/>
                             </button>
+                            <span id="quantity" className="text-xl">{product.quantite}</span>
+                            <button
+                              onClick={async (e) => {
+                                try {
+                                  e.preventDefault();
+                                  await handleUpdateQuantity(
+                                    product,
+                                    product.quantite + 1
+                                  );
+                                } catch (err) {
+                                  console.log(err);
+                                }
+                              }}
+                            >
+                              <img className="h-4 w-4" src="/images/plus-icon.svg"/>
+                            </button>
+                        
+                          </div>
                           </form>
 
                           <button
@@ -251,17 +255,17 @@ export default function Cart({ InitialCart, user }) {
                     <dl className="space-y-0.5 text-sm text-gray-700">
                       <div className="flex justify-between">
                         <dt>Sous-total</dt>
-                        <dd>{HT}</dd>
+                        <dd>{HT} €</dd>
                       </div>
 
                       <div className="flex justify-between">
                         <dt>TVA</dt>
-                        <dd>{TVA}</dd>
+                        <dd>{TVA} €</dd>
                       </div>
 
                       <div className="flex justify-between !text-base font-medium">
                         <dt>Total</dt>
-                        <dd>{TVA + HT}</dd>
+                        <dd>{TVA + HT} €</dd>
                       </div>
                     </dl>
 
