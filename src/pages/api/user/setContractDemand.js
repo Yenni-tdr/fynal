@@ -50,16 +50,13 @@ export default async function handler(req, res){
             return res.status(200).json({})
         }
         else if(contractType === "Deliverer"){
-            const contract = prisma.contrat.create({
-                include:{
-                    ContratVendeur: true
-                },
+            const contract = await prisma.contrat.create({
                 data: {
                     dateDebut: startDate,
                     dateFin: endDate,
                     idUtilisateur: userId,
                     etat: 0,
-                    ContratVendeur: {
+                    ContratLivreur: {
                         create: {
                             entrepriseAffiliee: company
                         }
@@ -68,7 +65,7 @@ export default async function handler(req, res){
                 }
             })
 
-            const vendeur = await prisma.livreur.create({
+            const livreur = await prisma.livreur.create({
                 data: {
                     idUtilisateur: userId,
                     permis: license,
