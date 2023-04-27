@@ -57,10 +57,10 @@ export const addressSchema = Yup.object().shape({
             then: () => Yup.string().required()
         }, "Le corps de l'adresse est requis si l'un des autres champs sauf le compléments est remplis"),
     addressAddition: Yup.string(),
-    postcode: Yup.number().min(5).max(5)
+    postcode: Yup.number()
         .when(['addressBody', 'addressAddition', 'city', 'country'], {
             is: (addressBody, addressAddition, city, country) => addressBody || addressAddition || city || country,
-            then: () => Yup.string().required()
+            then: () => Yup.number().required()
         }, "Le code postale est requis si l'un des autres champs sauf le compléments est remplis"),
     city: Yup.string()
         .when(['addressBody', 'addressAddition', 'postcode', 'country'], {
