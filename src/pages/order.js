@@ -280,19 +280,19 @@ export default function order({ InitialCart, user }) {
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Panier</div>
-                    <div>${HT}</div>
+                    <div>{HT}€</div>
                   </div>
                 </li>
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>TVA</div>
-                    <div>${TVA}</div>
+                    <div>{TVA}€</div>
                   </div>
                 </li>
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Total</div>
-                    <div>${TVA + HT}</div>
+                    <div>{TVA + HT}€</div>
                   </div>
                 </li>
                 <li>
