@@ -352,7 +352,7 @@ const AccountBody = () => {
                             <tr className="">
                                 <td><label htmlFor="addressAddition">Complément</label></td>
                                 <td>
-                                    <input {...registerAddress("addressAddition")} type="text" id="addressAddition" className={`peer ${!changeOnAddress ? "form-profile-input-display" : errorsAddress.addressAddition ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`}  required disabled={!changeOnAddress}/>
+                                    <input {...registerAddress("addressAddition")} type="text" id="addressAddition" className={`peer ${!changeOnAddress ? "form-profile-input-display" : errorsAddress.addressAddition ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`}    disabled={!changeOnAddress}/>
                                     <p className="error-form">
                                         {errorsAddress.addressAddition && <span>{errorsAddress.addressAddition.message}</span>}
                                     </p>
