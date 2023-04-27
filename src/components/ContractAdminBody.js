@@ -118,6 +118,7 @@ const ContractAdminBody = () => {
                                     <p className="text-gray-600 text-sm">Date de fin : {new Date(contract.dateFin).toLocaleDateString("fr-Fr")}</p>
                                     <p className="text-gray-600 text-sm">Etat du contrat : {contract.etat === 0 ? "En attente de validation" : contract.etat === 1 ? "En cours" : contract.etat === 2 ? "Fini" : ""}</p>
                                     <p className="text-gray-600 text-sm">Entreprise affiliée : {delivererContract?.entrepriseAffiliee}</p>
+                                    {contract.etat === 0 && <button onClick={() => validateContract(contract.idContrat)}>Approuver le contrat</button> }
                                 </div>
                             )
                         }
