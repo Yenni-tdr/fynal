@@ -81,8 +81,8 @@ model Entreprise {
 
 model Livreur {
   idLivreur     Int         @id @default(autoincrement())
-  permis        Int
-  vehicule      Int
+  permis        String
+  vehicule      String
   idUtilisateur Int         @unique
   Valide        Boolean     @default(false)
   Commande      Commande[]
