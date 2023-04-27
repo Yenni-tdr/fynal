@@ -107,7 +107,7 @@ const ContractAdminBody = () => {
                     }
                 </div>
 
-                <div className="flex flex-col items-center my-4 box-border w-120">
+                <div className="flex flex-col items-center my-4 box-border mb-20 w-120">
                     <h3>Contrats Livreur</h3>
                     {contracts?.map((contract) => {
                         const delivererContract = contract.ContratLivreur
