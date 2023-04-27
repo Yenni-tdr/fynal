@@ -3,10 +3,11 @@ import arrayUnique from "./uniqueValuesFromArray";
 
 export async function getProductsData(searchTerm) {
     // Recherche des produits qui ont un nom contenant le searchTerm 
-    const produits = await prisma.produit.findMany({
+    const produits = await prisma.produit.findMany({ 
       where: {
         OR: [
           { nom: { contains: searchTerm, mode: 'insensitive' } },
+          { description: { contains: searchTerm, mode: 'insensitive' } },
         ],
       },
     })
