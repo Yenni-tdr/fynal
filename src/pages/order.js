@@ -200,7 +200,7 @@ export default function order({ InitialCart, user }) {
                             alt={product.Produit.nom}
                             width={50}
                             height={50}
-                          ></Image>
+                          />
                           &nbsp;
                           {product.name}
                         </Link>
@@ -208,10 +208,10 @@ export default function order({ InitialCart, user }) {
                       <td className="p-5">{product.Produit.nom}</td>
                       <td className="p-5 text-right">{product.quantite}</td>
                       <td className="p-5 text-right">
-                        ${product.Produit.prix}
+                        {product.Produit.prix}€
                       </td>
                       <td className="p-5 text-right">
-                        ${product.Produit.prix * product.quantite}
+                        {product.Produit.prix * product.quantite}€
                       </td>
                     </tr>
                   ))}
@@ -255,10 +255,10 @@ export default function order({ InitialCart, user }) {
                         </Link>
                       </td>
                       <td className="p-5 text-right">
-                        {product.quantite} &nbsp; ${product.Produit.prix}
+                        {product.quantite} &nbsp; {product.Produit.prix}€
                       </td>
                       <td className="p-5 text-right">
-                        ${product.Produit.prix * product.quantite}
+                        {product.Produit.prix * product.quantite}€
                       </td>
                     </tr>
                   ))}
