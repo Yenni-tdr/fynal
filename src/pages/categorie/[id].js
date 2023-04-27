@@ -222,7 +222,7 @@ export default function Categorie({ catData }) {
             <h2 className='text-center mt-8 font-semibold text-xl italic'>{ infosCategorie.description }</h2>
             
             {/* Affichage des filtres */}
-            <div className='flex justify-end gap-4 mr-10 mt-10'>
+            <div className='flex justify-center gap-4 mr-10 mt-10'>
                 <select className="select select-bordered w-full max-w-xs" defaultValue={DEFAULT} onChange={(e) => handleFilter(e.target.value)}>
                     <option disabled value={DEFAULT}>Trier par :</option>
                     <option value={FILTRE_PRIX_CROISSANT_STRING}>{FILTRE_PRIX_CROISSANT_STRING}</option>
