@@ -103,13 +103,13 @@ export const contractSchema = Yup.object().shape({
     license: Yup.string()
         .when("contractType", {
             is: (contractType) => contractType === "Deliverer",
-            then: () => Yup.number()
+            then: () => Yup.string()
                 .required("Le permis est requis")
         }),
     vehicle: Yup.string()
         .when("contractType", {
             is: (contractType) => contractType === "Deliverer",
-            then: () => Yup.number()
+            then: () => Yup.string()
                 .required("Le vehicule est requis")
         }),
 
