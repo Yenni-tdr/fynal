@@ -22,6 +22,17 @@ export default async function handler(req, res){
     try{
         // Mise à jour de l'adresse de l'utilisateur dans la base de données
         // Le bloc try, catch permet de récupérer les erreurs en cas de besoin, si l'utilisateur n'est pas trouvé par exemple
+
+        const address = await prisma.adresse.create({
+            data: {
+                numeroNomRue: addressBody,
+                complement: addressAddition,
+                codePostal: postcode,
+                ville: city,
+                pays: country
+            }
+        })
+
         const changedUser = await prisma.utilisateur.update({
             where:{
                 idUtilisateur: userId
@@ -30,13 +41,7 @@ export default async function handler(req, res){
                 Adresse: true
             },
             data: {
-                adresse: {
-                    numeroNomRue: addressBody,
-                    complement: addressAddition,
-                    codePostal: postcode,
-                    ville: city,
-                    pays: country
-                }
+                idAdresse: address.idAdresse
             }
         });
 
