@@ -92,7 +92,7 @@ export async function getServerSideProps() {
   try {
     const commandes = await Commande.findMany({
       where: {
-        etatCommande : 0,
+        etatCommande : 1,
       },
         include: {
           Adresse: true,
