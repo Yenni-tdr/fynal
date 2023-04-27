@@ -31,9 +31,9 @@ const ContractBody = () => {
 
     // Envoie de la requête à chaque chargement de la page à l'aide d'SWR
     const {data: contracts, error:errorSWR, isLoading: isLoadingSWR} = useSWR(cookies['user'] ? '/api/user/getContracts' : null, fetcher, {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
+        revalidateIfStale: true,
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true,
     })
 
     const [contractDemand, setContractDemand] = useState(false);
@@ -226,7 +226,7 @@ const ContractBody = () => {
                                 {watchContractType === "Deliverer" &&
                                     <>
                                         <tr>
-                                            <td><label htmlFor="license">License</label></td>
+                                            <td><label htmlFor="license">Commission</label></td>
                                             <td>
                                                 <input {...registerContract("license")} type="text" id="license" className={`peer ${errorsContract.license ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} required/>
                                                 <p className="error-form">
@@ -235,7 +235,7 @@ const ContractBody = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><label htmlFor="vehicle">Véhicule</label></td>
+                                            <td><label htmlFor="vehicle">Commission</label></td>
                                             <td>
                                                 <input {...registerContract("vehicle")} type="text" id="vehicle" className={`peer ${errorsContract.vehicle ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} required/>
                                                 <p className="error-form">

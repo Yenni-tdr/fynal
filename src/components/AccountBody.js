@@ -36,8 +36,6 @@ const AccountBody = () => {
         return dateFormat.getFullYear()  + "-" + formatMonth(dateFormat.getMonth()+1)+ "-" + dateFormat.getDate();
     }
 
-    const birthDateDisplay = birthDateString(cookies?.user?.dateNaissance)
-
     // Utilisation du hook useForm pour gérer le formulaire de la modification de profile plus facilement
     const {register: registerProfile, handleSubmit: handleSubmitProfile, formState: {errors: errorsProfile}, reset: resetProfile} = useForm({
         resolver: yupResolver(profileSchema),
@@ -46,7 +44,7 @@ const AccountBody = () => {
             firstName:cookies?.user?.prenom,
             lastName:cookies?.user?.nom,
             email:cookies?.user?.email,
-            birthDate:birthDateDisplay,
+            birthDate:cookies?.user?.dateNaissance,
             sex:cookies?.user?.genre,
         }
     });
@@ -232,10 +230,17 @@ const AccountBody = () => {
                             <tr className="">
                                 <td><label htmlFor="birthDate">Date de naissance</label></td>
                                 <td>
-                                    <input {...registerProfile("birthDate")} type="date" id="birthDate" className={`peer ${!changeOnProfile ? "form-profile-input-display" : errorsProfile.birthDate ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} disabled={!changeOnProfile}/>
-                                    <p className="error-form">
-                                        {errorsProfile.birthDate && <span>{errorsProfile.birthDate.message}</span>}
-                                    </p>
+                                    {changeOnProfile &&
+                                        <>
+                                            <input {...registerProfile("birthDate")} type="date" id="birthDate" defaultValue={birthDateString(cookies?.user?.dateNaissance)} className={`peer ${!changeOnProfile ? "form-profile-input-display" : errorsProfile.birthDate ? "form-auth-input-invalid invalid" : "form-auth-input-valid valid"}`} disabled={!changeOnProfile}/>
+                                            <p className="error-form">
+                                                {errorsProfile.birthDate && <span>{errorsProfile.birthDate.message}</span>}
+                                            </p>
+                                        </>
+                                    }
+                                    {!changeOnProfile &&
+                                        <p className="pl-3">{new Date(cookies?.user?.dateNaissance).toLocaleDateString("fr-Fr")}</p>
+                                    }
                                 </td>
                             </tr>
                             <tr className="">
