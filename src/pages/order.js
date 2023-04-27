@@ -249,7 +249,7 @@ export default function order({ InitialCart, user }) {
                             alt={product.Produit.nom}
                             width={50}
                             height={50}
-                          ></Image>
+                          />
                           &nbsp;
                           {product.name}
                         </Link>
